@@ -132,3 +132,41 @@ def callback():
         db.session.commit()
     session["user_id"] = user_id
     return redirect(url_for("protected"))
+
+
+
+@app.route('/api/sms/callback', methods=['POST'])
+def sms_reply():
+    """Replies to SMS messages using data from a POST request.
+
+    Extracts the user's message and phone number from the request,
+    validates the user, gets and formats relevant information,
+    and uses OpenAI's API to generate a reply. The reply is sent
+    back to the user via SMS.
+
+    Returns:
+        A tuple containing a string response and an HTTP status code.
+    """
+    try:
+        # Extract and clean data from the request
+        from_number, message = get_data_from_request(request)
+
+        # Validate the user and get the corresponding assistant
+        user, assistant = validate_user_and_get_assistant(from_number)
+
+        # Gather relevant info based on the user's message
+        gathered_info, history = gather_info(message, user)
+
+        # Build a list of messages for the conversation
+        messages = build_messages(gathered_info, history, user, assistant, message)
+
+        # Use OpenAI's API to generate a reply
+        reply = generate_reply(messages, user)
+
+        # Send the reply to the user
+        send_reply(reply, from_number)
+
+        return 'OK', 200
+    except Exception as e:
+        print(f"Error: {e}")
+        return 'Internal Server Error', 500
