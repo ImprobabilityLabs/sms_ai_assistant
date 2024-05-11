@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 
 def configure_routes(app):
 
-    @app.route('/')
+    @app.route('/', methods=['GET', 'POST'])
     def index():
         return render_template('index.html')
 
@@ -22,33 +22,23 @@ def configure_routes(app):
     def index():
         return render_template('faq.html')
       
-    @app.route('/contact')
+    @app.route('/contact', methods=['POST'])
     def index():
         return render_template('contact.html')
 
-    @app.route('/subscribe')
+    @app.route('/subscribe', methods=['POST'])
     def index():
         return render_template('subscribe.html')
-    @app.route('/')
-
-  
-  
-  
-  def index():
-        return render_template('index.html')
-
-    @app.route('/')
+      
+    @app.route('/account', methods=['POST'])
     def index():
-        return render_template('index.html')
+        return render_template('account.html')
 
-    @app.route('/login', methods=['GET', 'POST'])
-    def login():
-        # Add your login logic here
-        if request.method == 'POST':
-            # Check credentials
-            session['logged_in'] = True
-            return redirect(url_for('dashboard'))
-        return render_template('login.html')
+    @app.route('/cancel', methods=['POST'])
+    def index():
+        return render_template('cancel.html')
+
+
 
     @app.route('/dashboard')
     def dashboard():
