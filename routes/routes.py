@@ -99,7 +99,7 @@ def configure_routes(app):
         return redirect(uri)
 
     @app.route("/api/google/callback")
-    def callback():
+    def google_callback():
         client = OAuth2Session(GOOGLE_CLIENT_ID, scope=["openid", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"], redirect_uri=url_for("callback", _external=True, _scheme='https'))
         token = client.fetch_token(GOOGLE_TOKEN_URL, client_secret=GOOGLE_CLIENT_SECRET, authorization_response=request.url)
         user_info = client.get("https://openidconnect.googleapis.com/v1/userinfo").json()
@@ -127,7 +127,7 @@ def configure_routes(app):
         return redirect(url_for("protected"))
 
     @app.route('/api/sms/callback', methods=['POST'])
-    def sms_reply():
+    def twillio_callback():
         """Replies to SMS messages using data from a POST request.
 
         Extracts the user's message and phone number from the request,
