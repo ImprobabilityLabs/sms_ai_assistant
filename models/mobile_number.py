@@ -1,5 +1,6 @@
 from .base import db, BaseModel
-from sqlalchemy.dialects.mysql import INTEGER  
+from sqlalchemy.dialects.mysql import INTEGER
+import phonenumbers
 
 class MobileNumber(BaseModel):
     __tablename__ = 'mobile_numbers'
@@ -10,5 +11,20 @@ class MobileNumber(BaseModel):
     mobile_number = db.Column(INTEGER(unsigned=True), nullable=False)
 
     def __repr__(self):
-        full_number = f"+{self.country_code} ({self.area_code}) {self.mobile_number}"
-        return f"<MobileNumber {full_number}>"
+        # Construct the full international number
+        full_number = f"+{self.country_code}{self.mobile_number}"
+        
+        # Parse the number using phonenumbers
+        parsed_number = phonenumbers.parse(full_number, None)
+        
+        # Format the number using international format
+        formatted_number = phonenumbers.format_number(parsed_number, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
+        
+        # Get the country name from the country code
+        country_name = phonenumbers.geocoder.description_for_number(parsed_number, "en")
+        
+        # Use country abbreviation (ISO 3166-1 alpha-2)
+        country_abbr = phonenumbers.region_code_for_number(parsed_number)
+        
+        return f"<MobileNumber {formatted_number} ({country_name}, {country_abbr})>"
+
