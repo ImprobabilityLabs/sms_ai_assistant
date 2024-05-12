@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, abort
+from twilio.request_validator import RequestValidator
 
 def configure_routes(app):
 
@@ -139,9 +140,28 @@ def configure_routes(app):
             A tuple containing a string response and an HTTP status code.
         """
         try:
-            # Extract and clean data from the request
-            from_number, message = get_data_from_request(request)
+            # Create an instance of RequestValidator
+            validator = RequestValidator(TWILIO_AUTH_TOKEN)
 
+            # Retrieve the full URL of the incoming request
+            url = request.url
+
+            # Get the POST data as a dictionary
+            post_vars = request.form.to_dict()
+
+            # Retrieve the X-Twilio-Signature header from the request
+            signature = request.headers.get('X-Twilio-Signature', '')
+
+            # Validate the request
+            if not validator.validate(url, post_vars, signature):
+                # If invalid, reject the request
+                abort(403)
+
+            from_number = post_vars['From']
+            to_number = post_vars['To']
+            message_body = post_vars['Body']
+            message_sid = post_vars.get('MessageSid', 'No SID')
+            
             # Validate the user and get the corresponding assistant
             user, assistant = validate_user_and_get_assistant(from_number)
 
