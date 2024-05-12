@@ -14,6 +14,7 @@ class Subscription(BaseModel):
     last_payment_date = db.Column(db.DateTime, nullable=True)
     tax_name = db.Column(db.String(16), nullable=True)
     tax_percent = db.Column(DECIMAL(5, 2), nullable=True)  
+    twillio_number = db.Column(db.String(16), nullable=True)
     status = db.Column(db.String(64), nullable=False)
     enabled = db.Column(db.Boolean, default=True, nullable=False)
     billing_error = db.Column(db.Boolean, default=False, nullable=False)
