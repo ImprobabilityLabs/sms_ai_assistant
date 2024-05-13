@@ -6,13 +6,6 @@ import re
 
 seo_for_data_auth = "cmFoaW1rQGltcHJvYmFiaWxpdHkuaW86NGQ4MzY1OWQ4YWEyNTIwNQ=="
 
-# Check if at least one additional argument was passed
-if len(sys.argv) <= 1:
-    print("No message was passed. Please run the script with a message argument.")
-    sys.exit()
-
-msg = sys.argv[1]
-
 def remove_keys(data, keys_to_remove):
     """ Recursively remove specified keys from a dictionary. """
     if isinstance(data, dict):
@@ -54,17 +47,6 @@ def clean_data(data):
     return json.dumps(cleaned_data, indent=2)
 
 def answer_question(question, data):
-    messages=[
-            {
-                "role": "system",
-                "content": "Extract the answer to '"+question+"', and output it in a paragraph with any additional relevant information."
-            },
-            {
-                "role": "user",
-                "content": data
-            }
-        ]
-
     client = Groq()
     completion = client.chat.completions.create(
         #model="mixtral-8x7b-32768",
