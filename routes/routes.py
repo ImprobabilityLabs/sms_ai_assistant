@@ -94,7 +94,7 @@ def configure_routes(app):
             db.session.add(user)
             db.session.commit()
         session["provider_id"] = provider_id
-        return redirect(url_for("protected"))
+        return redirect(url_for("dashboard"))
 
     @app.route("/api/google/authorize")
     def authorize_google():
@@ -105,7 +105,7 @@ def configure_routes(app):
     @app.route("/api/google/callback")
     def google_callback():
         client = OAuth2Session(current_app.config['GOOGLE_CLIENT_ID'], scope=["openid", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"], redirect_uri=url_for("callback", _external=True, _scheme='https'))
-        token = client.fetch_token(GOOGLE_TOKEN_URL, client_secret=GOOGLE_CLIENT_SECRET, authorization_response=request.url)
+        token = client.fetch_token(current_app.config['GOOGLE_TOKEN_URL'], client_secret=current_app.config['GOOGLE_CLIENT_SECRET'], authorization_response=request.url)
         user_info = client.get("https://openidconnect.googleapis.com/v1/userinfo").json()
         provider_id = user_info.get("sub")
         # Create a new user in the database if it doesn't exist
@@ -128,7 +128,7 @@ def configure_routes(app):
             db.session.add(user)
             db.session.commit()
         session["provider_id"] = provider_id
-        return redirect(url_for("protected"))
+        return redirect(url_for("dashboard"))
 
     @app.route('/api/sms/callback', methods=['POST'])
     def twillio_callback():
