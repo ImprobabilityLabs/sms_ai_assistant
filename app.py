@@ -1,18 +1,22 @@
 from flask import Flask
-from config import DevelopmentConfig
+from config import Config
 from models import db  # Assuming models/__init__.py initializes db
-from utils.logger import setup_logging
+from utils.logger import setup_logger
+from routes.route import route_blueprint  # Import the blueprint
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(DevelopmentConfig)
+    app.config.from_object(Config)
 
     # Initialize Extensions
     db.init_app(app)
-    setup_logging()
 
-    # Import routes to register them
-    import routes.route
+    # Setup Logging
+    logger = setup_logger('app_logger')
+    app.logger.addHandler(logger)
+    
+    # Register Blueprints
+    app.register_blueprint(route_blueprint)
 
     return app
 
