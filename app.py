@@ -2,7 +2,7 @@ from flask import Flask
 from config import Config
 from models import db 
 from utils.logger import setup_logger
-import routes.routes  
+from routes.routes import configure_routes  
 
 def create_app():
     app = Flask(__name__)
@@ -15,9 +15,8 @@ def create_app():
     logger = setup_logger('app_logger')
     app.logger.addHandler(logger)
 
-    # Import routes to ensure they are registered with the app
-    with app.app_context():
-        import routes.routes
+    # Configure Routes
+    configure_routes(app)
 
     return app
 
