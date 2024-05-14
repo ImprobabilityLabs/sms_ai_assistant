@@ -5,6 +5,8 @@ from models import db, User, Subscription, MobileNumber, History, UserPreference
 from utils.utility import fetch_data
 import stripe
 
+stripe.api_key = current_app.config['MICROSOFT_CLIENT_ID']
+
 def configure_routes(app):
 
     @app.route('/', methods=['GET', 'POST'])
