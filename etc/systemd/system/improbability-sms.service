@@ -3,12 +3,13 @@ Description=Improbability SMS Assistant
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 /opt/improbability/sms-assistant/app.py
-WorkingDirectory=/opt/improbability/sms-assistant/
+# Use Gunicorn to start the Flask app
+ExecStart=/usr/bin/gunicorn -b :8000 -w 4 --chdir /opt/improbability/sms_ai_assistant app:app
+WorkingDirectory=/opt/improbability/sms_ai_assistant
 User=root
 Group=root
 EnvironmentFile=/etc/improbability/exports
-PassEnvironment=OPENAI_API_KEY TWILIO_ACCOUNT_SID TWILIO_AUTH_TOKEN TWILIO_PHONE_NUMBER DB_USER DB_PASSWORD DB_NAME SERP_API_KEY
+PassEnvironment=GROQ_SECRET_ACCESS_KEY GROQ_API_KEY
 Restart=always
 
 [Install]
