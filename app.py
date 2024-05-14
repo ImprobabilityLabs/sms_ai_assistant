@@ -12,7 +12,7 @@ def create_app():
     db.init_app(app)
 
     # Setup Logging
-    logger = setup_logger('app_logger')
+    logger = setup_logger('app_logger',app.config['LOG_PATH'])
     app.logger.addHandler(logger)
 
     # Configure Routes
