@@ -113,16 +113,6 @@ def protected():
     return "Not logged in", 401
 
 
-class User(db.Model):
-    id = db.Column(db.String(255), primary_key=True)
-    email = db.Column(db.String(255), unique=True, nullable=False)
-    name = db.Column(db.String(255), nullable=True)
-    profile_pic = db.Column(db.String(255), nullable=True)  # URL to the profile picture
-    provider = db.Column(db.String(50), nullable=False)  # 'google', 'apple', 'microsoft'
-    stripe_customer_id = db.Column(db.String(255), nullable=True)  # Stripe customer ID
-
-    def __repr__(self):
-        return f'<User {self.email}>'
 
 
 if __name__ == "__main__":
