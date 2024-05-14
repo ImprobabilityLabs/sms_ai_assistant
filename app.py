@@ -14,9 +14,13 @@ def create_app():
     # Setup Logging
     logger = setup_logger('app_logger',app.config['LOG_PATH'])
     app.logger.addHandler(logger)
-
+    
     # Configure Routes
     configure_routes(app)
+
+    # Create tables if they do not exist
+    with app.app_context():
+        db.create_all()
 
     return app
 
