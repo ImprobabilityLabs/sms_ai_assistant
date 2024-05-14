@@ -73,12 +73,11 @@ def configure_routes(app):
         user_info = client.get("https://graph.microsoft.com/oidc/userinfo").json()
         current_app.logger.info('Info: Data Received from Microsoft API Call to /api/microsoft/callback: '+ str(user_info))
         provider_id = user_info.get("sub")
-        print(user_info)
         # Create a new user in the database if it doesn't exist
         user_name = user_info.get("name")
         if not user_name:
             user_name = user_info.get("givenname") + " " + user_info.get("familyname")
-        user = db.session.get(User, provider_id)
+        user = User.query.filter_by(provider_id=provider_id).first()
         if not user:
             # Create a Stripe customer
             stripe_customer = stripe.Customer.create(
@@ -114,7 +113,7 @@ def configure_routes(app):
         user_info = client.get("https://openidconnect.googleapis.com/v1/userinfo").json()
         provider_id = user_info.get("sub")
         # Create a new user in the database if it doesn't exist
-        user = db.session.get(User, provider_id)
+        user = User.query.filter_by(provider_id=provider_id).first()
         if not user:
             # Create a Stripe customer
             stripe_customer = stripe.Customer.create(
