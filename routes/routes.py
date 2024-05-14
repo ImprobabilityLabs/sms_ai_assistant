@@ -59,16 +59,19 @@ def configure_routes(app):
         pass
 
     @app.route("/api/microsoft/authorize")
-    def authorize_microsoft():
+    def microsoft_authorize():
+        current_app.logger.info('Info: API Call to /api/microsoft/authorize')
         client = OAuth2Session(current_app.config['MICROSOFT_CLIENT_ID'], scope=["openid", "profile", "email"], redirect_uri=url_for("microsoft_callback", _external=True, _scheme='https'))
         uri, state = client.authorization_url(current_app.config['MICROSOFT_AUTHORIZATION_URL'])
         return redirect(uri)
 
     @app.route("/api/microsoft/callback")
     def microsoft_callback():
+        current_app.logger.info('Info: API Call to /api/microsoft/callback')
         client = OAuth2Session(current_app.config['MICROSOFT_CLIENT_ID'], scope=["openid", "profile", "email"], redirect_uri=url_for("microsoft_callback", _external=True, _scheme='https'))
         token = client.fetch_token(current_app.config['MICROSOFT_TOKEN_URL'], client_secret=current_app.config['MICROSOFT_CLIENT_SECRET'], authorization_response=request.url)
         user_info = client.get("https://graph.microsoft.com/oidc/userinfo").json()
+        current_app.logger.info('Info: Data Received from Microsoft API Call to /api/microsoft/callback: '+ str(user_info))
         provider_id = user_info.get("sub")
         print(user_info)
         # Create a new user in the database if it doesn't exist
@@ -97,13 +100,15 @@ def configure_routes(app):
         return redirect(url_for("dashboard_page"))
 
     @app.route("/api/google/authorize")
-    def authorize_google():
+    def google_authorize():
+        current_app.logger.info('Info: API Call to /api/google/authorize')
         client = OAuth2Session(current_app.config['GOOGLE_CLIENT_ID'], scope=["openid", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"], redirect_uri=url_for("google_callback", _external=True, _scheme='https'))
         uri, state = client.authorization_url(current_app.config['GOOGLE_AUTHORIZATION_URL'])
         return redirect(uri)
 
     @app.route("/api/google/callback")
     def google_callback():
+        current_app.logger.info('Info: API Call to /api/google/callback')
         client = OAuth2Session(current_app.config['GOOGLE_CLIENT_ID'], scope=["openid", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"], redirect_uri=url_for("google_callback", _external=True, _scheme='https'))
         token = client.fetch_token(current_app.config['GOOGLE_TOKEN_URL'], client_secret=current_app.config['GOOGLE_CLIENT_SECRET'], authorization_response=request.url)
         user_info = client.get("https://openidconnect.googleapis.com/v1/userinfo").json()
