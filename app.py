@@ -40,13 +40,13 @@ def microsoft_callback():
     client = OAuth2Session(MICROSOFT_CLIENT_ID, scope=["openid", "profile", "email"], redirect_uri=url_for("microsoft_callback", _external=True, _scheme='https'))
     token = client.fetch_token(MICROSOFT_TOKEN_URL, client_secret=MICROSOFT_CLIENT_SECRET, authorization_response=request.url)
     user_info = client.get("https://graph.microsoft.com/oidc/userinfo").json()
-    user_id = user_info.get("sub")
+    provider_id = user_info.get("sub")
     print(user_info)
     # Create a new user in the database if it doesn't exist
     user_name = user_info.get("name")
     if not user_name:
         user_name = user_info.get("givenname") + " " + user_info.get("familyname")
-    user = db.session.get(User, user_id)
+    user = db.session.get(User, provider_id)
     if not user:
         # Create a Stripe customer
         stripe_customer = stripe.Customer.create(
@@ -55,16 +55,16 @@ def microsoft_callback():
             description="Customer for {}".format(user_info.get("email")),
         )
         user = User(
-            id=user_id,
+            provider_id=provider_id,
             email=user_info.get("email"),
             name=user_name,
-            provider='microsoft',  # Set the provider as 'microsoft'
+            provider_name='microsoft',  # Set the provider as 'microsoft'
             profile_pic=user_info.get("picture", None),  # Use the 'picture' field from Microsoft, if available
             stripe_customer_id=stripe_customer.id  # Initialize as None; update when integrating with Stripe
         )
         db.session.add(user)
         db.session.commit()
-    session["user_id"] = user_id
+    session["provider_id"] = provider_id
     return redirect(url_for("protected"))
 
 
@@ -80,9 +80,9 @@ def callback():
     client = OAuth2Session(GOOGLE_CLIENT_ID, scope=["openid", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"], redirect_uri=url_for("callback", _external=True, _scheme='https'))
     token = client.fetch_token(GOOGLE_TOKEN_URL, client_secret=GOOGLE_CLIENT_SECRET, authorization_response=request.url)
     user_info = client.get("https://openidconnect.googleapis.com/v1/userinfo").json()
-    user_id = user_info.get("sub")
+    provider_id = user_info.get("sub")
     # Create a new user in the database if it doesn't exist
-    user = db.session.get(User, user_id)
+    user = db.session.get(User, provider_id)
     if not user:
         # Create a Stripe customer
         stripe_customer = stripe.Customer.create(
@@ -91,24 +91,24 @@ def callback():
             description="Customer for {}".format(user_info.get("email")),
         )
         user = User(
-            id=user_id, 
+            provider_id=provider_id, 
             email=user_info.get("email"), 
             name=user_info.get("name"), 
-            provider='google',  # Set the provider as 'google'
+            provider_name='google',  # Set the provider as 'google'
             profile_pic=user_info.get("picture", None),  # Use the 'picture' field from Google, if available
             stripe_customer_id=stripe_customer.id  # Initialize as None; update when integrating with Stripe
         )
         db.session.add(user)
         db.session.commit()
-    session["user_id"] = user_id
+    session["provider_id"] = provider_id
     return redirect(url_for("protected"))
 
 
 @app.route("/protected")
 def protected():
-    user_id = session.get("user_id")
-    if user_id:
-        user = db.session.get(User, user_id)
+    provider_id = session.get("provider_id")
+    if provider_id:
+        user = db.session.get(User, provider_id)
         return f"Welcome, {user.name}!"
     return "Not logged in", 401
 
