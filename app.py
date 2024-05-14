@@ -26,6 +26,7 @@ def create_app():
 
     return app
 
+app = create_app()  # This line added
+
 if __name__ == '__main__':
-    app = create_app()
     app.run()
