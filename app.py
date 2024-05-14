@@ -18,7 +18,8 @@ def create_app():
     logger = setup_logger('app_logger',app.config['LOG_PATH'])
     app.logger.addHandler(logger)
     
-    stripe.api_key = current_app.config['STRIPE_API_KEY']
+    # Set Stripe API Key
+    stripe.api_key = app.config['STRIPE_API_KEY']
 
     # Configure Routes
     configure_routes(app)
