@@ -5,9 +5,9 @@ from models import db, User, Subscription, MobileNumber, History, UserPreference
 from utils.utility import fetch_data
 import stripe
 
-stripe.api_key = current_app.config['STRIPE_API_KEY']
-
 def configure_routes(app):
+
+    stripe.api_key = current_app.config['STRIPE_API_KEY']
 
     @app.route('/', methods=['GET', 'POST'])
     def index_page():
