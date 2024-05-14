@@ -49,6 +49,14 @@ def configure_routes(app):
             return redirect(url_for('login'))
         return render_template('dashboard.html')
 
+    @app.route('/logout')
+    def logout():
+        # Clear all data from the session
+        session.clear()
+     
+        # Redirect to the homepage
+        return redirect(url_for('index_page'))  
+    
     @app.route("/api/apple/authorize")
     def authorize_apple():
         # Apple-specific OAuth configuration and redirect
