@@ -53,7 +53,7 @@ def configure_routes(app):
         # Apple-specific OAuth configuration and redirect
         pass
 
-    @app.route("api/apple/callback")
+    @app.route("/api/apple/callback")
     def apple_callback():
         # Apple-specific OAuth configuration and redirect
         pass
