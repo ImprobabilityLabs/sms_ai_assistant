@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from oauthlib.oauth2 import WebApplicationClient
 from requests_oauthlib import OAuth2Session
 from models import User, Subscription, MobileNumber, History, UserPreference, AssistantPreference  # Import models
-from utils.utility import some_utility_function
+from utils.utility import fetch_data
 
 def configure_routes(app):
 
