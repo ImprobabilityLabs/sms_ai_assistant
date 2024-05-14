@@ -3,6 +3,7 @@ from oauthlib.oauth2 import WebApplicationClient
 from requests_oauthlib import OAuth2Session
 from models import db, User, Subscription, MobileNumber, History, UserPreference, AssistantPreference  # Import models
 from utils.utility import fetch_data
+import stripe
 
 def configure_routes(app):
 
