@@ -4,6 +4,7 @@ from models import db
 from utils.logger import setup_logger
 from routes.routes import configure_routes  
 from werkzeug.middleware.proxy_fix import ProxyFix
+import stripe
 
 def create_app():
     app = Flask(__name__)
@@ -17,6 +18,8 @@ def create_app():
     logger = setup_logger('app_logger',app.config['LOG_PATH'])
     app.logger.addHandler(logger)
     
+    stripe.api_key = current_app.config['STRIPE_API_KEY']
+
     # Configure Routes
     configure_routes(app)
 
