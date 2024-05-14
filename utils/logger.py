@@ -2,8 +2,8 @@ import logging
 import os
 from datetime import datetime
 
-def setup_logger(name):
-    BASE_LOGPATH = os.getenv('LOG_DIR', './logs/')  # Provide a default path if none is set
+def setup_logger(name, path='./logs/'):
+    BASE_LOGPATH = path
     if not os.path.exists(BASE_LOGPATH):
         os.makedirs(BASE_LOGPATH)
 
