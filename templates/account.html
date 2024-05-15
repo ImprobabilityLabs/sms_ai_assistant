@@ -4,29 +4,27 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="author" content="Improbability Labs Inc. ( Rahim Khoja )">
     <meta name="description" content="SMS AI Assistant by Improbability Labs Inc. An AI powered assistant that can lookup information available over SMS.">
     <meta name="keywords" content="AI, ChatBot, SMS, Assistant, innovation">
     <meta name="robots" content="index, follow">
     <meta property="og:title" content="Improbability Labs Inc. - SMS AI Assistant">
     <meta property="og:description" content="SMS AI Assistant by Improbability Labs Inc. An AI powered assistant that can lookup information available over SMS.">
-    <meta property="og:image" content="https://improbability.io/improbability-labs.png">
-    <meta property="og:url" content="https://improbability.io/">
+    <meta property="og:image" content="{{ url_for('static', filename='images/improbability-labs.png') }}">
+    <meta property="og:url" content="https://sms.improbability.io/">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Improbability Labs Inc. - SMS AI Assistant">
     <meta name="twitter:description" content="SMS AI Assistant by Improbability Labs Inc. An AI powered assistant that can lookup information available over SMS.">
-    <meta name="twitter:image" content="https://improbability.io/improbability-labs.png">
-    <link rel="canonical" href="https://trader.improbability.io/">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://improbability.io/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="https://improbability.io/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://improbability.io/favicon-16x16.png">
+    <meta name="twitter:image" content="{{ url_for('static', filename='images/improbability-labs.png') }}">
+    <link rel="canonical" href="https://sms.improbability.io/">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon/favicon-16x16.png') }}">
     <title>Improbability Labs Inc. - SMS AI Assistant</title>
-    <!-- Bootstrap core CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <link href="assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
-    <script src="assets/js/ie-emulation-modes-warning.js"></script>
+    <link href="<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/ie10-viewport-bug-workaround.css') }}">
+    <script src="{{ url_for('static', filename='js/ie-emulation-modes-warning.js') }}"></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -35,41 +33,40 @@
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
-    <link href="assets/css/improbability.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/improbability.css') }}" rel="stylesheet">
   </head>
   <body>
-    <div class="headbar">
-      <div class="container">
-        <div class="wrapper">
-          <a class="brand" href="index.html" rel="home" title="Improbability Labs Inc.">
-            <div class="brand-name">
-              <img class="img-responsive" src="https://improbability.io/improbability-labs.webp">
-              <span class="brand-text">Improbability Labs - SMS AI Assistant</span>
-            </div>
-          </a>
-          <!-- Navigation Bar -->
-          <div class="navbar-header pull-right">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span the="icon-bar"></span>
-            </button>
-          </div>
-          <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav navbar-right">
-              <li><a href="/link1">Home</a></li>
-              <li><a href="/link2">Dashboard</a></li>
-              <li><a href="/link3">Billing</a></li>
-              <li><a href="/link3">Logout</a></li>
-            </ul>
-          </div>
+<div class="headbar">
+  <div class="container">
+    <div class="wrapper">
+      <a class="brand" href="index.html" rel="home" title="Improbability Labs Inc.">
+        <div class="brand-name">
+          <img class="img-responsive" src="{{ url_for('static', filename='images/improbability-labs.webp') }}">
+          <span class="brand-text">Improbability Labs - SMS AI Assistant</span>
         </div>
+      </a>
+      <!-- Navigation Bar -->
+      <div class="navbar-header pull-right">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span the="icon-bar"></span>
+        </button>
       </div>
-      <div class="topbar">
-        <img height="10" src="data:image/gif;base64,R0lGODlhEAAQANUAAC8nhjAnhi08lC8riDEbfi8nhSxGmzEWejAfgCxHmy40ji45kjEYezAjhCxImi44ki4wiy45kS8viyxDmDAigixHmi8wiy08ky09kyxEmC44kC1AlixGmi44kS09lC1AlzEWezAfgS8wjC8riTEbfzAjgy40jyxInDEYfCxEmSxImwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C1hNUCBEYXRhWE1QPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS4zLWMwMTEgNjYuMTQ1NjYxLCAyMDEyLzAyLzA2LTE0OjU2OjI3ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M2IChXaW5kb3dzKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo3QTFCQkUxQTQxRUYxMUU3OTVFMThBMURCRjcwQ0RERiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo3QTFCQkUxQjQxRUYxMUU3OTVFMThBMURCRjcwQ0RERiI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjdBMUJCRTE4NDFFRjExRTc5NUUxOEExREJGNzBDRERGIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjdBMUJCRTE5NDFFRjExRTc5NUUxOEExREJGNzBDRERGIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+Af/+/fz7+vn49/b19PPy8fDv7u3s6+rp6Ofm5eTj4uHg397d3Nva2djX1tXU09LR0M/OzczLysnIx8bFxMPCwcC/vr28u7q5uLe2tbSzsrGwr66trKuqqainpqWko6KhoJ+enZybmpmYl5aVlJOSkZCPjo2Mi4qJiIeGhYSDgoGAf359fHt6eXh3dnV0c3JxcG9ubWxramloZ2ZlZGNiYWBfXl1cW1pZWFdWVVRTUlFQT05NTEtKSUhHRkVEQ0JBQD8+PTw7Ojk4NzY1NDMyMTAvLi0sKyopKCcmJSQjIiEgHx4dHBsaGRgXFhUUExIREA8ODQwLCgkIBwYFBAMCAQAAIfkEAAAAAAAsAAAAABAAEAAABn3AA4qAKBUGEEUEs8lUVA4h0YhUej6pxEkFQpFCDcBIZFpcs9vuNzwun7Vcb6gkJpuxhrSc3n689V98ZH54gHN1Jh1neXGBAW2KWByGJY9kkSmManOWiQIbKZONnJACkpSdHZ+hqKWgogcMU0cWnq9bsUQURxIKGhcbExxQQQA7">  
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="/link1">Home</a></li>
+          <li><a href="/link2">Dashboard</a></li>
+          <li><a href="/link3">Billing</a></li>
+          <li><a href="/link3">Logout</a></li>
+        </ul>
       </div>
     </div>
+  </div>
+  <div class="topbar">
+    <img height="10" src="data:image/gif;base64,R0lGODlhEAAQANUAAC8nhjAnhi08lC8riDEbfi8nhSxGmzEWejAfgCxHmy40ji45kjEYezAjhCxImi44ki4wiy45kS8viyxDmDAigixHmi8wiy08ky09kyxEmC44kC1AlixGmi44kS09lC1AlzEWezAfgS8wjC8riTEbfzAjgy40jyxInDEYfCxEmSxImwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C1hNUCBEYXRhWE1QPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS4zLWMwMTEgNjYuMTQ1NjYxLCAyMDEyLzAyLzA2LTE0OjU2OjI3ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M2IChXaW5kb3dzKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo3QTFCQkUxQTQxRUYxMUU3OTVFMThBMURCRjcwQ0RERiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo3QTFCQkUxQjQxRUYxMUU3OTVFMThBMURCRjcwQ0RERiI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjdBMUJCRTE4NDFFRjExRTc5NUUxOEExREJGNzBDRERGIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjdBMUJCRTE5NDFFRjExRTc5NUUxOEExREJGNzBDRERGIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+Af/+/fz7+vn49/b19PPy8fDv7u3s6+rp6Ofm5eTj4uHg397d3Nva2djX1tXU09LR0M/OzczLysnIx8bFxMPCwcC/vr28u7q5uLe2tbSzsrGwr66trKuqqainpqWko6KhoJ+enZybmpmYl5aVlJOSkZCPjo2Mi4qJiIeGhYSDgoGAf359fHt6eXh3dnV0c3JxcG9ubWxramloZ2ZlZGNiYWBfXl1cW1pZWFdWVVRTUlFQT05NTEtKSUhHRkVEQ0JBQD8+PTw7Ojk4NzY1NDMyMTAvLi0sKyopKCcmJSQjIiEgHx4dHBsaGRgXFhUUExIREA8ODQwLCgkIBwYFBAMCAQAAIfkEAAAAAAAsAAAAABAAEAAABn3AA4qAKBUGEEUEs8lUVA4h0YhUej6pxEkFQpFCDcBIZFpcs9vuNzwun7Vcb6gkJpuxhrSc3n689V98ZH54gHN1Jh1neXGBAW2KWByGJY9kkSmManOWiQIbKZONnJACkpSdHZ+hqKWgogcMU0cWnq9bsUQURxIKGhcbExxQQQA7">  </div>
+</div>
     <br />
     <!-- Open Container -->
     <div class="container" style="padding-top: 10px; padding-bottom: px;">
