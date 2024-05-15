@@ -23,7 +23,9 @@ for product in products.auto_paging_iter():
         description = product.description or "No description provided"  # Ensure description is defined
 
         # Access metadata
-        country = product.metadata.get('country', 'Not specified')  # Default to 'Not specified' if no country is set
+        country = product.metadata.get('country', '')  
+        tax = product.metadata.get('tax', None)  
+        tax_name = product.metadata.get('tax_name', None)  
 
         # Extract feature names from the features and marketing_features
         features = [feature['name'] for feature in product.get('features', [])]
