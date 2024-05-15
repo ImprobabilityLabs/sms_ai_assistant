@@ -220,7 +220,7 @@ def get_products():
                 'product_name': product.name
             })
 
-        return product_data
+    return product_data
 
 
 
