@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify, abort, current_app
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, abort, current_app, after_request
 from oauthlib.oauth2 import WebApplicationClient
 from requests_oauthlib import OAuth2Session
 from models import db, User, Subscription, MobileNumber, History, UserPreference, AssistantPreference  # Import models
@@ -6,6 +6,15 @@ from utils.utility import fetch_data
 import stripe
 
 def configure_routes(app):
+
+    @app.after_request
+    def add_header(response):
+        # Apply no-cache headers only to non-static content
+        if 'static' not in request.endpoint:
+            response.headers['Cache-Control'] = 'no-store'
+            response.headers['Pragma'] = 'no-cache'
+            response.headers['Expires'] = '0'
+        return response
 
     @app.route('/', methods=['GET', 'POST'])
     def index_page():
@@ -54,8 +63,15 @@ def configure_routes(app):
         # Clear all data from the session
         session.clear()
      
+        # Redirect to login page
+        response = redirect(url_for('index_page'))
+
+        # Delete cookies
+        for key in request.cookies:
+            response.delete_cookie(key)
+
         # Redirect to the homepage
-        return redirect(url_for('index_page'))  
+        return response
     
     @app.route("/api/apple/authorize")
     def authorize_apple():
