@@ -173,6 +173,57 @@ def generate_menu(member):
         ]
     return menu
 
+def get_products():
+    products = stripe.Product.list(limit=10)  # Adjust limit as necessary
+
+    product_data = []
+
+    for product in products.auto_paging_iter():
+        # Retrieve prices associated with the product
+        prices = stripe.Price.list(product=product.id, type='recurring')
+
+        for price in prices.data:
+            # Access price fields
+            price_id = price.id
+            amount = price.unit_amount
+            currency = price.currency.upper()
+            interval = price.recurring.interval
+
+            # Retrieve product details including description
+            description = product.description or ""
+
+            # Access metadata
+            country = product.metadata.get('country', '')
+            tax = float(product.metadata.get('tax', 0.0))
+            tax_name = product.metadata.get('tax_name', '')
+
+            # Extract feature names from the features and marketing_features
+            features = [feature['name'] for feature in product.get('features', [])]
+
+            # Handle the image URL
+            images = product.images
+            image_url = images[0] if images else 'https://example.com/default-image.jpg'  # Default image if none available
+
+            # Append to product data
+            product_data.append({
+                'product_id': product.id,
+                'price_id': price_id,
+                'amount': amount / 100,
+                'currency': currency,
+                'interval': interval,
+                'description': description,
+                'country': country,
+                'tax': tax,
+                'tax_name': tax_name,
+                'features': features,
+                'image_url': image_url,
+                'product_name': product.name
+            })
+
+        return product_data
+
+
+
 # Assuming extract_questions(msg) returns a list of questions
 #questions = extract_questions(msg)
 
