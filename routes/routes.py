@@ -88,7 +88,7 @@ def configure_routes(app):
             return redirect(url_for('index_page'))
         elif not member['is_subscribed']:
             products = get_products()
-            print(products)
+            current_app.logger.info('Info: Subscribe Page - Products Object: ' + str(products))
             return render_template('subscribe.html', menu=menu)
       
     @app.route('/account', methods=['GET', 'POST'])
