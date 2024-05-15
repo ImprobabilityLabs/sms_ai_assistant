@@ -381,16 +381,16 @@
               <ul class="socbut" style="float: left; list-style-type: none; height: 40px; line-height: 24px; margin-bottom: 0px; margin-left: 5px; margin-top: 20px; padding-left: 0px; padding-bottom: 5px;">
                 <li style="display: inline; padding-left: 7px; padding-right: 7px;">
                   <a href="https://www.linkedin.com/company/improbability-labs/" target="_blank">
-                  <img src="images/linkdin.svg" width="30px" 
-                    onmouseover="this.src='images/linkedin_hover.svg'" 
-                    onmouseout="this.src='images/linkdin.svg'" />
+                  <img src="{{ url_for('static', filename='images/linkdin.svg') }}" width="30px" 
+                    onmouseover="this.src='{{ url_for('static', filename='images/linkdin_hover.svg') }}'" 
+                    onmouseout="this.src='{{ url_for('static', filename='images/linkdin.svg') }}'" />
                   </a>
                 </li>
                 <li style="display: inline; padding-left: 7px; padding-right: 7px;">
                   <a href="https://twitter.com/ImprobLabs" target="_blank">
-                  <img src="images/twitter.svg" width="30px" 
-                    onmouseover="this.src='images/twitter_hover.svg'" 
-                    onmouseout="this.src='images/twitter.svg'" />
+                  <img src="{{ url_for('static', filename='images/twitter.svg') }}" width="30px" 
+                    onmouseover="this.src='{{ url_for('static', filename='images/twitter_hover.svg') }}'" 
+                    onmouseout="this.src='{{ url_for('static', filename='images/twitter.svg') }}'" />
                   </a>
                 </li>
               </ul>
@@ -407,12 +407,10 @@
       </div>
     </footer>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="assets/js/vendor/jquery.min.js"><\/script>')</script>
-    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="assets/js/ie10-viewport-bug-workaround.js"></script>
-    <script src="assets/tablepages.js"></script>
+    <script src="{{ url_for('static', filename='js/ie10-viewport-bug-workaround.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.3/js/bootstrap-select.min.js"></script>
-    <script src="assets/js/improbability.js"></script>
+    <script src="{{ url_for('static', filename='js/improbability.js') }}"></script>
   </body>
 </html>
