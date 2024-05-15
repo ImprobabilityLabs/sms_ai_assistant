@@ -9,13 +9,13 @@ def configure_routes(app):
 
     @app.after_request
     def add_header(response):
-        # Apply no-cache headers only to non-static content
-        if 'static' not in request.endpoint:
-            response.headers['Cache-Control'] = 'no-store'
+        # Ensure the endpoint is not None before checking its value
+        if request.endpoint and 'static' not in request.endpoint:
+            response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
             response.headers['Pragma'] = 'no-cache'
             response.headers['Expires'] = '0'
         return response
-
+    
     @app.route('/', methods=['GET', 'POST'])
     def index_page():
         return render_template('index.html')
