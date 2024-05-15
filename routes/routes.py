@@ -85,7 +85,7 @@ def configure_routes(app):
         current_app.logger.info('Info: Subscribe Page - Member Object: ' + str(member))
         menu = generate_menu(member)
         if not member['is_user']:
-            return render_template('index.html', menu=menu)
+            return redirect(url_for('index_page'))
         elif not member['is_subscribed']:
             return render_template('subscribe.html', menu=menu)
       
@@ -98,9 +98,9 @@ def configure_routes(app):
         current_app.logger.info('Info: Account Page - Member Object: ' + str(member))
         menu = generate_menu(member)
         if not member['is_user']:
-            return render_template('index.html', menu=menu)
+            return redirect(url_for('index_page'))
         elif not member['is_subscribed']:
-            return render_template('subscribe.html', menu=menu)
+            return redirect(url_for('subscribe_page'))
         elif member['is_subscribed']:
             return render_template('account.html', menu=menu)
 
@@ -113,9 +113,9 @@ def configure_routes(app):
         current_app.logger.info('Info: Cancel Page - Member Object: ' + str(member))
         menu = generate_menu(member)
         if not member['is_user']:
-            return render_template('index.html', menu=menu)
+            return redirect(url_for('index_page'))
         elif not member['is_subscribed']:
-            return render_template('subscribe.html', menu=menu)
+            return redirect(url_for('subscribe_page'))
         elif member['is_subscribed']:
             return render_template('cancel.html', menu=menu)
 
@@ -128,13 +128,13 @@ def configure_routes(app):
         current_app.logger.info('Info: Dashboard Page - Member Object: ' + str(member))
         menu = generate_menu(member)
         if not member['is_user']:
-            return render_template('index.html', menu=menu)
+            return redirect(url_for('index_page'))
         elif not member['is_subscribed']:
-            return render_template('subscribe.html', menu=menu)
+            return redirect(url_for('subscribe_page'))
         elif member['is_subscribed'] and not member['has_billing_error']:
             return render_template('dashboard.html', menu=menu)
         elif member['is_subscribed'] and member['has_billing_error']:
-            return render_template('account.html', menu=menu)
+            return redirect(url_for('account_page'))
 
     @app.route('/logout')
     def logout():
