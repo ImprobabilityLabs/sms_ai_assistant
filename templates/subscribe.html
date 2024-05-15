@@ -34,6 +34,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
     <link href="{{ url_for('static', filename='css/improbability.css') }}" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
   </head>
   <body>
 <div class="headbar">
@@ -360,24 +361,25 @@
                 <input id="card-name" type="text" class="form-control" name="card-name" required="" placeholder="Card Holder Name">
               </div>
             </div>
-            <div class="col-xs-12">
-              <div class="form-group form-type-text">
-                <label for="card-cc">Card Number</label>
-                <input id="card-cc" type="text" class="form-control" name="card-cc" placeholder="Card Number" required="">
-              </div>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-              <div class="form-group form-type-text">
-                <label for="card-exp">Card Expiry Date</label>
-                <input id="card-exp" type="text" class="form-control" placeholder="MM/YY" data-label="" name="card-exp" required="">
-              </div>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-              <div class="form-group form-type-text">
-                <label for="card-cvc">Card CVC</label>
-                <input id="card-cvc" type="text" class="form-control" name="card-cvc" placeholder="CVC" required="">
-              </div>
-            </div>
+<div class="col-xs-12">
+  <div class="form-group form-type-text" id="card-element">
+    <!-- Stripe Elements will be inserted here -->
+  </div>
+</div>
+<div class="col-xs-12 col-sm-6">
+  <div class="form-group form-type-text">
+    <label for="card-exp">Card Expiry Date</label>
+    <!-- Placeholder for Stripe Expiry Element -->
+    <div id="card-expiry-element"></div>
+  </div>
+</div>
+<div class="col-xs-12 col-sm-6">
+  <div class="form-group form-type-text">
+    <label for="card-cvc">Card CVC</label>
+    <!-- Placeholder for Stripe CVC Element -->
+    <div id="card-cvc-element"></div>
+  </div>
+</div>
             <div class="col-xs-12">
               <div class="form-group form-type-text">
                 <label for="billing-address">Billing Address</label>
