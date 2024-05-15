@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from models import db, User, Subscription, MobileNumber, History, UserPreference, AssistantPreference 
 from oauthlib.oauth2 import WebApplicationClient
 from requests_oauthlib import OAuth2Session
-from utils.utility import fetch_data, check_user_subscription, generate_menu
+from utils.utility import fetch_data, check_user_subscription, generate_menu, get_products
 import stripe
 
 def configure_routes(app):
@@ -87,6 +87,8 @@ def configure_routes(app):
         if not member['is_user']:
             return redirect(url_for('index_page'))
         elif not member['is_subscribed']:
+            products = get_products()
+            print(products)
             return render_template('subscribe.html', menu=menu)
       
     @app.route('/account', methods=['GET', 'POST'])
