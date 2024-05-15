@@ -10,16 +10,16 @@
     <meta name="robots" content="index, follow">
     <meta property="og:title" content="Improbability Labs Inc. - SMS AI Assistant">
     <meta property="og:description" content="SMS AI Assistant by Improbability Labs Inc. An AI powered assistant that can lookup information available over SMS.">
-    <meta property="og:image" content="https://improbability.io/improbability-labs.png">
-    <meta property="og:url" content="https://improbability.io/">
+    <meta property="og:image" content="{{ url_for('static', filename='images/improbability-labs.png') }}">
+    <meta property="og:url" content="https://sms.improbability.io/">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Improbability Labs Inc. - SMS AI Assistant">
     <meta name="twitter:description" content="SMS AI Assistant by Improbability Labs Inc. An AI powered assistant that can lookup information available over SMS.">
-    <meta name="twitter:image" content="https://improbability.io/improbability-labs.png">
-    <link rel="canonical" href="https://trader.improbability.io/">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://improbability.io/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="https://improbability.io/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://improbability.io/favicon-16x16.png">
+    <meta name="twitter:image" content="{{ url_for('static', filename='images/improbability-labs.png') }}">
+    <link rel="canonical" href="https://sms.improbability.io/">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon/favicon-16x16.png') }}">
     <title>Improbability Labs Inc. - SMS AI Assistant</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
@@ -41,7 +41,7 @@
     <div class="wrapper">
       <a class="brand" href="index.html" rel="home" title="Improbability Labs Inc.">
         <div class="brand-name">
-          <img class="img-responsive" src="https://improbability.io/improbability-labs.webp">
+          <img class="img-responsive" src="{{ url_for('static', filename='images/improbability-labs.webp') }}">
           <span class="brand-text">Improbability Labs - SMS AI Assistant</span>
         </div>
       </a>
@@ -87,21 +87,21 @@
                 <!-- Google Login Button -->
                 <a href="/api/google/authorize">
                     <button class="btn btn-default login-button">
-                        <img src="/assets/google-logo.svg" alt="Google logo" style="width: 24px; height: 24px;">
+                        <img src="{{ url_for('static', filename='images/google-logo.svg') }}" alt="Google logo" style="width: 24px; height: 24px;">
                         Continue with Google
                     </button>
                 </a>
                 <!-- Microsoft Login Button -->
                 <a href="/api/microsoft/authorize">
                     <button class="btn btn-default login-button">
-                        <img src="/assets/microsoft-logo.svg" alt="Microsoft logo" style="width: 24px; height: 24px;">
+                        <img src="{{ url_for('static', filename='images/microsoft-logo.svg') }}" alt="Microsoft logo" style="width: 24px; height: 24px;">
                         Continue with Microsoft
                     </button>
                 </a>
                 <!-- Apple Login Button -->
                 <a href="/api/apple/authorize">
                     <button class="btn btn-default login-button">
-                        <img src="/assets/apple-logo.svg" alt="Apple logo" style="width: 24px; height: 24px;">
+                        <img src="{{ url_for('static', filename='images/apple-logo.svg') }}" alt="Apple logo" style="width: 24px; height: 24px;">
                         Continue with Apple
                     </button>
                 </a>
