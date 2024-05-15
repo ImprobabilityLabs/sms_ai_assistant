@@ -22,8 +22,8 @@ def configure_routes(app):
             member = check_user_subscription(session.get('user_provider_id'))
         else:
             member = check_user_subscription(None)
-        menu = generate_menu(member)
         current_app.logger.info('Info: Index Page - Member Object: ' + str(member))
+        menu = generate_menu(member)
         return render_template('index.html', menu=menu)
 
     @app.route('/terms')
