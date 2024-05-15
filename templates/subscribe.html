@@ -410,12 +410,6 @@
                 </select>
               </div>
             </div>
-            <div class="col-xs-12">
-              <div class="form-group form-type-text">
-                <label for="billing-zip">Billing Postal Code/ZIP</label>
-                <input id="billing-zip" type="text" class="form-control" name="billing-zip" placeholder="Postal Code/ZIP" required="" autocomplete="postal-code">
-              </div>
-            </div>
           </div>
           <div class="row" style="display:block">
             <div id="cc-error" class="col-xs-12 col-xs-6" style="display:none">
@@ -526,6 +520,7 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="{{ url_for('static', filename='js/ie10-viewport-bug-workaround.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.3/js/bootstrap-select.min.js"></script>
+    <script src="{{ url_for('static', filename='js/improbability.js') }}"></script>
     <script>
   var stripe = Stripe('pk_test_51OOwrOJzClWbuS5HiI3za4AH1nlNiu1ZqJZo6ATTSTdA36SIOM0yOtotS2iUR0x6XFg5vCibUaOnK2VX6EG2kQF200jcPkbwTA'); // Replace with your public key
 
@@ -549,13 +544,13 @@
 
   // Create instances of the card elements
   var cardNumber = elements.create('cardNumber', {
-  style: style,
-  classes: {
-    base: "form-control",  // Ensuring styling consistency with Bootstrap
-  },
-  // This enables the collection of the postal code
-  showPostalCode: true
-});
+    style: style,
+    classes: {
+      base: "form-control",  // Ensuring styling consistency with Bootstrap
+    },
+    // This enables the collection of the postal code
+    showPostalCode: true
+  });
   
   var cardExpiry = elements.create('cardExpiry', {style: style});
   var cardCvc = elements.create('cardCvc', {style: style});
@@ -595,6 +590,6 @@
     form.submit();
   }
 </script>
-    <script src="{{ url_for('static', filename='js/improbability.js') }}"></script>
+    
   </body>
 </html>
