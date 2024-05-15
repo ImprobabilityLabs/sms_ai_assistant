@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from models import db, User, Subscription, MobileNumber, History, UserPreference, AssistantPreference 
 from oauthlib.oauth2 import WebApplicationClient
 from requests_oauthlib import OAuth2Session
-from utils.utility import fetch_data
+from utils.utility import fetch_data, check_user_subscription
 import stripe
 
 def configure_routes(app):
@@ -18,6 +18,8 @@ def configure_routes(app):
     
     @app.route('/', methods=['GET', 'POST'])
     def index_page():
+        if session.get('user_provider_id'):
+            member = check_user_subscription(session.get('user_provider_id'))
         return render_template('index.html')
 
     @app.route('/terms')
