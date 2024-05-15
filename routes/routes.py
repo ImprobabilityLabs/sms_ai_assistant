@@ -46,16 +46,20 @@ def configure_routes(app):
       
     @app.route('/account', methods=['POST'])
     def account_page():
+        if not session.get('user_provider_id'):
+            return redirect(url_for('index_page'))
         return render_template('account.html')
 
     @app.route('/cancel', methods=['POST'])
     def cancel_page():
+        if not session.get('user_provider_id'):
+            return redirect(url_for('index_page'))
         return render_template('cancel.html')
 
     @app.route('/dashboard')
     def dashboard_page():
-        if not session.get('logged_in'):
-            return redirect(url_for('login'))
+        if not session.get('user_provider_id'):
+            return redirect(url_for('index_page'))
         return render_template('dashboard.html')
 
     @app.route('/logout')
