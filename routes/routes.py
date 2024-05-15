@@ -120,7 +120,7 @@ def configure_routes(app):
             )
             db.session.add(user)
             db.session.commit()
-        session["provider_id"] = provider_id
+        session["user_provider_id"] = provider_id
         return redirect(url_for("dashboard_page"))
 
     @app.route("/api/google/authorize")
@@ -156,7 +156,7 @@ def configure_routes(app):
             )
             db.session.add(user)
             db.session.commit()
-        session["provider_id"] = provider_id
+        session["user_provider_id"] = provider_id
         return redirect(url_for("dashboard_page"))
 
     @app.route('/api/sms/callback', methods=['POST'])
