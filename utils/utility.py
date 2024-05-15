@@ -4,6 +4,7 @@ from groq import Groq
 import sys
 import re
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, abort
+from models import db, User, Subscription, MobileNumber, History, UserPreference, AssistantPreference 
 from twilio.request_validator import RequestValidator
 from flask_sqlalchemy import SQLAlchemy
 from oauthlib.oauth2 import WebApplicationClient
