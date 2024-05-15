@@ -20,47 +20,94 @@ def configure_routes(app):
     def index_page():
         if session.get('user_provider_id'):
             member = check_user_subscription(session.get('user_provider_id'))
-            current_app.logger.info('Info: Index Page - Member Object: ' + str(member))
+        else:
+            member = check_user_subscription(None)
+        current_app.logger.info('Info: Index Page - Member Object: ' + str(member))
         return render_template('index.html')
 
     @app.route('/terms')
     def terms_page():
+        if session.get('user_provider_id'):
+            member = check_user_subscription(session.get('user_provider_id'))
+        else:
+            member = check_user_subscription(None)
+        current_app.logger.info('Info: Terms Page - Member Object: ' + str(member))
         return render_template('terms.html')
 
     @app.route('/privacy')
     def privacy_page():
+        if session.get('user_provider_id'):
+            member = check_user_subscription(session.get('user_provider_id'))
+        else:
+            member = check_user_subscription(None)
+        current_app.logger.info('Info: Privacy Page - Member Object: ' + str(member))
         return render_template('privacy.html')
 
     @app.route('/about')
     def about_page():
+        if session.get('user_provider_id'):
+            member = check_user_subscription(session.get('user_provider_id'))
+        else:
+            member = check_user_subscription(None)
+        current_app.logger.info('Info: About Page - Member Object: ' + str(member))
         return render_template('about.html')
 
     @app.route('/faq')
     def faq_page():
+        if session.get('user_provider_id'):
+            member = check_user_subscription(session.get('user_provider_id'))
+        else:
+            member = check_user_subscription(None)
+        current_app.logger.info('Info: Faq Page - Member Object: ' + str(member))
         return render_template('faq.html')
       
     @app.route('/contact', methods=['GET', 'POST'])
     def contact_page():
+        if session.get('user_provider_id'):
+            member = check_user_subscription(session.get('user_provider_id'))
+        else:
+            member = check_user_subscription(None)
+        current_app.logger.info('Info: Contact Page - Member Object: ' + str(member))
         return render_template('contact.html')
 
     @app.route('/subscribe', methods=['GET', 'POST'])
     def subscribe_page():
+        if session.get('user_provider_id'):
+            member = check_user_subscription(session.get('user_provider_id'))
+        else:
+            member = check_user_subscription(None)
+        current_app.logger.info('Info: Subscribe Page - Member Object: ' + str(member))
         return render_template('subscribe.html')
       
     @app.route('/account', methods=['GET', 'POST'])
     def account_page():
+        if session.get('user_provider_id'):
+            member = check_user_subscription(session.get('user_provider_id'))
+        else:
+            member = check_user_subscription(None)
+        current_app.logger.info('Info: Account Page - Member Object: ' + str(member))
         if not session.get('user_provider_id'):
             return redirect(url_for('index_page'))
         return render_template('account.html')
 
     @app.route('/cancel', methods=['GET', 'POST'])
     def cancel_page():
+        if session.get('user_provider_id'):
+            member = check_user_subscription(session.get('user_provider_id'))
+        else:
+            member = check_user_subscription(None)
+        current_app.logger.info('Info: Cancel Page - Member Object: ' + str(member))
         if not session.get('user_provider_id'):
             return redirect(url_for('index_page'))
         return render_template('cancel.html')
 
     @app.route('/dashboard', methods=['GET', 'POST'])
     def dashboard_page():
+        if session.get('user_provider_id'):
+            member = check_user_subscription(session.get('user_provider_id'))
+        else:
+            member = check_user_subscription(None)
+        current_app.logger.info('Info: Dashboard Page - Member Object: ' + str(member))
         if not session.get('user_provider_id'):
             return redirect(url_for('index_page'))
         return render_template('dashboard.html')
