@@ -113,6 +113,35 @@ def extract_questions(message_text):
 
     return filtered_questions
 
+
+def check_user_subscription(provider_id):
+    # Initialize the result dictionary
+    result = {
+        "is_user": False,
+        "is_subscribed": False,
+        "has_billing_error": False
+    }
+    
+    # Query the user based on provider_id
+    user = User.query.filter_by(provider_id=provider_id).first()
+    
+    # Check if the user exists
+    if user:
+        result['is_user'] = True
+        
+        # Query the subscription based on user id and check if it is enabled
+        subscription = Subscription.query.filter_by(user_id=user.id, enabled=True).first()
+        
+        if subscription:
+            result['is_subscribed'] = True
+            
+            # Check if there is a billing error
+            if subscription.billing_error:
+                result['has_billing_error'] = True
+                
+    return result
+
+
 # Assuming extract_questions(msg) returns a list of questions
 #questions = extract_questions(msg)
 
