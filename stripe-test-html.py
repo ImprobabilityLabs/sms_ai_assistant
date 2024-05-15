@@ -24,8 +24,8 @@ for product in products.auto_paging_iter():
 
         # Access metadata
         country = product.metadata.get('country', '')  
-        tax = product.metadata.get('tax', None)  
-        tax_name = product.metadata.get('tax_name', None)  
+        tax = product.metadata.get('tax', '0.0')  
+        tax_name = product.metadata.get('tax_name', '')  
 
         # Extract feature names from the features and marketing_features
         features = [feature['name'] for feature in product.get('features', [])]
@@ -39,7 +39,7 @@ for product in products.auto_paging_iter():
 <div class="col-xs-12 col-sm-6">
   <div class="radio black-title">
     <label>
-    <input type="radio" name="subscriptionOption" value="{product.id}" data-price-id="{price_id}" data-cost="{amount/100:.2f}" data-currency="{currency}" data-interval="{interval}" data-country="{country}" data-product="{product.name}">
+    <input type="radio" name="subscriptionOption" value="{product.id}" data-price-id="{price_id}" data-cost="{amount/100:.2f}" data-currency="{currency}" data-interval="{interval}" data-country="{country}" data-product="{product.name}" data-tax-percent="{tax:.2f}" data-tax-name="{tax_name}">
     <strong>{product.name}</strong>
     <img src="{image_url}" alt="{product.name} Image" style="height:20px; width:30px;">
     </label>
