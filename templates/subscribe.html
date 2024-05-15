@@ -386,15 +386,61 @@
             </div>
           </div>
         </div>
-        <!-- Additional billing details as previously shown -->
-        <!-- Insert rest of form fields such as Billing Address, Country, ZIP etc -->
+            <div class="col-xs-12">
+              <div class="form-group form-type-text">
+                <label for="billing-address">Billing Address</label>
+                <input id="billing-address" type="text" class="form-control" name="billing-address" placeholder="Billing Address" required="">
+              </div>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+              <div class="form-group form-type-select">
+                <label for="country">Billing Country</label>
+                <select id="country" class="form-control" required="" onchange="updateStates(this.value);">
+                  <option selected disabled>Please select a billing country</option>
+                  <option value="USA">United States of America</option>
+                  <option value="CAN">Canada</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+              <div class="form-group form-type-select">
+                <label for="state">Billing State/Province</label>
+                <select id="state" class="form-control" required="">
+                  <!-- Options will be dynamically updated based on selected country -->
+                </select>
+              </div>
+            </div>
+            <div class="col-xs-12">
+              <div class="form-group form-type-text">
+                <label for="billing-zip">Billing Postal Code/ZIP</label>
+                <input id="billing-zip" type="text" class="form-control" name="billing-zip" placeholder="Postal Code/ZIP" required="" autocomplete="postal-code">
+              </div>
+            </div>
+          </div>
+          <div class="row" style="display:block">
+            <div id="cc-error" class="col-xs-12 col-xs-6" style="display:none">
+              <p class="alert alert-danger">Code is not valid</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="row">
+                <div class="col-xs-6">
+                  <p class="cc-cards pull-right-xs">
+                    <i class="fa fa-cc-visa"></i>
+                    <i class="fa fa-cc-mastercard"></i>
+                    <i class="fa fa-cc-amex"></i>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-12">
+              <div id="warning" class="alert alert-danger" role="alert" style="display:none;margin:15px 0px"></div>
+            </div>
+          </div>
+        </section>
       </div>
-      <div class="col-xs-12">
-        <button type="submit" class="btn btn-custom-primary btn-lg btn-block">Submit Payment</button>
-      </div>
-    </section>
-  </form>
-</div>
+      <!-- Close Payment Details Box -->
 <!-- Close Payment Details Box -->
       <!-- Open Purchase Details Box -->
       <div class="box box-primary">
