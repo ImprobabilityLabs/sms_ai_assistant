@@ -49,7 +49,7 @@ for product in products.auto_paging_iter():
         for feature in features:
             html_output += f"            <li>{feature}</li>\n"
             
-            html_output += f'''          </ul>
+        html_output += f'''          </ul>
           <p>{description}</p>
         </div>'''
 
