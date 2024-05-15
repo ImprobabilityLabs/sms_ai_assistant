@@ -150,21 +150,21 @@ def generate_menu(member):
             {"name": "FAQ", "url": "/faq"},
             {"name": "Contact", "url": "/contact"},
         ]
-    else if member.is_user and not member.is_subscribed:
+    elif member.is_user and not member.is_subscribed:
         menu = [
             {"name": "Home", "url": "/"},
             {"name": "Subscribe", "url": "/subscribe"},
             {"name": "Contact", "url": "/contact"},
             {"name": "Logout", "url": "/logout"},
         ]
-    else if member.is_user and member.is_subscribed and not member.has_billing_error:
+    elif member.is_user and member.is_subscribed and not member.has_billing_error:
         menu = [
             {"name": "Home", "url": "/"},
             {"name": "Dashboard", "url": "/dashboard"},
             {"name": "Account", "url": "/account"},
             {"name": "Logout", "url": "/logout"},
         ]
-    else if member.is_user and member.is_subscribed and member.has_billing_error:
+    elif member.is_user and member.is_subscribed and member.has_billing_error:
         menu = [
             {"name": "Home", "url": "/"},
             {"name": "Account", "url": "/account"},
@@ -172,6 +172,7 @@ def generate_menu(member):
             {"name": "Logout", "url": "/logout"},
         ]
     return menu
+
 
 # Assuming extract_questions(msg) returns a list of questions
 #questions = extract_questions(msg)
