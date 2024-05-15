@@ -20,6 +20,7 @@ def configure_routes(app):
     def index_page():
         if session.get('user_provider_id'):
             member = check_user_subscription(session.get('user_provider_id'))
+            current_app.logger.info('Info: Index Page - Member Object: ' + str(member))
         return render_template('index.html')
 
     @app.route('/terms')
