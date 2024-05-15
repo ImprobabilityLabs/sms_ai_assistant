@@ -526,7 +526,6 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="{{ url_for('static', filename='js/ie10-viewport-bug-workaround.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.3/js/bootstrap-select.min.js"></script>
-    <script src="{{ url_for('static', filename='js/improbability.js') }}"></script>
     <script>
   var stripe = Stripe('pk_test_51OOwrOJzClWbuS5HiI3za4AH1nlNiu1ZqJZo6ATTSTdA36SIOM0yOtotS2iUR0x6XFg5vCibUaOnK2VX6EG2kQF200jcPkbwTA'); // Replace with your public key
 
@@ -549,7 +548,15 @@
   };
 
   // Create instances of the card elements
-  var cardNumber = elements.create('cardNumber', {style: style});
+  var cardNumber = elements.create('cardNumber', {
+  style: style,
+  classes: {
+    base: "form-control",  // Ensuring styling consistency with Bootstrap
+  },
+  // This enables the collection of the postal code
+  showPostalCode: true
+});
+  
   var cardExpiry = elements.create('cardExpiry', {style: style});
   var cardCvc = elements.create('cardCvc', {style: style});
 
@@ -558,6 +565,7 @@
   cardExpiry.mount('#card-expiry-element');
   cardCvc.mount('#card-cvc-element');
 
+      
   // Handle form submission
   var form = document.getElementById('payment-form');
   form.addEventListener('submit', function(event) {
@@ -587,5 +595,6 @@
     form.submit();
   }
 </script>
+    <script src="{{ url_for('static', filename='js/improbability.js') }}"></script>
   </body>
 </html>
