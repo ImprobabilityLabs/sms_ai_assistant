@@ -24,7 +24,7 @@ for product in products.auto_paging_iter():
 
         # Access metadata
         country = product.metadata.get('country', '')  
-        tax = product.metadata.get('tax', '0.0')  
+        tax = product.metadata.get('tax', 0.0)  
         tax_name = product.metadata.get('tax_name', '')  
 
         # Extract feature names from the features and marketing_features
