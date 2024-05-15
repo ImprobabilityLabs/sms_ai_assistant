@@ -36,28 +36,27 @@ for product in products.auto_paging_iter():
 
         # Generate HTML
         html_output += f'''
-<div class="col-xs-12 col-sm-6">
-  <div class="radio black-title">
-    <label>
-    <input type="radio" name="subscriptionOption" value="{product.id}" data-price-id="{price_id}" data-cost="{amount/100:.2f}" data-currency="{currency}" data-interval="{interval}" data-country="{country}" data-product="{product.name}" data-tax-percent="{tax:.2f}" data-tax-name="{tax_name}">
-    <strong>{product.name}</strong>
-    <img src="{image_url}" alt="{product.name} Image" style="height:20px; width:30px;">
-    </label>
-  </div>
-  <p><strong>${amount / 100:.2f} {currency} / month</strong></p>
-  <ul>'''
-
-        # Append features to the HTML
+        <div class="col-xs-12 col-sm-6">
+          <div class="radio black-title">
+            <label>
+              <input type="radio" name="subscriptionOption" value="{product.id}" data-price-id="{price_id}" data-cost="{amount/100:.2f}" data-currency="{currency}" data-interval="{interval}" data-country="{country}" data-product="{product.name}" data-tax-percent="{tax:.2f}" data-tax-name="{tax_name}">
+              <strong>{product.name}</strong>
+              <img src="{image_url}" alt="{product.name} Image" style="height:20px; width:30px;">
+            </label>
+          </div>
+          <p><strong>${amount / 100:.2f} {currency} / month</strong></p>
+          <ul>\n'''
         for feature in features:
-            html_output += f"<li>{feature}</li>"
-
-        html_output += f'''
-  </ul>
-  <p>{description}</p>
-</div>
-'''
+            html_output += f"            <li>{feature}</li>\n"
+            
+            html_output += f'''          </ul>
+          <p>{description}</p>
+        </div>'''
 
 print(html_output)
+
+
+
 
 
 
