@@ -33,7 +33,8 @@ def configure_routes(app):
         else:
             member = check_user_subscription(None)
         current_app.logger.info('Info: Terms Page - Member Object: ' + str(member))
-        return render_template('terms.html')
+        menu = generate_menu(member)
+        return render_template('terms.html', menu=menu)
 
     @app.route('/privacy')
     def privacy_page():
@@ -42,7 +43,8 @@ def configure_routes(app):
         else:
             member = check_user_subscription(None)
         current_app.logger.info('Info: Privacy Page - Member Object: ' + str(member))
-        return render_template('privacy.html')
+        menu = generate_menu(member)
+        return render_template('privacy.html', menu=menu)
 
     @app.route('/about')
     def about_page():
@@ -51,7 +53,8 @@ def configure_routes(app):
         else:
             member = check_user_subscription(None)
         current_app.logger.info('Info: About Page - Member Object: ' + str(member))
-        return render_template('about.html')
+        menu = generate_menu(member)
+        return render_template('about.html', menu=menu)
 
     @app.route('/faq')
     def faq_page():
@@ -60,7 +63,8 @@ def configure_routes(app):
         else:
             member = check_user_subscription(None)
         current_app.logger.info('Info: Faq Page - Member Object: ' + str(member))
-        return render_template('faq.html')
+        menu = generate_menu(member)
+        return render_template('faq.html', menu=menu)
       
     @app.route('/contact', methods=['GET', 'POST'])
     def contact_page():
@@ -69,7 +73,8 @@ def configure_routes(app):
         else:
             member = check_user_subscription(None)
         current_app.logger.info('Info: Contact Page - Member Object: ' + str(member))
-        return render_template('contact.html')
+        menu = generate_menu(member)
+        return render_template('contact.html', menu=menu)
 
     @app.route('/subscribe', methods=['GET', 'POST'])
     def subscribe_page():
@@ -78,7 +83,11 @@ def configure_routes(app):
         else:
             member = check_user_subscription(None)
         current_app.logger.info('Info: Subscribe Page - Member Object: ' + str(member))
-        return render_template('subscribe.html')
+        menu = generate_menu(member)
+        if not member['is_user']:
+            return render_template('index.html', menu=menu)
+        elif not member['is_subscribed']:
+            return render_template('subscribe.html', menu=menu)
       
     @app.route('/account', methods=['GET', 'POST'])
     def account_page():
@@ -87,9 +96,13 @@ def configure_routes(app):
         else:
             member = check_user_subscription(None)
         current_app.logger.info('Info: Account Page - Member Object: ' + str(member))
-        if not session.get('user_provider_id'):
-            return redirect(url_for('index_page'))
-        return render_template('account.html')
+        menu = generate_menu(member)
+        if not member['is_user']:
+            return render_template('index.html', menu=menu)
+        elif not member['is_subscribed']:
+            return render_template('subscribe.html', menu=menu)
+        elif member['is_subscribed']:
+            return render_template('account.html', menu=menu)
 
     @app.route('/cancel', methods=['GET', 'POST'])
     def cancel_page():
@@ -98,9 +111,13 @@ def configure_routes(app):
         else:
             member = check_user_subscription(None)
         current_app.logger.info('Info: Cancel Page - Member Object: ' + str(member))
-        if not session.get('user_provider_id'):
-            return redirect(url_for('index_page'))
-        return render_template('cancel.html')
+        menu = generate_menu(member)
+        if not member['is_user']:
+            return render_template('index.html', menu=menu)
+        elif not member['is_subscribed']:
+            return render_template('subscribe.html', menu=menu)
+        elif member['is_subscribed']:
+            return render_template('cancel.html', menu=menu)
 
     @app.route('/dashboard', methods=['GET', 'POST'])
     def dashboard_page():
@@ -109,9 +126,15 @@ def configure_routes(app):
         else:
             member = check_user_subscription(None)
         current_app.logger.info('Info: Dashboard Page - Member Object: ' + str(member))
-        if not session.get('user_provider_id'):
-            return redirect(url_for('index_page'))
-        return render_template('dashboard.html')
+        menu = generate_menu(member)
+        if not member['is_user']:
+            return render_template('index.html', menu=menu)
+        elif not member['is_subscribed']:
+            return render_template('subscribe.html', menu=menu)
+        elif member['is_subscribed'] and not member['has_billing_error']:
+            return render_template('dashboard.html', menu=menu)
+        elif member['is_subscribed'] and member['has_billing_error']:
+            return render_template('account.html', menu=menu)
 
     @app.route('/logout')
     def logout():
