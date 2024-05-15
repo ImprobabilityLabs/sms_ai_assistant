@@ -36,27 +36,27 @@ def configure_routes(app):
     def faq_page():
         return render_template('faq.html')
       
-    @app.route('/contact', methods=['POST'])
+    @app.route('/contact', methods=['GET', 'POST'])
     def contact_page():
         return render_template('contact.html')
 
-    @app.route('/subscribe', methods=['POST'])
+    @app.route('/subscribe', methods=['GET', 'POST'])
     def subscribe_page():
         return render_template('subscribe.html')
       
-    @app.route('/account', methods=['POST'])
+    @app.route('/account', methods=['GET', 'POST'])
     def account_page():
         if not session.get('user_provider_id'):
             return redirect(url_for('index_page'))
         return render_template('account.html')
 
-    @app.route('/cancel', methods=['POST'])
+    @app.route('/cancel', methods=['GET', 'POST'])
     def cancel_page():
         if not session.get('user_provider_id'):
             return redirect(url_for('index_page'))
         return render_template('cancel.html')
 
-    @app.route('/dashboard')
+    @app.route('/dashboard', methods=['GET', 'POST'])
     def dashboard_page():
         if not session.get('user_provider_id'):
             return redirect(url_for('index_page'))
