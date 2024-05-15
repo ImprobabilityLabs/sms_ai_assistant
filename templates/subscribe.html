@@ -350,91 +350,63 @@
           </div
       </section>
       </div>
-      <!-- Open Payment Details Box -->
-      <div class="box box-primary">
-        <h3 class="title black-title">Payment Details</h3>
-        <section style="display:block">
-          <div class="row">
-            <div class="col-xs-12">
-              <div class="form-group form-type-text">
-                <label for="card-name">Card Holder Name</label>
-                <input id="card-name" type="text" class="form-control" name="card-name" required="" placeholder="Card Holder Name">
-              </div>
-            </div>
-<div class="col-xs-12">
-  <div class="form-group form-type-text" id="card-element">
-    <!-- Stripe Elements will be inserted here -->
-  </div>
-</div>
-<div class="col-xs-12 col-sm-6">
-  <div class="form-group form-type-text">
-    <label for="card-exp">Card Expiry Date</label>
-    <!-- Placeholder for Stripe Expiry Element -->
-    <div id="card-expiry-element"></div>
-  </div>
-</div>
-<div class="col-xs-12 col-sm-6">
-  <div class="form-group form-type-text">
-    <label for="card-cvc">Card CVC</label>
-    <!-- Placeholder for Stripe CVC Element -->
-    <div id="card-cvc-element"></div>
-  </div>
-</div>
-            <div class="col-xs-12">
-              <div class="form-group form-type-text">
-                <label for="billing-address">Billing Address</label>
-                <input id="billing-address" type="text" class="form-control" name="billing-address" placeholder="Billing Address" required="">
-              </div>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-              <div class="form-group form-type-select">
-                <label for="country">Billing Country</label>
-                <select id="country" class="form-control" required="" onchange="updateStates(this.value);">
-                  <option selected disabled>Please select a billing country</option>
-                  <option value="USA">United States of America</option>
-                  <option value="CAN">Canada</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-              <div class="form-group form-type-select">
-                <label for="state">Billing State/Province</label>
-                <select id="state" class="form-control" required="">
-                  <!-- Options will be dynamically updated based on selected country -->
-                </select>
-              </div>
-            </div>
-            <div class="col-xs-12">
-              <div class="form-group form-type-text">
-                <label for="billing-zip">Billing Postal Code/ZIP</label>
-                <input id="billing-zip" type="text" class="form-control" name="billing-zip" placeholder="Postal Code/ZIP" required="" autocomplete="postal-code">
-              </div>
-            </div>
+<!-- Open Payment Details Box -->
+<div class="box box-primary">
+  <h3 class="title black-title">Payment Details</h3>
+  <form id="payment-form">
+    <section style="display:block">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="card-name">Card Holder Name</label>
+            <input id="card-name" type="text" class="form-control" name="card-name" required="" placeholder="Card Holder Name">
           </div>
-          <div class="row" style="display:block">
-            <div id="cc-error" class="col-xs-12 col-xs-6" style="display:none">
-              <p class="alert alert-danger">Code is not valid</p>
+        </div>
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label>Card Details</label>
+            <div id="card-element" class="form-control">
+              <!-- Stripe Elements will be inserted here -->
             </div>
+            <div id="card-errors" role="alert"></div>
           </div>
-          <div class="row">
-            <div class="col-xs-12">
-              <div class="row">
-                <div class="col-xs-6">
-                  <p class="cc-cards pull-right-xs">
-                    <i class="fa fa-cc-visa"></i>
-                    <i class="fa fa-cc-mastercard"></i>
-                    <i class="fa fa-cc-amex"></i>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-xs-12">
-              <div id="warning" class="alert alert-danger" role="alert" style="display:none;margin:15px 0px"></div>
-            </div>
+        </div>
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="billing-address">Billing Address</label>
+            <input id="billing-address" type="text" class="form-control" name="billing-address" placeholder="Billing Address" required="">
           </div>
-        </section>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="form-group">
+            <label for="country">Billing Country</label>
+            <select id="country" class="form-control" required="">
+              <option selected disabled>Please select a billing country</option>
+              <option value="USA">United States of America</option>
+              <option value="CAN">Canada</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="form-group">
+            <label for="state">Billing State/Province</label>
+            <select id="state" class="form-control" required="">
+              <!-- Options will be dynamically updated based on selected country -->
+            </select>
+          </div>
+        </div>
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="billing-zip">Billing Postal Code/ZIP</label>
+            <input id="billing-zip" type="text" class="form-control" name="billing-zip" placeholder="Postal Code/ZIP" required="" autocomplete="postal-code">
+          </div>
+        </div>
       </div>
-      <!-- Close Payment Details Box -->
+    </section>
+  </form>
+</div>
+<!-- Close Payment Details Box -->
+
       <!-- Open Purchase Details Box -->
       <div class="box box-primary">
         <h3 class="title black-title purchase-details-price-title" style="display: none;">Purchase Details </h3>
