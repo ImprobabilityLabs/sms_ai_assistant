@@ -80,40 +80,28 @@
     <section style="display:block">
       <div class="row black-title">
         <!-- Subscription Option 1: Canada -->
-        <div class="col-xs-12 col-sm-6">
-          <div class="radio black-title">
-            <label>
-            <input type="radio" name="subscriptionOption" value="prod_Q31nkWXDQfoHC5" data-price-id="price_1PCvjzJzClWbuS5HjdMoYls1" data-cost="15.00" data-currency="USD" data-interval="month" data-country="USA" data-product="SMS AI Assistant - USA">
-            <strong>SMS AI Assistant - USA</strong>
-            <img src="https://files.stripe.com/links/MDB8YWNjdF8xT093ck9KekNsV2J1UzVIfGZsX3Rlc3RfUHl3UDNOOHZ0NnhyWVNoYkdjczF5Mm5k00SCbJLN8E" alt="SMS AI Assistant - USA Image" style="height:20px; width:30px;">
-            </label>
-          </div>
-          <p><strong>$15.00 USD / month</strong></p>
-          <ul>
-            <li>US SMS number</li>
-            <li>Real-time data lookup from Google</li>
-            <li>Customizable settings for the AI Assistant</li>
-            <li>Customizable AI's response language</li>
-          </ul>
-          <p>Access a US SMS number with our AI Assistant. Get real-time Google searches, customizable AI settings, and a customizable AI's response language for USD 15/month.</p>
-        </div>
-        <div class="col-xs-12 col-sm-6">
-          <div class="radio black-title">
-            <label>
-            <input type="radio" name="subscriptionOption" value="prod_Q31lKH0FPWWw3b" data-price-id="price_1PCvheJzClWbuS5HPAiyYHsL" data-cost="15.00" data-currency="USD" data-interval="month" data-country="Canada" data-product="SMS AI Assistant - Canada">
-            <strong>SMS AI Assistant - Canada</strong>
-            <img src="https://files.stripe.com/links/MDB8YWNjdF8xT093ck9KekNsV2J1UzVIfGZsX3Rlc3RfQU0yQ0ZGVVc0T3B6dkMzbjRwdXlLREpI00O5SyQ3Aa" alt="SMS AI Assistant - Canada Image" style="height:20px; width:30px;">
-            </label>
-          </div>
-          <p><strong>$15.00 USD / month</strong></p>
-          <ul>
-            <li>Canadian SMS number</li>
-            <li>Real-time data lookup from Google</li>
-            <li>Customizable settings for the AI Assistant</li>
-            <li>Customizable AI's response language</li>
-          </ul>
-          <p>Access a Canadian SMS number with our AI Assistant. Get real-time Google searches, customizable AI settings, and a customizable AI's response language for USD 15/month.</p>
-        </div>
+{% for product in products %}
+<div class="col-xs-12 col-sm-6">
+    <div class="radio black-title">
+        <label>
+            <input type="radio" name="subscriptionOption" value="{{ product.product_id }}" 
+                   data-price-id="{{ product.price_id }}" data-cost="{{ product.amount }}" 
+                   data-currency="{{ product.currency }}" data-interval="{{ product.interval }}"
+                   data-country="{{ product.country }}" data-product="{{ product.product_name }}"
+                   data-tax-percent="{{ product.tax }}" data-tax-name="{{ product.tax_name }}">
+            <strong>{{ product.product_name }}</strong>
+            <img src="{{ product.image_url }}" alt="{{ product.product_name }} Image" style="height:20px; width:30px;">
+        </label>
+    </div>
+    <p><strong>${{ product.amount }} {{ product.currency }} / {{ product.interval }}</strong></p>
+    <ul>
+        {% for feature in product.features %}
+        <li>{{ feature }}</li>
+        {% endfor %}
+    </ul>
+    <p>{{ product.description }}</p>
+</div>
+{% endfor %}
       </div>
       <div class="row" style="display:block">
         <div id="subscription-error" class="col-xs-12 col-sm-8" style="display:none">
