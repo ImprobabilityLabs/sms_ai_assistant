@@ -19,7 +19,7 @@
   };
 
   // Create instances of the card elements
-  var cardNumber = elements.create('cardExpiry', {style: style});
+  var cardNumber = elements.create('cardNumber', {style: style});
   var cardExpiry = elements.create('cardExpiry', {style: style});
   var cardCvc = elements.create('cardCvc', {style: style});
 
