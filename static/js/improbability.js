@@ -518,7 +518,7 @@ function validatePersonalPreferences() {
     const userName = document.getElementById('user-name');
     if (userName) {
         if (userName.value.length < 3) {
-            errors.push("Preferred Name must be at least 3 characters long.");
+            errors.push("Your Preferred Name must be at least 3 characters long.");
             userName.style.borderColor = 'red';
             isValid = false;
         } else {
