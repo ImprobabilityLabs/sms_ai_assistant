@@ -440,3 +440,62 @@ function adjustFaqTitle() {
           });
 
       });
+
+
+function validateAssistantDetails() {
+    // Reset error display and outline colors if elements exist
+    const errorContainer = document.getElementById('assistant-error');
+    if (errorContainer) {
+        errorContainer.style.display = 'none';
+    }
+
+    let isValid = true;
+    const errors = [];
+
+    // Validate Assistant's Name
+    const assistantName = document.getElementById('assistant-name');
+    if (assistantName) {
+        if (assistantName.value.length < 3) {
+            errors.push("Assistant's Name must be at least 3 characters long.");
+            assistantName.style.borderColor = 'red';
+            isValid = false;
+        } else {
+            assistantName.style.borderColor = '';
+        }
+    }
+
+    // Validate Assistant's Origin
+    const assistantOrigin = document.getElementById('assistant-origin');
+    if (assistantOrigin) {
+        if (!assistantOrigin.value.trim()) {
+            errors.push("Assistant's Origin is required.");
+            assistantOrigin.style.borderColor = 'red';
+            isValid = false;
+        } else {
+            assistantOrigin.style.borderColor = '';
+        }
+    }
+
+    // Validate dropdowns
+    const dropdowns = ['assistant-gender', 'assistant-personality', 'assistant-response-style', 'assistant-demeanor', 'assistant-attitude'];
+    dropdowns.forEach(id => {
+        const dropdown = document.getElementById(id);
+        if (dropdown && dropdown.selectedIndex === 0) {
+            errors.push(`${dropdown.previousElementSibling.innerText} is required.`);
+            dropdown.style.borderColor = 'red';
+            isValid = false;
+        } else if (dropdown) {
+            dropdown.style.borderColor = '';
+        }
+    });
+
+    // Display errors if any
+    if (errors.length > 0 && errorContainer) {
+        errorContainer.innerHTML = errors.map(error => `<p class="alert alert-danger">${error}</p>`).join('');
+        errorContainer.style.display = 'block';
+    }
+
+    return isValid;
+}
+
+// Add this to button's onclick event: validateAssistantDetails()
