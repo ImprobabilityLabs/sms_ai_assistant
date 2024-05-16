@@ -481,7 +481,7 @@ function validateAssistantDetails() {
     dropdowns.forEach(id => {
         const dropdown = document.getElementById(id);
         if (dropdown && dropdown.selectedIndex === 0) {
-            errors.push(`${dropdown.previousElementSibling.innerText} is required.`);
+            errors.push(`Assistant's ${dropdown.previousElementSibling.innerText} is required.`);
             dropdown.style.borderColor = 'red';
             isValid = false;
         } else if (dropdown) {
@@ -562,7 +562,7 @@ function validatePersonalPreferences() {
 
     [userLanguage, userTitle, userMeasurement].forEach(field => {
         if (field && field.selectedIndex === 0) {
-            errors.push(`${field.previousElementSibling.innerText} is required.`);
+            errors.push(`Your Preferred ${field.previousElementSibling.innerText} is required.`);
             field.style.borderColor = 'red';
             isValid = false;
         } else if (field) {
