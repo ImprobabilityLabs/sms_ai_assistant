@@ -194,30 +194,12 @@ window.addEventListener('resize', adjustFaqTitle);
             e.target.value = (month && year.length === 2) ? (month + '/' + year) : month + year;
           });
           
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('input[name="subscriptionOption"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-            const details = document.querySelector('.purchase-details-price'); // Using class selector
-            const detailstitle = document.querySelector('.purchase-details-price-title'); // Using class selector
-            if (this.checked) {
-                details.style.display = 'block';
-                detailstitle.style.display = 'block';
-                document.querySelector('.subscription-name').textContent = this.dataset.product;
-                document.querySelector('.plan-final').textContent = `${this.dataset.cost} ${this.dataset.currency} per ${this.dataset.interval}`;
-            } else {
-                details.style.display = 'none'; // Optionally hide the details when another option is unchecked
-            }
-        });
-    });
-});
-
           
           
             // Function to allow only numbers in the CVV field and limit to 4 characters
             document.getElementById('card-cvc').addEventListener('input', function (e) {
               e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4);
             });
-
 
 
 $.fn.pageMe = function(opts){
@@ -340,4 +322,17 @@ $(document).ready(function(){
     
 });
 
-
+              document.querySelectorAll('input[name="subscriptionOption"]').forEach(radio => {
+                  radio.addEventListener('change', function() {
+                      const details = document.querySelector('.purchase-details-price'); // Using class selector
+                      const detailstitle = document.querySelector('.purchase-details-price-title'); // Using class selector
+                      if (this.checked) {
+                          details.style.display = 'block';
+                          detailstitle.style.display = 'block';
+                          document.querySelector('.subscription-name').textContent = this.dataset.product;
+                          document.querySelector('.plan-final').textContent = `${this.dataset.cost} ${this.dataset.currency} per ${this.dataset.interval}`;
+                      } else {
+                          details.style.display = 'none'; // Optionally hide the details when another option is unchecked
+                      }
+                  });
+              });
