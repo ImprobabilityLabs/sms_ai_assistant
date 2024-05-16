@@ -310,12 +310,6 @@
           });
       });
 
-      // Function to allow only numbers in the CVV field and limit to 4 characters
-      document.getElementById('card-cvc').addEventListener('input', function(e) {
-          e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4);
-      });
-
-
       $.fn.pageMe = function(opts) {
           var $this = this,
               defaults = {
