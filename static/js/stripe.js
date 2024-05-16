@@ -19,15 +19,7 @@
   };
 
   // Create instances of the card elements
-  var cardNumber = elements.create('cardNumber', {
-    style: style,
-    classes: {
-      base: "form-control",  // Ensuring styling consistency with Bootstrap
-    },
-    // This enables the collection of the postal code
-    showPostalCode: true
-  });
-  
+  var cardNumber = elements.create('cardExpiry', {style: style});
   var cardExpiry = elements.create('cardExpiry', {style: style});
   var cardCvc = elements.create('cardCvc', {style: style});
 
