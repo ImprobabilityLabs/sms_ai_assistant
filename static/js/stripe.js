@@ -2,21 +2,21 @@
 
   var elements = stripe.elements();
 
-  var style = {
-    base: {
-      color: "#32325d",
-      fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-      fontSmoothing: "antialiased",
-      fontSize: "16px",
-      "::placeholder": {
-        color: "#aab7c4"
-      }
-    },
-    invalid: {
-      color: "#fa755a",
-      iconColor: "#fa755a"
-    }
-  };
+var style = {
+   base: {
+     color: "#32325d",
+     fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+     fontSmoothing: "antialiased",
+     fontSize: "16px",
+     "::placeholder": {
+       color: "#aab7c4"
+     },
+   },
+   invalid: {
+     color: "#fa755a",
+     iconColor: "#fa755a"
+   }
+};
 
   // Create instances of the card elements
   var cardNumber = elements.create('cardNumber', {style: style});
