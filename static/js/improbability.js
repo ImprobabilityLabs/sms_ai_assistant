@@ -467,8 +467,8 @@ function validateAssistantDetails() {
     // Validate Assistant's Origin
     const assistantOrigin = document.getElementById('assistant-origin');
     if (assistantOrigin) {
-        if (!assistantOrigin.value.trim()) {
-            errors.push("Assistant's Origin is required.");
+        if (assistantOrigin.value.length < 5) {
+            errors.push("Assistant's Origin must be at least 5 characters long.");
             assistantOrigin.style.borderColor = 'red';
             isValid = false;
         } else {
@@ -580,8 +580,13 @@ function validatePersonalPreferences() {
 
     // Display errors if any
     if (errors.length > 0 && errorContainer) {
-        errorContainer.innerHTML = errors.map(error => `<p class="alert alert-danger">${error}</p>`).join('');
+        errorContainer.innerHTML = `<div style="color: red; border: 1px solid red; padding: 10px;">
+                                    <p><strong>Please correct the following errors:</strong></p>
+                                    <ul>${errors.map(error => `<li>${error}</li>`).join('')}</ul>
+                                </div>`;
         errorContainer.style.display = 'block';
+    } else if (errorContainer) {
+        errorContainer.style.display = 'none'; // Hide the container if no errors
     }
 
     return isValid;
