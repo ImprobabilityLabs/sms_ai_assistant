@@ -498,4 +498,16 @@ function validateAssistantDetails() {
     return isValid;
 }
 
-// Add this to button's onclick event: validateAssistantDetails()
+document.addEventListener('DOMContentLoaded', function() {
+    const submitButton = document.getElementById('submit-sms-subscribe');
+
+    if (submitButton) {
+        submitButton.addEventListener('click', function(event) {
+            const isValid = validateAssistantDetails();
+            if (!isValid) {
+                event.preventDefault(); // Prevent form submission if validation fails
+            }
+        });
+    }
+});
+
