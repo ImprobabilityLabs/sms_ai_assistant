@@ -259,13 +259,6 @@
           inputElement.value = phoneNumber; // Update the input value with formatted or unformatted number
       });
 
-      document.getElementById('card-cc').addEventListener('input', function(e) {
-          var input = e.target.value.replace(/\D/g, '').substring(0, 16); // Remove non-digits and limit to 16 characters
-          var formatted = input.replace(/(\d{4})(?=\d)/g, '$1 '); // Add a space after every 4 digits
-          e.target.value = formatted;
-      });
-
-
       document.getElementById('card-name').addEventListener('input', function(e) {
           var input = e.target.value.replace(/[^A-Za-z ]/g, ''); // Remove non-alphabetic characters
           e.target.value = input;
@@ -300,22 +293,6 @@
           }
 
           e.target.value = formattedInput;
-      });
-
-
-      document.getElementById('card-exp').addEventListener('input', function(e) {
-          var input = e.target.value.replace(/\D/g, '').substring(0, 4); // Remove non-digits and limit to 4 characters
-          var month = input.substring(0, 2); // Extract the first two characters as the month
-          var year = input.substring(2, 4); // Extract the next two characters as the year
-
-          // Ensure the month is between 01 and 12
-          if (month.length === 2 && (month < '01' || month > '12')) {
-              month = ''; // If not, clear the month
-              year = ''; // Clear year as well since month is invalid
-          }
-
-          // Apply formatting only when all 4 digits are present and the month is valid
-          e.target.value = (month && year.length === 2) ? (month + '/' + year) : month + year;
       });
 
       document.querySelectorAll('input[name="subscriptionOption"]').forEach(radio => {
