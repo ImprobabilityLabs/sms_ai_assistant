@@ -541,9 +541,13 @@ function validatePersonalPreferences() {
     // Validate Mobile Number
     const userMobile = document.getElementById('user-mobile');
     if (userMobile) {
-        const mobilePattern = /^[2-9]\d{2}[2-9](?!11)\d{2}\d{4}$/;  // North American number format excluding country code
-        if (!mobilePattern.test(userMobile.value)) {
-            errors.push("Mobile Number must be a valid North American number (without country code).");
+        // Remove non-numeric characters from input
+        const cleanMobileNumber = userMobile.value.replace(/[^\d]/g, '');
+
+        // North American number format excluding country code
+        const mobilePattern = /^[2-9]\d{2}[2-9](?!11)\d{2}\d{4}$/;
+        if (!mobilePattern.test(cleanMobileNumber)) {
+            errors.push("Your Mobile Number must be a valid North American number.");
             userMobile.style.borderColor = 'red';
             isValid = false;
         } else {
@@ -570,7 +574,7 @@ function validatePersonalPreferences() {
     const userDescription = document.getElementById('user-description');
     if (userDescription) {
         if (userDescription.value.length < 20) {
-            errors.push("About You must be descriptive enough (at least 20 characters).");
+            errors.push("Your Bio must be descriptive enough (at least 20 characters).");
             userDescription.style.borderColor = 'red';
             isValid = false;
         } else {
