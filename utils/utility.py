@@ -185,7 +185,7 @@ def get_products():
         for price in prices.data:
             # Access price fields
             price_id = price.id
-            amount = price.unit_amount
+            amount = price.unit_amount / 100
             currency = price.currency.upper()
             interval = price.recurring.interval
 
@@ -208,12 +208,12 @@ def get_products():
             product_data.append({
                 'product_id': product.id,
                 'price_id': price_id,
-                'amount': amount / 100,
+                'amount': f"{amount:.2f}",
                 'currency': currency,
                 'interval': interval,
                 'description': description,
                 'country': country,
-                'tax': tax,
+                'tax': f"{tax:.2f}",
                 'tax_name': tax_name,
                 'features': features,
                 'image_url': image_url,
