@@ -503,16 +503,104 @@ function validateAssistantDetails() {
     return isValid;
 }
 
+
+function validatePersonalPreferences() {
+    // Reset error display and outline colors if elements exist
+    const errorContainer = document.getElementById('personal-error');
+    if (errorContainer) {
+        errorContainer.style.display = 'none';
+    }
+
+    let isValid = true;
+    const errors = [];
+
+    // Validate Preferred Name
+    const userName = document.getElementById('user-name');
+    if (userName) {
+        if (userName.value.length < 3) {
+            errors.push("Preferred Name must be at least 3 characters long.");
+            userName.style.borderColor = 'red';
+            isValid = false;
+        } else {
+            userName.style.borderColor = '';
+        }
+    }
+
+    // Validate User Location
+    const userLocation = document.getElementById('user-location');
+    if (userLocation) {
+        if (userLocation.value.length < 5) {
+            errors.push("Your Location must be at least 5 characters long.");
+            userLocation.style.borderColor = 'red';
+            isValid = false;
+        } else {
+            userLocation.style.borderColor = '';
+        }
+    }
+
+    // Validate Mobile Number
+    const userMobile = document.getElementById('user-mobile');
+    if (userMobile) {
+        const mobilePattern = /^[2-9]\d{2}[2-9](?!11)\d{2}\d{4}$/;  // North American number format excluding country code
+        if (!mobilePattern.test(userMobile.value)) {
+            errors.push("Mobile Number must be a valid North American number (without country code).");
+            userMobile.style.borderColor = 'red';
+            isValid = false;
+        } else {
+            userMobile.style.borderColor = '';
+        }
+    }
+
+    // Validate Preferred Communication Language and Title
+    const userLanguage = document.getElementById('user-language');
+    const userTitle = document.getElementById('user-title');
+    const userMeasurement = document.getElementById('user-measurement');
+
+    [userLanguage, userTitle, userMeasurement].forEach(field => {
+        if (field && field.selectedIndex === 0) {
+            errors.push(`${field.previousElementSibling.innerText} is required.`);
+            field.style.borderColor = 'red';
+            isValid = false;
+        } else if (field) {
+            field.style.borderColor = '';
+        }
+    });
+
+    // Validate Description
+    const userDescription = document.getElementById('user-description');
+    if (userDescription) {
+        if (userDescription.value.length < 20) {
+            errors.push("About You must be descriptive enough (at least 20 characters).");
+            userDescription.style.borderColor = 'red';
+            isValid = false;
+        } else {
+            userDescription.style.borderColor = '';
+        }
+    }
+
+    // Display errors if any
+    if (errors.length > 0 && errorContainer) {
+        errorContainer.innerHTML = errors.map(error => `<p class="alert alert-danger">${error}</p>`).join('');
+        errorContainer.style.display = 'block';
+    }
+
+    return isValid;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const submitButton = document.getElementById('submit-sms-subscribe');
 
     if (submitButton) {
         submitButton.addEventListener('click', function(event) {
-            const isValid = validateAssistantDetails();
-            if (!isValid) {
-                event.preventDefault(); // Prevent form submission if validation fails
+            const isValidAssistant = validateAssistantDetails();
+            const isValidPersonal = validatePersonalPreferences();
+
+            // Prevent form submission if either validation fails
+            if (!isValidAssistant || !isValidPersonal) {
+                event.preventDefault();
             }
         });
     }
 });
+
 
