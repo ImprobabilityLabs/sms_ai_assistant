@@ -646,6 +646,92 @@ function validateSubscriptionOptions() {
     return isSelected;
 }
 
+
+function validatePaymentDetails() {
+    // Reset error display and outline colors if elements exist
+    const errorContainer = document.getElementById('cc-error');
+    if (errorContainer) {
+        errorContainer.style.display = 'none';
+        errorContainer.innerHTML = '';
+    }
+
+    let isValid = true;
+    const errors = [];
+
+    // Validate Card Holder Name
+    const cardName = document.getElementById('card-name');
+    if (cardName.value.length < 5) {
+        errors.push("Card Holder Name must be at least 5 characters long.");
+        cardName.style.borderColor = 'red';
+        isValid = false;
+    } else if (cardName) {
+        cardName.style.borderColor = '';
+    }
+
+    // Validate Billing Address
+    const billingAddress = document.getElementById('billing-address');
+    if (billingAddress.value.length < 10) {
+        errors.push("Billing Address must be at least 10 characters long.");
+        billingAddress.style.borderColor = 'red';
+        isValid = false;
+    } else if (billingAddress) {
+        billingAddress.style.borderColor = '';
+    }
+
+    // Validate Country and Postal Code
+    const country = document.getElementById('country');
+    const billingZip = document.getElementById('billing-zip');
+    if (country && billingZip) {
+        const countryCode = country.value;
+        let zipPattern;
+
+        if (countryCode === "USA") {
+            zipPattern = /^\d{5}$/;
+        } else if (countryCode === "CAN") {
+            zipPattern = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
+        }
+
+        if (country.selectedIndex === 0) {
+            errors.push("Billing Country is required.");
+            country.style.borderColor = 'red';
+            isValid = false;
+        } else {
+            country.style.borderColor = '';
+        }
+
+        if (!zipPattern.test(billingZip.value.replace(/\s/g, ''))) {
+            errors.push("Billing Postal Code/ZIP is invalid for the selected country.");
+            billingZip.style.borderColor = 'red';
+            isValid = false;
+        } else {
+            billingZip.style.borderColor = '';
+        }
+    }
+
+    // Stripe Elements validation placeholders
+    // Assuming you have the stripe elements 'cardNumber', 'cardExpiry', and 'cardCvc' initialized
+    if (!stripe.cardNumber.complete) {
+        errors.push("Card number is incomplete.");
+        isValid = false;
+    }
+    if (!stripe.cardExpiry.complete) {
+        errors.push("Card expiry date is incomplete.");
+        isValid = false;
+    }
+    if (!stripe.cardCvc.complete) {
+        errors.push("Card CVC is incomplete.");
+        isValid = false;
+    }
+
+    // Display errors if any
+    if (errors.length > 0 && errorContainer) {
+        errorContainer.innerHTML = errors.map(error => `<p class="alert alert-danger">${error}</p>`).join('');
+        errorContainer.style.display = 'block';
+    }
+
+    return isValid;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const submitButton = document.getElementById('submit-sms-subscribe');
 
@@ -654,9 +740,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const isValidAssistant = validateAssistantDetails();
             const isValidPersonal = validatePersonalPreferences();
             const isValidSubscription = validateSubscriptionOptions();
+            const isValidPaymentDetails = validatePaymentDetails();
 
             // Prevent form submission if either validation fails
-            if (!isValidAssistant || !isValidPersonal || !isValidSubscription) {
+            if (!isValidAssistant || !isValidPersonal || !isValidSubscription || !isValidPaymentDetails) {
                 event.preventDefault();
             }
         });
