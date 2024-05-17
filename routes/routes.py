@@ -87,6 +87,11 @@ def configure_routes(app):
         if not member['is_user']:
             return redirect(url_for('index_page'))
         elif not member['is_subscribed']:
+            if request.method == 'POST':
+                # Log each form key and value
+                current_app.logger.info('Received POST request with following form data:')
+                for key in request.form:
+                    current_app.logger.info(f'{key}: {request.form[key]}')
             product_data = get_products()
             current_app.logger.info('Info: Subscribe Page - Products Object: ' + str(product_data))
             return render_template('subscribe.html', menu=menu, products=product_data)
