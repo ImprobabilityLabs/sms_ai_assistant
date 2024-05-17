@@ -784,21 +784,51 @@ function validatePaymentDetails() {
     return isValid;
 }
 
+function validateStripeDetails(cardNumber, callback) {
+    stripe.createToken(cardNumber).then(function(result) {
+        if (result.error) {
+            // Handle the error, display it to the user
+            const errorContainer = document.getElementById('cc-error');
+            if (errorContainer) {
+                errorContainer.innerHTML = `<div style="color: red; border: 1px solid red; padding: 10px;">
+                                            <p><strong>Error:</strong> ${result.error.message}</p>
+                                        </div>`;
+                errorContainer.style.display = 'block';
+            }
+            callback(false);
+        } else {
+            // Append the Stripe token to the form
+            const form = document.getElementById('subscribe-form');
+            const hiddenInput = document.createElement('input');
+            hiddenInput.setAttribute('type', 'hidden');
+            hiddenInput.setAttribute('name', 'stripeToken');
+            hiddenInput.setAttribute('value', result.token.id);
+            form.appendChild(hiddenInput);
+            callback(true);
+        }
+    });
+}
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
     const submitButton = document.getElementById('submit-sms-subscribe');
-
     if (submitButton) {
         submitButton.addEventListener('click', function(event) {
+            event.preventDefault();
+
             const isValidAssistant = validateAssistantDetails();
             const isValidPersonal = validatePersonalPreferences();
             const isValidSubscription = validateSubscriptionOptions();
-            const isValidPaymentDetails = validatePaymentDetails();
+            const isValidPayment = validatePaymentDetails();
 
-            // Prevent form submission if either validation fails
-            if (!isValidAssistant || !isValidPersonal || !isValidSubscription || !isValidPaymentDetails) {
-                event.preventDefault();
-            } else {
-                document.getElementById('subscribe-form').submit();
+            if (isValidAssistant && isValidPersonal && isValidSubscription && isValidPayment) {
+                const cardNumberElement = document.getElementById('card-number-element'); // Or however you access the Stripe Element
+                validateStripeDetails(cardNumberElement, function(isValidStripe) {
+                    if (isValidStripe) {
+                        document.getElementById('subscribe-form').submit();
+                    }
+                });
             }
         });
     }
