@@ -677,13 +677,29 @@ function validatePaymentDetails() {
         billingAddress.style.borderColor = '';
     }
 
-    // Validate Country and Postal Code
+    // Validate Country
     const country = document.getElementById('country');
+    const state = document.getElementById('state');
     const billingZip = document.getElementById('billing-zip');
     let zipPattern;
-    if (country && billingZip) {
-        const countryCode = country.value;
+    if (country) {
+        if (country.selectedIndex === 0) {
+            errors.push("Billing Country is required.");
+            country.style.borderColor = 'red';
+            isValid = false;
+        } else {
+            country.style.borderColor = '';
+            // Validate State/Province if country is selected
+            if (state && state.selectedIndex === 0) {
+                errors.push("Billing State/Province is required.");
+                state.style.borderColor = 'red';
+                isValid = false;
+            } else {
+                state.style.borderColor = '';
+            }
+        }
 
+        const countryCode = country.value;
         if (country.selectedIndex > 0) {
             // Patterns only applied if a country is selected
             if (countryCode === "USA") {
@@ -692,7 +708,7 @@ function validatePaymentDetails() {
                 zipPattern = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
             }
 
-            // Perform validation only if a pattern is set
+            // Validate Postal Code
             if (zipPattern && !zipPattern.test(billingZip.value.replace(/\s/g, ''))) {
                 errors.push("Billing Postal Code/ZIP is invalid for the selected country.");
                 billingZip.style.borderColor = 'red';
@@ -700,6 +716,11 @@ function validatePaymentDetails() {
             } else {
                 billingZip.style.borderColor = '';
             }
+        } else {
+            // If no country is selected, prompt for ZIP/Postal Code as required
+            errors.push("Billing Postal Code/ZIP cannot be validated without a selected country.");
+            billingZip.style.borderColor = 'red';
+            isValid = false;
         }
     }
 
@@ -727,7 +748,7 @@ function validatePaymentDetails() {
     } else if (errorContainer) {
         errorContainer.style.display = 'none'; // Hide the container if no errors
     }
-    
+
     return isValid;
 }
 
