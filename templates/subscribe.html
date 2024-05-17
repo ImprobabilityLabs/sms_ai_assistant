@@ -85,8 +85,8 @@
 <div class="col-xs-12 col-sm-6">
     <div class="radio black-title">
         <label>
-            <input type="radio" name="subscriptionOption" value="{{ product.product_id }}" 
-                   data-price-id="{{ product.price_id }}" data-cost="{{ product.amount }}" 
+            <input type="radio" name="subscriptionOption" value="{{ product.price_id }}" 
+                   data-product-id="{{ product.product_id }}" data-cost="{{ product.amount }}" 
                    data-currency="{{ product.currency }}" data-interval="{{ product.interval }}"
                    data-country="{{ product.country }}" data-product="{{ product.product_name }}"
                    data-tax-percent="{{ product.tax }}" data-tax-name="{{ product.tax_name }}">
@@ -142,7 +142,7 @@
             <label for="assistant-gender" class="long-label">Assistant's Gender</label>
             <!-- Label for mobile devices -->
             <label for="assistant-gender" class="short-label">Gender</label>
-            <select id="assistant-gender" class="form-control" required="" title="Choose the gender identity for your assistant.">
+            <select id="assistant-gender" class="form-control" required="" name="assistant-gender" title="Choose the gender identity for your assistant.">
               <option selected disabled>Please select a gender</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
@@ -163,7 +163,7 @@
             <label for="assistant-personality" class="long-label">Assistant's Personality Type</label>
             <!-- Label for mobile devices -->
             <label for="assistant-personality" class="short-label">Personality</label>
-            <select id="assistant-personality" class="form-control" required="" title="Select the personality type you prefer for your assistant.">
+            <select id="assistant-personality" class="form-control" required="" name="assistant-personality" title="Select the personality type you prefer for your assistant.">
               <option selected disabled>Please select a personality</option>
               <option value="Analytical">Analytical</option>
               <option value="Creative">Creative</option>
@@ -185,7 +185,7 @@
             <label for="assistant-response-style" class="long-label">Assistant's Response Style</label>
             <!-- Label for mobile devices -->
             <label for="assistant-response-style" class="short-label">Response Style</label>
-            <select id="assistant-response-style" class="form-control" required="" title="Choose how you want your assistant to communicate with you.">
+            <select id="assistant-response-style" class="form-control" required="" name="assistant-response-style" title="Choose how you want your assistant to communicate with you.">
               <option selected disabled>Please select a response style</option>
               <option value="Formal">Formal</option>
               <option value="Informal">Informal</option>
@@ -206,7 +206,7 @@
             <label for="assistant-demeanor" class="long-label">Assistant's Demeanor</label>
             <!-- Label for mobile devices -->
             <label for="assistant-demeanor" class="short-label">Demeanor</label>
-            <select id="assistant-demeanor" class="form-control" required="" title="Select the overall demeanor you expect from your assistant.">
+            <select id="assistant-demeanor" class="form-control" required="" name="assistant-demeanor" title="Select the overall demeanor you expect from your assistant.">
               <option selected disabled>Please select a demeanor</option>
               <option value="Serious">Serious</option>
               <option value="Lighthearted">Lighthearted</option>
@@ -221,7 +221,7 @@
             <label for="assistant-attitude" class="long-label">Assistant's Attitude</label>
             <!-- Label for mobile devices -->
             <label for="assistant-attitude" class="short-label">Attitude</label>
-            <select id="assistant-attitude" class="form-control" required="" title="Decide on the attitude you want your assistant to maintain.">
+            <select id="assistant-attitude" class="form-control" required="" name="assistant-attitude" title="Decide on the attitude you want your assistant to maintain.">
               <option selected disabled>Please select an attitude</option>
               <option value="Optimistic">Optimistic</option>
               <option value="Pessimistic">Pessimistic</option>
@@ -249,7 +249,7 @@
             <div class="form-group form-type-text">
               <label for="user-name" class="long-label">Preferred Name</label>
               <label for="user-name" class="short-label">Preferred Name</label>
-              <input id="user-name" type="text" class="form-control" required="" placeholder="How should your assistant address you?" title="Enter your preferred name for personalized communication with your assistant.">
+              <input id="user-name" type="text" class="form-control" required="" name="user-name" placeholder="How should your assistant address you?" title="Enter your preferred name for personalized communication with your assistant.">
             </div>
           </div>
           <!-- Location -->
@@ -257,7 +257,7 @@
             <div class="form-group form-type-text">
               <label for="user-location" class="long-label">Your Location</label>
               <label for="user-location" class="short-label">Location</label>
-              <input id="user-location" type="text" class="form-control" required="" placeholder="What city are you located in?" title="Specify your current location (City, State, Country).">
+              <input id="user-location" type="text" class="form-control" required="" name="user-location" placeholder="What city are you located in?" title="Specify your current location (City, State, Country).">
             </div>
           </div>
           <!-- Time Zone -->
@@ -265,7 +265,7 @@
             <div class="form-group form-type-text">
               <label for="user-mobile" class="long-label">Mobile Number</label>
               <label for="user-mobile" class="short-label">Mobile</label>
-              <input id="user-mobile" type="text" class="form-control" required="" placeholder="The mobile number your assistant can reach you on." title="Enter a mobile number for your assistant to contact you on.">
+              <input id="user-mobile" type="text" class="form-control" required="" name="user-mobile" placeholder="The mobile number your assistant can reach you on." title="Enter a mobile number for your assistant to contact you on.">
             </div>
           </div>
           <!-- Communication Language -->
@@ -273,7 +273,7 @@
             <div class="form-group form-type-select">
               <label for="user-language" class="long-label">Preferred Communication Language</label>
               <label for="user-language" class="short-label">Language</label>
-              <select id="user-language" class="form-control" required="" title="Select the language you prefer for communication with your assistant.">
+              <select id="user-language" class="form-control" required="" name="user-language" title="Select the language you prefer for communication with your assistant.">
                 <option selected disabled>Please select a language</option>
                 <option value="English">English</option>
                 <option value="Spanish">Spanish</option>
@@ -293,7 +293,7 @@
             <div class="form-group form-type-select">
               <label for="user-title" class="long-label">Preferred Title</label>
               <label for="user-title" class="short-label">Preferred Title</label>
-              <select id="user-title" class="form-control" required="" title="Choose your preferred formal or social title.">
+              <select id="user-title" class="form-control" required="" name="user-title" title="Choose your preferred formal or social title.">
                 <option selected disabled>Please select a title</option>
                 <option value="Mr.">Mr.</option>
                 <option value="Ms.">Ms.</option>
@@ -314,7 +314,7 @@
             <div class="form-group form-type-select">
               <label for="user-measurement" class="long-label">Measurement System</label>
               <label for="user-measurement" class="short-label">Measurements</label>
-              <select id="user-measurement" class="form-control" required="" title="Choose your preferred system of measurement, either Imperial or Metric.">
+              <select id="user-measurement" class="form-control" required="" name="user-measurement" title="Choose your preferred system of measurement, either Imperial or Metric.">
                 <option selected disabled>Please select a measurement system</option>
                 <option value="Imperial">Imperial</option>
                 <option value="Metric">Metric</option>
@@ -326,7 +326,7 @@
             <div class="form-group form-type-textarea">
               <label for="user-description" class="long-label">About You</label>
               <label for="user-description" class="short-label">About</label>
-              <textarea id="user-description" class="form-control" rows="4" required="" placeholder="Tell your assistant a bit more about yourself." title="Provide some background information about yourself for assistant interactions."></textarea>
+              <textarea id="user-description" class="form-control" rows="4" required="" name="user-description" placeholder="Tell your assistant a bit more about yourself." title="Provide some background information about yourself for assistant interactions."></textarea>
             </div>
           </div>
         </div>
@@ -381,7 +381,7 @@
             <div class="col-xs-12 col-sm-6">
               <div class="form-group form-type-select">
                 <label for="country">Billing Country</label>
-                <select id="country" class="form-control" required="" onchange="updateStates(this.value);">
+                <select id="country" class="form-control" required="" id="billing-country" onchange="updateStates(this.value);">
                   <option selected disabled>Please select a billing country</option>
                   <option value="USA">United States of America</option>
                   <option value="CAN">Canada</option>
@@ -391,7 +391,7 @@
             <div class="col-xs-12 col-sm-6">
               <div class="form-group form-type-select">
                 <label for="state">Billing State/Province</label>
-                <select id="state" class="form-control" required="">
+                <select id="state" class="form-control" required="" name="billing-state">
                   <!-- Options will be dynamically updated based on selected country -->
                 </select>
               </div>
