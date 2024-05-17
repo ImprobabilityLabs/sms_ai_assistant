@@ -646,7 +646,7 @@ function validateSubscriptionOptions() {
     return isSelected;
 }
 
-function validatePaymentDetails_old() {
+function validatePaymentDetails() {
     // Reset error display and outline colors if elements exist
     const errorContainer = document.getElementById('cc-error');
     if (errorContainer) {
@@ -707,45 +707,6 @@ function validatePaymentDetails_old() {
         }
     }
 
-    // Stripe Elements validation placeholders
-    if (!stripe.cardNumber.complete) {
-        errors.push("Card number is incomplete.");
-        isValid = false;
-    }
-    if (!stripe.cardExpiry.complete) {
-        errors.push("Card expiry date is incomplete.");
-        isValid = false;
-    }
-    if (!stripe.cardCvc.complete) {
-        errors.push("Card CVC is incomplete.");
-        isValid = false;
-    }
-
-    // Display errors if any
-    if (errors.length > 0 && errorContainer) {
-        errorContainer.innerHTML = errors.map(error => `<p class="alert alert-danger">${error}</p>`).join('');
-        errorContainer.style.display = 'block';
-    } else {
-        // Ensure the error container is hidden if no errors are present
-        if (errorContainer) {
-            errorContainer.style.display = 'none';
-        }
-    }
-
-    return isValid;
-}
-
-
-function validatePaymentDetails() {
-    const errorContainer = document.getElementById('cc-error');
-    errorContainer.style.display = 'none';
-    errorContainer.innerHTML = '';
-
-    let isValid = true;
-    const errors = [];
-
-    // Other validations...
-
     // Check if Stripe Elements are complete
     if (!document.querySelector('#card-number-element').classList.contains('StripeElement--complete')) {
         errors.push("Card number is incomplete.");
@@ -760,19 +721,20 @@ function validatePaymentDetails() {
         isValid = false;
     }
 
-    // Display errors if any
-    if (errors.length > 0) {
-        errorContainer.innerHTML = errors.map(error => `<p class="alert alert-danger">${error}</p>`).join('');
-        errorContainer.style.display = 'block';
-    } else {
-        errorContainer.style.display = 'none';
-    }
 
+    // Display errors if any
+    if (errors.length > 0 && errorContainer) {
+        errorContainer.innerHTML = `<div style="color: red; border: 1px solid red; padding: 10px;">
+                                    <p><strong>Please correct the following errors:</strong></p>
+                                    <ul>${errors.map(error => `<li>${error}</li>`).join('')}</ul>
+                                </div>`;
+        errorContainer.style.display = 'block';
+    } else if (errorContainer) {
+        errorContainer.style.display = 'none'; // Hide the container if no errors
+    }
+    
     return isValid;
 }
-
-// Call this function before form submission if needed
-
 
 document.addEventListener('DOMContentLoaded', function() {
     const submitButton = document.getElementById('submit-sms-subscribe');
@@ -791,5 +753,3 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
-
