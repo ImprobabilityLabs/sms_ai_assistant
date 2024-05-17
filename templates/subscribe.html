@@ -123,7 +123,7 @@
             <label for="assistant-name" class="long-label">Assistant's Name</label>
             <!-- Label for mobile devices -->
             <label for="assistant-name" class="short-label">Name</label>
-            <input id="assistant-name" type="text" class="form-control" name="assistant-name" required="" placeholder="Assistant's Name" title="Enter a name for your assistant.">
+            <input id="assistant-name" type="text" class="form-control" name="assistant-name" required="" placeholder="Assistant's Name" title="Enter a name for your assistant." value="{{ form_data.get('assistant-name', '') }}">
           </div>
         </div>
         <div class="col-xs-6">
@@ -132,7 +132,7 @@
             <label for="assistant-origin" class="long-label">Assistant's Origin</label>
             <!-- Label for mobile devices -->
             <label for="assistant-origin" class="short-label">Origin</label>
-            <input id="assistant-origin" type="text" class="form-control" name="assistant-origin" required="" placeholder="Assistant's Origin" title="Specify the origin (Place of Birth) of your assistant.">
+            <input id="assistant-origin" type="text" class="form-control" name="assistant-origin" required="" placeholder="Assistant's Origin" title="Specify the origin (Place of Birth) of your assistant." value="{{ form_data.get('assistant-origin', '') }}">
           </div>
         </div>
         <!-- Assistant's Gender and Personality Type -->
@@ -143,17 +143,17 @@
             <!-- Label for mobile devices -->
             <label for="assistant-gender" class="short-label">Gender</label>
             <select id="assistant-gender" class="form-control" required="" name="assistant-gender" title="Choose the gender identity for your assistant.">
-              <option selected disabled>Please select a gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Non-binary">Non-binary</option>
-              <option value="Genderqueer">Genderqueer</option>
-              <option value="Genderfluid">Genderfluid</option>
-              <option value="Agender">Agender</option>
-              <option value="Bigender">Bigender</option>
-              <option value="Two-Spirit">Two-Spirit</option>
-              <option value="Gender nonconforming">Gender nonconforming</option>
-              <option value="Transgender">Transgender</option>
+              <option {% if form_data.get('assistant-gender') == None %}selected{% endif %} disabled>Please select a gender</option>
+              <option value="Male" {% if form_data.get('assistant-gender') == 'Male' %}selected{% endif %}>Male</option>
+              <option value="Female" {% if form_data.get('assistant-gender') == 'Female' %}selected{% endif %}>Female</option>
+              <option value="Non-binary" {% if form_data.get('assistant-gender') == 'Non-binary' %}selected{% endif %}>Non-binary</option>
+              <option value="Genderqueer" {% if form_data.get('assistant-gender') == 'Genderqueer' %}selected{% endif %}>Genderqueer</option>
+              <option value="Genderfluid" {% if form_data.get('assistant-gender') == 'Genderfluid' %}selected{% endif %}>Genderfluid</option>
+              <option value="Agender" {% if form_data.get('assistant-gender') == 'Agender' %}selected{% endif %}>Agender</option>
+              <option value="Bigender" {% if form_data.get('assistant-gender') == 'Bigender' %}selected{% endif %}>Bigender</option>
+              <option value="Two-Spirit" {% if form_data.get('assistant-gender') == 'Two-Spirit' %}selected{% endif %}>Two-Spirit</option>
+              <option value="Gender nonconforming" {% if form_data.get('assistant-gender') == 'Gender nonconforming' %}selected{% endif %}>Gender nonconforming</option>
+              <option value="Transgender" {% if form_data.get('assistant-gender') == 'Transgender' %}selected{% endif %}>Transgender</option>
             </select>
           </div>
         </div>
