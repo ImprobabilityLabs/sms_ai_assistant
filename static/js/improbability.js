@@ -562,21 +562,27 @@ function validatePersonalPreferences() {
         }
     }
 
-    // Validate Preferred Communication Language and Title
+    // Validate Preferred Communication Language, Title, and Measurement using the long-label for error messages
     const userLanguage = document.getElementById('user-language');
     const userTitle = document.getElementById('user-title');
     const userMeasurement = document.getElementById('user-measurement');
 
     [userLanguage, userTitle, userMeasurement].forEach(field => {
-        if (field && field.selectedIndex === 0) {
-            errors.push(`Your Preferred ${field.previousElementSibling.innerText} is required.`);
-            field.style.borderColor = 'red';
-            isValid = false;
-        } else if (field) {
-            field.style.borderColor = '';
+        if (field) {
+            // Find the long-label element within the same container as the field
+            const longLabel = field.closest('.form-group').querySelector('.long-label');
+
+            if (field.selectedIndex === 0) {
+                // Use the innerText of the long-label for the error message
+                errors.push(`Your ${longLabel.innerText} is required.`);
+                field.style.borderColor = 'red';
+                isValid = false;
+            } else {
+                field.style.borderColor = '';
+            }
         }
     });
-
+    
     // Validate Description
     const userDescription = document.getElementById('user-description');
     if (userDescription) {
@@ -647,9 +653,10 @@ document.addEventListener('DOMContentLoaded', function() {
         submitButton.addEventListener('click', function(event) {
             const isValidAssistant = validateAssistantDetails();
             const isValidPersonal = validatePersonalPreferences();
+            const isValidSubscription = validateSubscriptionOptions();
 
             // Prevent form submission if either validation fails
-            if (!isValidAssistant || !isValidPersonal) {
+            if (!isValidAssistant || !isValidPersonal || !isValidSubscription) {
                 event.preventDefault();
             }
         });
