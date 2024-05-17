@@ -186,17 +186,17 @@
             <!-- Label for mobile devices -->
             <label for="assistant-response-style" class="short-label">Response Style</label>
             <select id="assistant-response-style" class="form-control" required="" name="assistant-response-style" title="Choose how you want your assistant to communicate with you.">
-              <option selected disabled>Please select a response style</option>
-              <option value="Formal">Formal</option>
-              <option value="Informal">Informal</option>
-              <option value="Casual">Casual</option>
-              <option value="Professional">Professional</option>
-              <option value="Friendly">Friendly</option>
-              <option value="Authoritative">Authoritative</option>
-              <option value="Conversational">Conversational</option>
-              <option value="Educational">Educational</option>
-              <option value="Relaxed">Relaxed</option>
-              <option value="Engaging">Engaging</option>
+              <option {% if form_data.get('assistant-response-style') == None %}selected {% endif %}disabled>Please select a response style</option>
+              <option value="Formal" {% if form_data.get('assistant-response-style') == 'Formal' %}selected{% endif %}>Formal</option>
+              <option value="Informal" {% if form_data.get('assistant-response-style') == 'Informal' %}selected{% endif %}>Informal</option>
+              <option value="Casual" {% if form_data.get('assistant-response-style') == 'Casual' %}selected{% endif %}>Casual</option>
+              <option value="Professional" {% if form_data.get('assistant-response-style') == 'Professional' %}selected{% endif %}>Professional</option>
+              <option value="Friendly" {% if form_data.get('assistant-response-style') == 'Friendly' %}selected{% endif %}>Friendly</option>
+              <option value="Authoritative" {% if form_data.get('assistant-response-style') == 'Authoritative' %}selected{% endif %}>Authoritative</option>
+              <option value="Conversational" {% if form_data.get('assistant-response-style') == 'Conversational' %}selected{% endif %}>Conversational</option>
+              <option value="Educational" {% if form_data.get('assistant-response-style') == 'Educational' %}selected{% endif %}>Educational</option>
+              <option value="Relaxed" {% if form_data.get('assistant-response-style') == 'Relaxed' %}selected{% endif %}>Relaxed</option>
+              <option value="Engaging" {% if form_data.get('assistant-response-style') == 'Engaging' %}selected{% endif %}>Engaging</option>
             </select>
           </div>
         </div>
@@ -207,10 +207,10 @@
             <!-- Label for mobile devices -->
             <label for="assistant-demeanor" class="short-label">Demeanor</label>
             <select id="assistant-demeanor" class="form-control" required="" name="assistant-demeanor" title="Select the overall demeanor you expect from your assistant.">
-              <option selected disabled>Please select a demeanor</option>
-              <option value="Serious">Serious</option>
-              <option value="Lighthearted">Lighthearted</option>
-              <option value="Balanced">Balanced</option>
+              <option {% if form_data.get('assistant-demeanor') == None %}selected {% endif %}disabled>Please select a demeanor</option>
+              <option value="Serious" {% if form_data.get('assistant-demeanor') == 'Serious' %}selected{% endif %}>Serious</option>
+              <option value="Lighthearted" {% if form_data.get('assistant-demeanor') == 'Lighthearted' %}selected{% endif %}>Lighthearted</option>
+              <option value="Balanced" {% if form_data.get('assistant-demeanor') == 'Balanced' %}selected{% endif %}>Balanced</option>
             </select>
           </div>
         </div>
@@ -222,10 +222,10 @@
             <!-- Label for mobile devices -->
             <label for="assistant-attitude" class="short-label">Attitude</label>
             <select id="assistant-attitude" class="form-control" required="" name="assistant-attitude" title="Decide on the attitude you want your assistant to maintain.">
-              <option selected disabled>Please select an attitude</option>
-              <option value="Optimistic">Optimistic</option>
-              <option value="Pessimistic">Pessimistic</option>
-              <option value="Realistic">Realistic</option>
+              <option {% if form_data.get('assistant-attitude') == None %}selected {% endif %}disabled>Please select an attitude</option>
+              <option value="Optimistic" {% if form_data.get('assistant-attitude') == 'Optimistic' %}selected{% endif %}>Optimistic</option>
+              <option value="Pessimistic" {% if form_data.get('assistant-attitude') == 'Pessimistic' %}selected{% endif %}>Pessimistic</option>
+              <option value="Realistic" {% if form_data.get('assistant-attitude') == 'Realistic' %}selected{% endif %}>Realistic</option>
             </select>
           </div>
         </div>
