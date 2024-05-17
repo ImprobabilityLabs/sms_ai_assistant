@@ -476,19 +476,26 @@ function validateAssistantDetails() {
         }
     }
 
-    // Validate dropdowns
+    // Validate dropdowns using the long-label for error messages
     const dropdowns = ['assistant-gender', 'assistant-personality', 'assistant-response-style', 'assistant-demeanor', 'assistant-attitude'];
     dropdowns.forEach(id => {
         const dropdown = document.getElementById(id);
-        if (dropdown && dropdown.selectedIndex === 0) {
-            errors.push(`Assistant's ${dropdown.previousElementSibling.innerText} is required.`);
-            dropdown.style.borderColor = 'red';
-            isValid = false;
-        } else if (dropdown) {
-            dropdown.style.borderColor = '';
+        if (dropdown) {
+            // Find the long-label element within the same container as the dropdown
+            const longLabel = dropdown.closest('.form-group').querySelector('.long-label');
+
+            if (dropdown.selectedIndex === 0) {
+                // Use the innerText of the long-label for the error message
+                errors.push(`${longLabel.innerText} is required.`);
+                dropdown.style.borderColor = 'red';
+                isValid = false;
+            } else {
+                dropdown.style.borderColor = '';
+            }
         }
     });
 
+    
     // Display errors if any
     if (errors.length > 0 && errorContainer) {
         errorContainer.innerHTML = `<div style="color: red; border: 1px solid red; padding: 10px;">
