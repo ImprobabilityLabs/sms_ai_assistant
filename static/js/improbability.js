@@ -680,30 +680,26 @@ function validatePaymentDetails() {
     // Validate Country and Postal Code
     const country = document.getElementById('country');
     const billingZip = document.getElementById('billing-zip');
+    let zipPattern;
     if (country && billingZip) {
         const countryCode = country.value;
-        let zipPattern;
 
-        if (countryCode === "USA") {
-            zipPattern = /^\d{5}$/;
-        } else if (countryCode === "CAN") {
-            zipPattern = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
-        }
+        if (country.selectedIndex > 0) {
+            // Patterns only applied if a country is selected
+            if (countryCode === "USA") {
+                zipPattern = /^\d{5}$/;
+            } else if (countryCode === "CAN") {
+                zipPattern = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
+            }
 
-        if (country.selectedIndex === 0) {
-            errors.push("Billing Country is required.");
-            country.style.borderColor = 'red';
-            isValid = false;
-        } else {
-            country.style.borderColor = '';
-        }
-
-        if (!zipPattern.test(billingZip.value.replace(/\s/g, ''))) {
-            errors.push("Billing Postal Code/ZIP is invalid for the selected country.");
-            billingZip.style.borderColor = 'red';
-            isValid = false;
-        } else {
-            billingZip.style.borderColor = '';
+            // Perform validation only if a pattern is set
+            if (zipPattern && !zipPattern.test(billingZip.value.replace(/\s/g, ''))) {
+                errors.push("Billing Postal Code/ZIP is invalid for the selected country.");
+                billingZip.style.borderColor = 'red';
+                isValid = false;
+            } else {
+                billingZip.style.borderColor = '';
+            }
         }
     }
 
@@ -720,7 +716,6 @@ function validatePaymentDetails() {
         errors.push("Card CVC is incomplete.");
         isValid = false;
     }
-
 
     // Display errors if any
     if (errors.length > 0 && errorContainer) {
