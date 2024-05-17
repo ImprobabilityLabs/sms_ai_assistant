@@ -28,32 +28,4 @@ var style = {
   cardExpiry.mount('#card-expiry-element');
   cardCvc.mount('#card-cvc-element');
 
-      
-  // Handle form submission
-  var form = document.getElementById('payment-form');
-  form.addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    stripe.createToken(cardNumber).then(function(result) {
-      if (result.error) {
-        // Show error in your form
-        var errorElement = document.getElementById('card-errors');
-        errorElement.textContent = result.error.message;
-      } else {
-        // Send the token to your server
-        stripeTokenHandler(result.token);
-      }
-    });
-  });
-
-  function stripeTokenHandler(token) {
-    var form = document.getElementById('payment-form');
-    var hiddenInput = document.createElement('input');
-    hiddenInput.setAttribute('type', 'hidden');
-    hiddenInput.setAttribute('name', 'stripeToken');
-    hiddenInput.setAttribute('value', token.id);
-    form.appendChild(hiddenInput);
     
-    // Submit the form
-    form.submit();
-  }
