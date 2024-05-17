@@ -646,7 +646,6 @@ function validateSubscriptionOptions() {
     return isSelected;
 }
 
-
 function validatePaymentDetails() {
     // Reset error display and outline colors if elements exist
     const errorContainer = document.getElementById('cc-error');
@@ -660,7 +659,7 @@ function validatePaymentDetails() {
 
     // Validate Card Holder Name
     const cardName = document.getElementById('card-name');
-    if (cardName.value.length < 5) {
+    if (cardName && cardName.value.length < 5) {
         errors.push("Card Holder Name must be at least 5 characters long.");
         cardName.style.borderColor = 'red';
         isValid = false;
@@ -670,7 +669,7 @@ function validatePaymentDetails() {
 
     // Validate Billing Address
     const billingAddress = document.getElementById('billing-address');
-    if (billingAddress.value.length < 10) {
+    if (billingAddress && billingAddress.value.length < 10) {
         errors.push("Billing Address must be at least 10 characters long.");
         billingAddress.style.borderColor = 'red';
         isValid = false;
@@ -709,7 +708,6 @@ function validatePaymentDetails() {
     }
 
     // Stripe Elements validation placeholders
-    // Assuming you have the stripe elements 'cardNumber', 'cardExpiry', and 'cardCvc' initialized
     if (!stripe.cardNumber.complete) {
         errors.push("Card number is incomplete.");
         isValid = false;
@@ -727,6 +725,11 @@ function validatePaymentDetails() {
     if (errors.length > 0 && errorContainer) {
         errorContainer.innerHTML = errors.map(error => `<p class="alert alert-danger">${error}</p>`).join('');
         errorContainer.style.display = 'block';
+    } else {
+        // Ensure the error container is hidden if no errors are present
+        if (errorContainer) {
+            errorContainer.style.display = 'none';
+        }
     }
 
     return isValid;
