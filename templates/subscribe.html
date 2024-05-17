@@ -143,7 +143,7 @@
             <!-- Label for mobile devices -->
             <label for="assistant-gender" class="short-label">Gender</label>
             <select id="assistant-gender" class="form-control" required="" name="assistant-gender" title="Choose the gender identity for your assistant.">
-              <option {% if form_data.get('assistant-gender') == None %}selected{% endif %} disabled>Please select a gender</option>
+              <option {% if form_data.get('assistant-gender') == None %}selected {% endif %}disabled>Please select a gender</option>
               <option value="Male" {% if form_data.get('assistant-gender') == 'Male' %}selected{% endif %}>Male</option>
               <option value="Female" {% if form_data.get('assistant-gender') == 'Female' %}selected{% endif %}>Female</option>
               <option value="Non-binary" {% if form_data.get('assistant-gender') == 'Non-binary' %}selected{% endif %}>Non-binary</option>
@@ -164,17 +164,17 @@
             <!-- Label for mobile devices -->
             <label for="assistant-personality" class="short-label">Personality</label>
             <select id="assistant-personality" class="form-control" required="" name="assistant-personality" title="Select the personality type you prefer for your assistant.">
-              <option selected disabled>Please select a personality</option>
-              <option value="Analytical">Analytical</option>
-              <option value="Creative">Creative</option>
-              <option value="Adventurous">Adventurous</option>
-              <option value="Empathetic">Empathetic</option>
-              <option value="Logical">Logical</option>
-              <option value="Optimistic">Optimistic</option>
-              <option value="Introverted">Introverted</option>
-              <option value="Extroverted">Extroverted</option>
-              <option value="Ambitious">Ambitious</option>
-              <option value="Humble">Humble</option>
+              <option {% if form_data.get('assistant-personality') == None %}selected {% endif %}disabled>Please select a personality</option>
+              <option value="Analytical" {% if form_data.get('assistant-personality') == 'Analytical' %}selected{% endif %}>Analytical</option>
+              <option value="Creative" {% if form_data.get('assistant-personality') == 'Creative' %}selected{% endif %}>Creative</option>
+              <option value="Adventurous" {% if form_data.get('assistant-personality') == 'Adventurous' %}selected{% endif %}>Adventurous</option>
+              <option value="Empathetic" {% if form_data.get('assistant-personality') == 'Empathetic' %}selected{% endif %}>Empathetic</option>
+              <option value="Logical" {% if form_data.get('assistant-personality') == 'Logical' %}selected{% endif %}>Logical</option>
+              <option value="Optimistic" {% if form_data.get('assistant-personality') == 'Optimistic' %}selected{% endif %}>Optimistic</option>
+              <option value="Introverted" {% if form_data.get('assistant-personality') == 'Introverted' %}selected{% endif %}>Introverted</option>
+              <option value="Extroverted" {% if form_data.get('assistant-personality') == 'Extroverted' %}selected{% endif %}>Extroverted</option>
+              <option value="Ambitious" {% if form_data.get('assistant-personality') == 'Ambitious' %}selected{% endif %}>Ambitious</option>
+              <option value="Humble" {% if form_data.get('assistant-personality') == 'Humble' %}selected{% endif %}>Humble</option>
             </select>
           </div>
         </div>
