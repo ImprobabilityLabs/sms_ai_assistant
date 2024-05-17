@@ -596,6 +596,43 @@ function validatePersonalPreferences() {
     return isValid;
 }
 
+function validateSubscriptionOptions() {
+    // Reset error display and outline colors if elements exist
+    const errorContainer = document.getElementById('subscription-error');
+    if (errorContainer) {
+        errorContainer.style.display = 'none';
+        errorContainer.innerHTML = '';
+    }
+
+    // Get all radio inputs with the name 'subscriptionOption'
+    const subscriptionOptions = document.querySelectorAll('input[name="subscriptionOption"]');
+    let isSelected = false;
+
+    if (subscriptionOptions.length > 0) {
+        // Check if any radio button is selected
+        isSelected = Array.from(subscriptionOptions).some(radio => radio.checked);
+        
+        // If no option is selected, display error
+        if (!isSelected) {
+            if (errorContainer) {
+                const errorText = `<p class="alert alert-danger">You must select a valid subscription.</p>`;
+                errorContainer.innerHTML = errorText;
+                errorContainer.style.display = 'block';
+                errorContainer.innerHTML = `<div style="color: red; border: 1px solid red; padding: 10px;">
+                                            <p><strong>Please correct the following errors:</strong></p>
+                                            <ul>You must select a valid subscription.</ul>
+                                            </div>`;
+                errorContainer.style.display = 'block';
+            }
+        } else if (errorContainer) {
+            errorContainer.style.display = 'none'; // Hide the container if no errors
+        }
+    }
+
+    // Return true if a subscription is selected, otherwise false
+    return isSelected;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const submitButton = document.getElementById('submit-sms-subscribe');
 
