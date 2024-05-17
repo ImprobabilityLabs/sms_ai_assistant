@@ -677,20 +677,21 @@ function validatePaymentDetails() {
         billingAddress.style.borderColor = '';
     }
 
-    // Validate Country
+    // Validate Country and State/Province
     const country = document.getElementById('country');
     const state = document.getElementById('state');
     const billingZip = document.getElementById('billing-zip');
-    let zipPattern;
     if (country) {
         if (country.selectedIndex === 0) {
             errors.push("Billing Country is required.");
+            errors.push("Billing State/Province is required.");
             country.style.borderColor = 'red';
+            state.style.borderColor = 'red';
             isValid = false;
         } else {
             country.style.borderColor = '';
             // Validate State/Province if country is selected
-            if (state && state.selectedIndex === 0) {
+            if (state.selectedIndex === 0) {
                 errors.push("Billing State/Province is required.");
                 state.style.borderColor = 'red';
                 isValid = false;
@@ -698,45 +699,42 @@ function validatePaymentDetails() {
                 state.style.borderColor = '';
             }
         }
+    }
 
+    // Validate Postal Code based on selected Country
+    let zipPattern;
+    if (country.selectedIndex > 0) {
         const countryCode = country.value;
-        if (country.selectedIndex > 0) {
-            // Patterns only applied if a country is selected
-            if (countryCode === "USA") {
-                zipPattern = /^\d{5}$/;
-            } else if (countryCode === "CAN") {
-                zipPattern = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
-            }
+        if (countryCode === "USA") {
+            zipPattern = /^\d{5}$/;
+        } else if (countryCode === "CAN") {
+            zipPattern = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
+        }
 
-            // Validate Postal Code
-            if (zipPattern && !zipPattern.test(billingZip.value.replace(/\s/g, ''))) {
-                errors.push("Billing Postal Code/ZIP is invalid for the selected country.");
-                billingZip.style.borderColor = 'red';
-                isValid = false;
-            } else {
-                billingZip.style.borderColor = '';
-            }
-        } else {
-            // If no country is selected, prompt for ZIP/Postal Code as required
-            errors.push("Billing Postal Code/ZIP cannot be validated without a selected country.");
+        if (zipPattern && !zipPattern.test(billingZip.value.replace(/\s/g, ''))) {
+            errors.push("Billing Postal Code/ZIP is invalid for the selected country.");
             billingZip.style.borderColor = 'red';
             isValid = false;
+        } else {
+            billingZip.style.borderColor = '';
         }
     }
 
-    // Check if Stripe Elements are complete
-    if (!document.querySelector('#card-number-element').classList.contains('StripeElement--complete')) {
-        errors.push("Card number is incomplete.");
-        isValid = false;
+    // Check if Stripe Elements are complete and apply visual feedback
+    function checkStripeElement(elementId, errorMessage) {
+        const element = document.querySelector(elementId);
+        if (!element.classList.contains('StripeElement--complete')) {
+            errors.push(errorMessage);
+            element.classList.add('StripeElement--error'); // Custom class for styling errors
+            isValid = false;
+        } else {
+            element.classList.remove('StripeElement--error');
+        }
     }
-    if (!document.querySelector('#card-expiry-element').classList.contains('StripeElement--complete')) {
-        errors.push("Card expiry date is incomplete.");
-        isValid = false;
-    }
-    if (!document.querySelector('#card-cvc-element').classList.contains('StripeElement--complete')) {
-        errors.push("Card CVC is incomplete.");
-        isValid = false;
-    }
+
+    checkStripeElement('#card-number-element', "Card number is incomplete.");
+    checkStripeElement('#card-expiry-element', "Card expiry date is incomplete.");
+    checkStripeElement('#card-cvc-element', "Card CVC is incomplete.");
 
     // Display errors if any
     if (errors.length > 0 && errorContainer) {
