@@ -701,8 +701,10 @@ function validatePaymentDetails() {
         if (country.selectedIndex === 0) {
             errors.push("Billing Country is required.");
             errors.push("Billing State/Province is required.");
+            errors.push("Billing Postal Code/ZIP is invalid.");
             country.style.borderColor = 'red';
             state.style.borderColor = 'red';
+            billingZip.style.borderColor = 'red';
             isValid = false;
         } else {
             country.style.borderColor = '';
