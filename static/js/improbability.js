@@ -784,32 +784,39 @@ function validatePaymentDetails() {
     return isValid;
 }
 
-function validateStripeDetails(cardNumber, callback) {
-    stripe.createToken(cardNumber).then(function(result) {
-        if (result.error) {
-            // Handle the error, display it to the user
-            const errorContainer = document.getElementById('cc-error');
-            if (errorContainer) {
-                errorContainer.innerHTML = `<div style="color: red; border: 1px solid red; padding: 10px;">
-                                            <p><strong>Error:</strong> ${result.error.message}</p>
-                                        </div>`;
+function validateStripeDetails(callback) {
+    // Assuming you have references to all necessary Stripe elements
+    var cardNumberElement = elements.getElement('cardNumber');
+    var cardExpiryElement = elements.getElement('cardExpiry');
+    var cardCvcElement = elements.getElement('cardCvc');
+
+    if (cardNumberElement._complete && cardExpiryElement._complete && cardCvcElement._complete) {
+        stripe.createToken(cardNumberElement).then(function(result) {
+            if (result.error) {
+                // Handle the error, display it to the user
+                const errorContainer = document.getElementById('cc-error');
+                errorContainer.textContent = result.error.message;
                 errorContainer.style.display = 'block';
+                callback(false);
+            } else {
+                // Append the Stripe token to the form
+                const form = document.getElementById('subscribe-form');
+                const hiddenInput = document.createElement('input');
+                hiddenInput.setAttribute('type', 'hidden');
+                hiddenInput.setAttribute('name', 'stripeToken');
+                hiddenInput.setAttribute('value', result.token.id);
+                form.appendChild(hiddenInput);
+                callback(true);
             }
-            callback(false);
-        } else {
-            // Append the Stripe token to the form
-            const form = document.getElementById('subscribe-form');
-            const hiddenInput = document.createElement('input');
-            hiddenInput.setAttribute('type', 'hidden');
-            hiddenInput.setAttribute('name', 'stripeToken');
-            hiddenInput.setAttribute('value', result.token.id);
-            form.appendChild(hiddenInput);
-            callback(true);
-        }
-    });
+        });
+    } else {
+        // Handle the case where not all elements are complete
+        const errorContainer = document.getElementById('cc-error');
+        errorContainer.textContent = "Please fill out all card details correctly.";
+        errorContainer.style.display = 'block';
+        callback(false);
+    }
 }
-
-
 
 document.addEventListener('DOMContentLoaded', function() {
     const submitButton = document.getElementById('submit-sms-subscribe');
@@ -823,8 +830,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const isValidPayment = validatePaymentDetails();
 
             if (isValidAssistant && isValidPersonal && isValidSubscription && isValidPayment) {
-                const cardNumberElement = document.getElementById('card-number-element'); // Or however you access the Stripe Element
-                validateStripeDetails(cardNumberElement, function(isValidStripe) {
+                validateStripeDetails(function(isValidStripe) {
                     if (isValidStripe) {
                         document.getElementById('subscribe-form').submit();
                     }
