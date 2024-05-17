@@ -97,7 +97,7 @@ def configure_routes(app):
                     current_app.logger.info(f'{key}: {request.form[key]}')
             product_data = get_products()
             current_app.logger.info('Info: Subscribe Page - Products Object: ' + str(product_data))
-            return render_template('subscribe.html', menu=menu, products=product_data)
+            return render_template('subscribe.html', menu=menu, products=product_data, form_data=request.form)
       
     @app.route('/account', methods=['GET', 'POST'])
     def account_page():
