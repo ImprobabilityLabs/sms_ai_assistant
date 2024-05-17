@@ -32,12 +32,22 @@ function adjustFaqTitle() {
       window.addEventListener('load', adjustFaqTitle);
       window.addEventListener('resize', adjustFaqTitle);
 
-      function updateStates(country) {
-          const stateSelect = document.getElementById('state');
-          stateSelect.innerHTML = ''; // Clear existing options
-          if (country === 'USA') {
-              // List of states for USA with full names and abbreviations
-              const states = [{
+
+function updateStates(country) {
+    const stateSelect = document.getElementById('state');
+    stateSelect.innerHTML = ''; // Clear existing options
+
+    // Add a default option as the first item
+    const defaultOption = document.createElement('option');
+    defaultOption.textContent = 'Please select a state/province';
+    defaultOption.value = ''; // Make sure this is empty or a specific value that is considered invalid
+    defaultOption.selected = true;
+    defaultOption.disabled = true; // Optional: make it non-selectable after a selection
+    stateSelect.appendChild(defaultOption);
+
+    if (country === 'USA') {
+        // List of states for USA
+        const states = [{
                   abbreviation: 'AL',
                   name: 'Alabama'
               }, {
@@ -188,15 +198,17 @@ function adjustFaqTitle() {
                   abbreviation: 'WY',
                   name: 'Wyoming'
               }];
-              states.forEach(state => {
-                  const option = document.createElement('option');
-                  option.value = state.abbreviation;
-                  option.text = state.name;
-                  stateSelect.appendChild(option);
-              });
-          } else if (country === 'CAN') {
-              // List of provinces for Canada with full names and abbreviations
-              const provinces = [{
+
+        // Append each state to the select dropdown
+        states.forEach(state => {
+            const option = document.createElement('option');
+            option.value = state.abbreviation;
+            option.text = state.name;
+            stateSelect.appendChild(option);
+        });
+    } else if (country === 'CAN') {
+        // List of provinces for Canada
+        const provinces = [{
                   abbreviation: 'AB',
                   name: 'Alberta'
               }, {
@@ -236,14 +248,18 @@ function adjustFaqTitle() {
                   abbreviation: 'YT',
                   name: 'Yukon'
               }];
-              provinces.forEach(province => {
-                  const option = document.createElement('option');
-                  option.value = province.abbreviation;
-                  option.text = province.name;
-                  stateSelect.appendChild(option);
-              });
-          }
-      }
+
+        // Append each province to the select dropdown
+        provinces.forEach(province => {
+            const option = document.createElement('option');
+            option.value = province.abbreviation;
+            option.text = province.name;
+            stateSelect.appendChild(option);
+        });
+    }
+}
+
+
 
       document.getElementById('user-mobile').addEventListener('input', function() {
           const inputElement = this;
