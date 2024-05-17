@@ -34,7 +34,7 @@ function adjustFaqTitle() {
 
 
 function updateStates(country) {
-    const stateSelect = document.getElementById('state');
+    const stateSelect = document.getElementById('billing-state');
     stateSelect.innerHTML = ''; // Clear existing options
 
     // Add a default option as the first item
@@ -288,12 +288,12 @@ function updateStates(country) {
           e.target.value = input;
       });
 
-      document.getElementById('country').addEventListener('change', function() {
+      document.getElementById('billing-country').addEventListener('change', function() {
           document.getElementById('billing-zip').value = ''; // Clear postal code field when country changes
       });
 
       document.getElementById('billing-zip').addEventListener('input', function(e) {
-          const country = document.getElementById('country').value;
+          const country = document.getElementById('billing-country').value;
           let input = e.target.value.toUpperCase(); // Convert to uppercase
           let formattedInput = '';
 
@@ -710,8 +710,8 @@ function validatePaymentDetails() {
     }
 
     // Validate Country and State/Province
-    const country = document.getElementById('country');
-    const state = document.getElementById('state');
+    const country = document.getElementById('billing-country');
+    const state = document.getElementById('billing-state');
     const billingZip = document.getElementById('billing-zip');
     if (country) {
         if (country.selectedIndex === 0) {
