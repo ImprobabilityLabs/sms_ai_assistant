@@ -777,7 +777,31 @@ function validatePaymentDetails() {
                                     <ul>${errors.map(error => `<li>${error}</li>`).join('')}</ul>
                                 </div>`;
         errorContainer.style.display = 'block';
-    } else if (errorContainer) {
+    } else if (isValid) {
+        // If the form is valid, create Stripe token
+        stripe.createToken(cardNumber).then(function(result) {
+            if (result.error) {
+                // Inform the user if there was an error
+                errorContainer.innerHTML = `<div style="color: red; border: 1px solid red; padding: 10px;">
+                                    <p><strong>Please correct the following errors:</strong></p>
+                                    <ul>${result.error.message}</ul>
+                                </div>`;
+                errorContainer.style.display = 'block';
+                isValid = false; // Mark as invalid to prevent form submission
+            } else {
+                // Send the token to your server or append it as a hidden input
+                const form = document.getElementById('subscribe-form');
+                const hiddenInput = document.createElement('input');
+                hiddenInput.setAttribute('type', 'hidden');
+                hiddenInput.setAttribute('name', 'stripeToken');
+                hiddenInput.setAttribute('value', result.token.id);
+                form.appendChild(hiddenInput);
+                
+                // Optionally, you can submit the form here if all is good
+                // form.submit();
+            }
+        });
+    } else if (errorContainer && isValid) {
         errorContainer.style.display = 'none'; // Hide the container if no errors
     }
 
@@ -797,6 +821,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Prevent form submission if either validation fails
             if (!isValidAssistant || !isValidPersonal || !isValidSubscription || !isValidPaymentDetails) {
                 event.preventDefault();
+            } else {
+                document.getElementById('subscribe-form').submit();
             }
         });
     }
