@@ -380,7 +380,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
               <div class="form-group form-type-select">
-                <label for="country">Billing Country</label>
+                <label for="billing-country">Billing Country</label>
                 <select id="billing-country" class="form-control" required="" name="billing-country" title="Select the billing country." onchange="updateStates(this.value);">
                   <option {% if form_data.get('billing-country') == None %}selected {% endif %}disabled>Please select a billing country</option>
                   <option value="USA" {% if form_data.get('billing-country') == 'USA' %}selected{% endif %}>United States of America</option>
@@ -390,7 +390,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
               <div class="form-group form-type-select">
-                <label for="state">Billing State/Province</label>
+                <label for="billing-state">Billing State/Province</label>
                 <select id="billing-state" class="form-control" required="" name="billing-state">
                   <!-- Options will be dynamically updated based on selected country -->
                 </select>
