@@ -94,8 +94,11 @@ def configure_routes(app):
                     current_app.logger.info(f'{key}: {request.form[key]}')
                     # Validate form data
                     required_fields = [
-                        'subscriptionOption', 'card-name', 'billing-address', 'billing-country', 
-                        'billing-state', 'billing-zip', 'stripeToken', 'suff'
+                        'subscriptionOption', 'assistant-name', 'assistant-origin', 'assistant-gender',
+                        'assistant-personality', 'assistant-response-style', 'assistant-demeanor',
+                        'assistant-attitude', 'user-name', 'user-location', 'user-mobile', 'user-language',
+                        'user-title', 'user-measurement', 'user-description', 'card-name', 'billing-address',
+                        'billing-country', 'billing-state', 'billing-zip', 'stripeToken', 'deleteme'
                     ]
                     if all(field in request.form for field in required_fields):
                         testvar = true
