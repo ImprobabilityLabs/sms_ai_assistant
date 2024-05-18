@@ -1,4 +1,56 @@
 document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById("improbability-sms-contact-form");
+
+    async function handleContactSubmit(event) {
+        event.preventDefault();
+        var successMessage = document.getElementById("improbability-contact-success-message");
+        var errorMessage = document.getElementById("improbability-contact-error-message");
+        var data = new FormData(event.target);
+
+        successMessage.style.display = 'none';
+        errorMessage.style.display = 'none';
+
+        try {
+            let response = await fetch(event.target.action, {
+                method: form.method,
+                body: data,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                successMessage.innerHTML = `<div style="color: green; border: 1px solid green; padding: 10px;">
+                                            <p>Your message has been sent successfully!</p>
+                                        </div>`;
+                successMessage.style.display = 'block';
+                form.reset();
+            } else {
+                let data = await response.json();
+                if (data.errors) {
+                    errorMessage.innerHTML = `<div style="color: red; border: 1px solid red; padding: 10px;">
+                                                <p><strong>Please correct the following errors:</strong></p>
+                                                <ul>${data.errors.map(error => `<li>${error.message}</li>`).join('')}</ul>
+                                            </div>`;
+                } else {
+                    errorMessage.innerHTML = `<div style="color: red; border: 1px solid red; padding: 10px;">
+                                                <p>Oops! There was a problem submitting your form</p>
+                                            </div>`;
+                }
+                errorMessage.style.display = 'block';
+            }
+        } catch (error) {
+            errorMessage.innerHTML = `<div style="color: red; border: 1px solid red; padding: 10px;">
+                                        <p>Oops! There was a problem submitting your form</p>
+                                    </div>`;
+            errorMessage.style.display = 'block';
+        }
+    }
+
+    form.addEventListener("submit", handleContactSubmit);
+});
+
+document.addEventListener('DOMContentLoaded', function() {
     function adjustFaqTitle() {
         var brandText = document.querySelector('.faq-page-title');
         if (brandText) {  // Check if the element actually exists
