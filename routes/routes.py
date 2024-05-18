@@ -89,11 +89,22 @@ def configure_routes(app):
         elif not member['is_subscribed']:
             if request.method == 'POST':
                 current_app.logger.info('Received POST request with following form data:')
+                error_message = None
                 for key in request.form:
                     current_app.logger.info(f'{key}: {request.form[key]}')
+                    # Validate form data
+                    required_fields = [
+                        'subscriptionOption', 'card-name', 'billing-address', 'billing-country', 
+                        'billing-state', 'billing-zip', 'stripeToken', 'suff'
+                    ]
+                    if all(field in request.form for field in required_fields):
+                        testvar = true
+                    else:
+                        error_message = 'Please complete all required fields.'
+                        current_app.logger.error(error_message)
             product_data = get_products()
             current_app.logger.info('Info: Subscribe Page - Products Object: ' + str(product_data))
-            return render_template('subscribe.html', menu=menu, products=product_data, form_data=request.form)
+            return render_template('subscribe.html', menu=menu, products=product_data, form_data=request.form, error=error_message)
       
     @app.route('/account', methods=['GET', 'POST'])
     def account_page():
