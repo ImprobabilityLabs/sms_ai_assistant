@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://ajax.googleapis.com https://stackpath.bootstrapcdn.com https://cdnjs.cloudflare.com;">
     <meta name="author" content="Improbability Labs Inc. ( Rahim Khoja )">
     <meta name="description" content="SMS AI Assistant by Improbability Labs Inc. An AI powered assistant that can lookup information available over SMS.">
     <meta name="keywords" content="AI, ChatBot, SMS, Assistant, innovation">
@@ -21,7 +22,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon/favicon-16x16.png') }}">
     <title>Improbability Labs Inc. - SMS AI Assistant</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <link href="<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/ie10-viewport-bug-workaround.css') }}">
     <script src="{{ url_for('static', filename='js/ie-emulation-modes-warning.js') }}"></script>
@@ -32,7 +33,7 @@
     <![endif]-->
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css">
     <link href="{{ url_for('static', filename='css/improbability.css') }}" rel="stylesheet">
     <script src="https://js.stripe.com/v3/"></script>
   </head>
@@ -507,11 +508,11 @@
         </div>
       </div>
     </footer>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="{{ url_for('static', filename='js/ie10-viewport-bug-workaround.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.3/js/bootstrap-select.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js"></script>
     <script src="{{ url_for('static', filename='js/stripe.js') }}"></script>
     <script src="{{ url_for('static', filename='js/improbability.js') }}"></script>
     <script>
