@@ -6,9 +6,35 @@ document.addEventListener('DOMContentLoaded', function() {
         var successMessage = document.getElementById("improbability-contact-success-message");
         var errorMessage = document.getElementById("improbability-contact-error-message");
         var data = new FormData(event.target);
+        var errors = [];
 
         successMessage.style.display = 'none';
         errorMessage.style.display = 'none';
+
+        // Validate Mobile Number if contact-method is mobile
+        var contactMethod = data.get('contact-method');
+        var userMobile = document.getElementById('user-mobile').value;
+
+        if (contactMethod === 'mobile') {
+            if (!userMobile) {
+                errors.push("Mobile number is required when contact method is Mobile.");
+            } else {
+                const cleanMobileNumber = userMobile.replace(/[^\d]/g, '');
+                const mobilePattern = /^[2-9]\d{2}[2-9](?!11)\d{2}\d{4}$/;
+                if (!mobilePattern.test(cleanMobileNumber)) {
+                    errors.push("Your Mobile Number must be a valid North American number.");
+                }
+            }
+        }
+
+        if (errors.length > 0) {
+            errorMessage.innerHTML = `<div style="color: red; border: 1px solid red; padding: 10px;">
+                                        <p><strong>Please correct the following errors:</strong></p>
+                                        <ul>${errors.map(error => `<li>${error}</li>`).join('')}</ul>
+                                    </div>`;
+            errorMessage.style.display = 'block';
+            return;
+        }
 
         try {
             let response = await fetch(event.target.action, {
