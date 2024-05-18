@@ -417,7 +417,15 @@
             </div>
           </div>
           <div class="row" style="display:block">
-            <div id="cc-error" class="col-xs-12" style="display:none">
+            <div id="cc-error" class="col-xs-12" style="{% if error %}display:block{% else %}display:none{% endif %}">
+            {% if error %}
+              <div style="color: red; border: 1px solid red; padding: 10px;">
+                <p><strong>Please correct the following errors:</strong></p>
+                <ul>
+                  <li>{{ error }}</li>
+                </ul>
+              </div>
+            {% endif %}
             </div>
           </div>
         </section>
