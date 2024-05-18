@@ -132,12 +132,12 @@
             <!-- Success and Error Messages spanning full width of the form -->
             <div class="col-xs-12">
                 <!-- Success Message -->
-                <div id="success-message" class="alert alert-success" style="display:none">
+                <div id="improbability-contact-success-message" class="alert alert-success" style="display:none">
                     <p>Your message has been sent successfully!</p>
                 </div>
 
                 <!-- Error Message -->
-                <div id="error-message" class="alert alert-danger" style="display:none">
+                <div id="improbability-contact-error-message" class="alert alert-danger" style="display:none">
                     <p>There was a problem with your submission. Please check your entries and try again.</p>
                 </div>
             </div>
@@ -205,37 +205,5 @@
     <script src="{{ url_for('static', filename='js/ie10-viewport-bug-workaround.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js"></script>
     <script src="{{ url_for('static', filename='js/improbability.js') }}"></script>
-    <script>
-    var form = document.getElementById("improbability-sms-contact-form");
-    
-    async function handleSubmit(event) {
-      event.preventDefault();
-      var status = document.getElementById("improbability-contact-status");
-      var data = new FormData(event.target);
-      fetch(event.target.action, {
-        method: form.method,
-        body: data,
-        headers: {
-            'Accept': 'application/json'
-        }
-      }).then(response => {
-        if (response.ok) {
-          status.innerHTML = "Thanks for your submission!";
-          form.reset()
-        } else {
-          response.json().then(data => {
-            if (Object.hasOwn(data, 'errors')) {
-              status.innerHTML = data["errors"].map(error => error["message"]).join(", ")
-            } else {
-              status.innerHTML = "Oops! There was a problem submitting your form"
-            }
-          })
-        }
-      }).catch(error => {
-        status.innerHTML = "Oops! There was a problem submitting your form"
-      });
-    }
-    form.addEventListener("submit", handleSubmit)
-</script>
   </body>
 </html>
