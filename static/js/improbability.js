@@ -1,36 +1,50 @@
-function adjustBrandText() {
-    var brandText = document.querySelector('.brand-text');
-    if (brandText) {  // Check if the element actually exists
-        if (window.innerWidth > 1200) {
-            brandText.textContent = 'Improbability Labs - SMS AI Assistant';
+document.addEventListener('DOMContentLoaded', function() {
+    function adjustFaqTitle() {
+        var brandText = document.querySelector('.faq-page-title');
+        if (brandText) {  // Check if the element actually exists
+            if (window.innerWidth >= 768) {
+                brandText.textContent = 'Frequently Asked Questions';
+            } else {
+                brandText.textContent = 'FAQ'; // You can adjust this if different text is needed for smaller sizes
+            }
         } else {
-            brandText.textContent = 'SMS AI Assistant'; // You can adjust this if different text is needed for smaller sizes
+            console.log('Element with class faq-page-title not found on this page.');
         }
-    } else {
-        console.log('Element with class brand-text not found on this page.');
     }
-}
 
-function adjustFaqTitle() {
-    var brandText = document.querySelector('.faq-page-title');
-    if (brandText) {  // Check if the element actually exists
-        if (window.innerWidth >= 768) {
-            brandText.textContent = 'Frequently Asked Questions';
+    // Run the function once the page has fully loaded
+    adjustFaqTitle();
+    
+    // Add event listeners if the element exists
+    if (document.querySelector('.faq-page-title')) {
+        window.addEventListener('resize', adjustFaqTitle);
+    }
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    function adjustBrandText() {
+        var brandText = document.querySelector('.brand-text');
+        if (brandText) {  // Check if the element actually exists
+            if (window.innerWidth > 1200) {
+                brandText.textContent = 'Improbability Labs - SMS AI Assistant';
+            } else {
+                brandText.textContent = 'SMS AI Assistant'; // You can adjust this if different text is needed for smaller sizes
+            }
         } else {
-            brandText.textContent = 'FAQ'; // You can adjust this if different text is needed for smaller sizes
+            console.log('Element with class brand-text not found on this page.');
         }
-    } else {
-        console.log('Element with class faq-page-title not found on this page.');
     }
-}
 
-window.addEventListener('load', adjustFaqTitle);
-window.addEventListener('resize', adjustFaqTitle);
+    // Run the function once the page has fully loaded
+    adjustBrandText();
+    
+    // Add event listeners if the element exists
+    if (document.querySelector('.brand-text')) {
+        window.addEventListener('resize', adjustBrandText);
+    }
+});
 
-
-      // Run both functions on load and resize
-      window.addEventListener('load', adjustBrandText);
-      window.addEventListener('resize', adjustBrandText);
 
 
 function updateStates(country) {
