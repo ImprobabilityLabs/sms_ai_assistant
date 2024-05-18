@@ -249,7 +249,7 @@
             <div class="form-group form-type-text">
               <label for="user-name" class="long-label">Preferred Name</label>
               <label for="user-name" class="short-label">Preferred Name</label>
-              <input id="user-name" type="text" class="form-control" required="" name="user-name" placeholder="How should your assistant address you?" title="Enter your preferred name for personalized communication with your assistant.">
+              <input id="user-name" type="text" class="form-control" required="" name="user-name" placeholder="How should your assistant address you?" title="Enter your preferred name for personalized communication with your assistant." value="{{ form_data.get('user-name', '') }}">
             </div>
           </div>
           <!-- Location -->
@@ -257,7 +257,7 @@
             <div class="form-group form-type-text">
               <label for="user-location" class="long-label">Your Location</label>
               <label for="user-location" class="short-label">Location</label>
-              <input id="user-location" type="text" class="form-control" required="" name="user-location" placeholder="What city are you located in?" title="Specify your current location (City, State, Country).">
+              <input id="user-location" type="text" class="form-control" required="" name="user-location" placeholder="What city are you located in?" title="Specify your current location (City, State, Country)." value="{{ form_data.get('user-location', '') }}">
             </div>
           </div>
           <!-- Time Zone -->
@@ -265,7 +265,7 @@
             <div class="form-group form-type-text">
               <label for="user-mobile" class="long-label">Mobile Number</label>
               <label for="user-mobile" class="short-label">Mobile</label>
-              <input id="user-mobile" type="text" class="form-control" required="" name="user-mobile" placeholder="The mobile number your assistant can reach you on." title="Enter a mobile number for your assistant to contact you on.">
+              <input id="user-mobile" type="text" class="form-control" required="" name="user-mobile" placeholder="The mobile number your assistant can reach you on." title="Enter a mobile number for your assistant to contact you on." value="{{ form_data.get('user-mobile', '') }}">
             </div>
           </div>
           <!-- Communication Language -->
@@ -274,17 +274,17 @@
               <label for="user-language" class="long-label">Preferred Communication Language</label>
               <label for="user-language" class="short-label">Language</label>
               <select id="user-language" class="form-control" required="" name="user-language" title="Select the language you prefer for communication with your assistant.">
-                <option selected disabled>Please select a language</option>
-                <option value="English">English</option>
-                <option value="Spanish">Spanish</option>
-                <option value="Chinese">Chinese</option>
-                <option value="French">French</option>
-                <option value="German">German</option>
-                <option value="Japanese">Japanese</option>
-                <option value="Korean">Korean</option>
-                <option value="Arabic">Arabic</option>
-                <option value="Russian">Russian</option>
-                <option value="Portuguese">Portuguese</option>
+                <option {% if form_data.get('user-language') == None %}selected {% endif %}disabled>Please select a language</option>
+                <option value="English" {% if form_data.get('user-language') == 'English' %}selected{% endif %}>English</option>
+                <option value="Spanish" {% if form_data.get('user-language') == 'Spanish' %}selected{% endif %}>Spanish</option>
+                <option value="Chinese" {% if form_data.get('user-language') == 'Chinese' %}selected{% endif %}>Chinese</option>
+                <option value="French" {% if form_data.get('user-language') == 'French' %}selected{% endif %}>French</option>
+                <option value="German" {% if form_data.get('user-language') == 'German' %}selected{% endif %}>German</option>
+                <option value="Japanese" {% if form_data.get('user-language') == 'Japanese' %}selected{% endif %}>Japanese</option>
+                <option value="Korean" {% if form_data.get('user-language') == 'Korean' %}selected{% endif %}>Korean</option>
+                <option value="Arabic" {% if form_data.get('user-language') == 'Arabic' %}selected{% endif %}>Arabic</option>
+                <option value="Russian" {% if form_data.get('user-language') == 'Russian' %}selected{% endif %}>Russian</option>
+                <option value="Portuguese" {% if form_data.get('user-language') == 'Portuguese' %}selected{% endif %}>Portuguese</option>
               </select>
             </div>
           </div>
@@ -294,18 +294,18 @@
               <label for="user-title" class="long-label">Preferred Title</label>
               <label for="user-title" class="short-label">Preferred Title</label>
               <select id="user-title" class="form-control" required="" name="user-title" title="Choose your preferred formal or social title.">
-                <option selected disabled>Please select a title</option>
-                <option value="Mr.">Mr.</option>
-                <option value="Ms.">Ms.</option>
-                <option value="Mrs.">Mrs.</option>
-                <option value="Dr.">Dr.</option>
-                <option value="Prof.">Prof.</option>
-                <option value="Mx.">Mx.</option>
-                <option value="Miss">Miss</option>
-                <option value="Sir">Sir</option>
-                <option value="Lady">Lady</option>
-                <option value="Capt.">Capt.</option>
-                <option value="Rev.">Rev.</option>
+                <option {% if form_data.get('user-title') == None %}selected {% endif %}disabled>Please select a title</option>
+                <option value="Mr." {% if form_data.get('user-title') == 'Mr.' %}selected{% endif %}>Mr.</option>
+                <option value="Ms." {% if form_data.get('user-title') == 'Ms.' %}selected{% endif %}>Ms.</option>
+                <option value="Mrs." {% if form_data.get('user-title') == 'Mrs.' %}selected{% endif %}>Mrs.</option>
+                <option value="Dr." {% if form_data.get('user-title') == 'Dr.' %}selected{% endif %}>Dr.</option>
+                <option value="Prof." {% if form_data.get('user-title') == 'Prof.' %}selected{% endif %}>Prof.</option>
+                <option value="Mx." {% if form_data.get('user-title') == 'Mx.' %}selected{% endif %}>Mx.</option>
+                <option value="Miss" {% if form_data.get('user-title') == 'Miss' %}selected{% endif %}>Miss</option>
+                <option value="Sir" {% if form_data.get('user-title') == 'Sir' %}selected{% endif %}>Sir</option>
+                <option value="Lady" {% if form_data.get('user-title') == 'Lady' %}selected{% endif %}>Lady</option>
+                <option value="Capt." {% if form_data.get('user-title') == 'Capt.' %}selected{% endif %}>Capt.</option>
+                <option value="Rev." {% if form_data.get('user-title') == 'Rev.' %}selected{% endif %}>Rev.</option>
               </select>
             </div>
           </div>
@@ -315,9 +315,9 @@
               <label for="user-measurement" class="long-label">Measurement System</label>
               <label for="user-measurement" class="short-label">Measurements</label>
               <select id="user-measurement" class="form-control" required="" name="user-measurement" title="Choose your preferred system of measurement, either Imperial or Metric.">
-                <option selected disabled>Please select a measurement system</option>
-                <option value="Imperial">Imperial</option>
-                <option value="Metric">Metric</option>
+                <option {% if form_data.get('user-measurement') == None %}selected {% endif %}disabled>Please select a measurement system</option>
+                <option value="Imperial" {% if form_data.get('user-measurement') == 'Imperial' %}selected{% endif %}>Imperial</option>
+                <option value="Metric" {% if form_data.get('user-measurement') == 'Metric' %}selected{% endif %}>Metric</option>
               </select>
             </div>
           </div>
@@ -326,7 +326,7 @@
             <div class="form-group form-type-textarea">
               <label for="user-description" class="long-label">About You</label>
               <label for="user-description" class="short-label">About</label>
-              <textarea id="user-description" class="form-control" rows="4" required="" name="user-description" placeholder="Tell your assistant a bit more about yourself." title="Provide some background information about yourself for assistant interactions."></textarea>
+              <textarea id="user-description" class="form-control" rows="4" required="" name="user-description" placeholder="Tell your assistant a bit more about yourself." title="Provide some background information about yourself for assistant interactions.">{{ form_data.get('user-description', '') }}</textarea>
             </div>
           </div>
         </div>
@@ -345,7 +345,7 @@
         <div class="col-xs-12">
           <div class="form-group">
             <label for="card-name">Card Holder Name</label>
-            <input id="card-name" type="text" class="form-control" name="card-name" required="" placeholder="Card Holder Name">
+            <input id="card-name" type="text" class="form-control" name="card-name" required="" placeholder="Card Holder Name" value="{{ form_data.get('card-name', '') }}">
           </div>
         </div>
         <div class="col-xs-12">
@@ -375,16 +375,16 @@
             <div class="col-xs-12">
               <div class="form-group form-type-text">
                 <label for="billing-address">Billing Address</label>
-                <input id="billing-address" type="text" class="form-control" name="billing-address" placeholder="Billing Address" required="">
+                <input id="billing-address" type="text" class="form-control" name="billing-address" placeholder="Billing Address" required="" value="{{ form_data.get('billing-address', '') }}">
               </div>
             </div>
             <div class="col-xs-12 col-sm-6">
               <div class="form-group form-type-select">
                 <label for="country">Billing Country</label>
-                <select id="billing-country" class="form-control" required="" name="billing-country" onchange="updateStates(this.value);">
-                  <option selected disabled>Please select a billing country</option>
-                  <option value="USA">United States of America</option>
-                  <option value="CAN">Canada</option>
+                <select id="billing-country" class="form-control" required="" name="billing-country" title="Select the billing country." onchange="updateStates(this.value);">
+                  <option {% if form_data.get('billing-country') == None %}selected {% endif %}disabled>Please select a billing country</option>
+                  <option value="USA" {% if form_data.get('billing-country') == 'USA' %}selected{% endif %}>United States of America</option>
+                  <option value="CAN" {% if form_data.get('billing-country') == 'CAN' %}selected{% endif %}>Canada</option>
                 </select>
               </div>
             </div>
@@ -399,7 +399,7 @@
         <div class="col-xs-12">
               <div class="form-group form-type-text">
                 <label for="billing-zip">Billing Postal Code/ZIP</label>
-                <input id="billing-zip" type="text" class="form-control" name="billing-zip" placeholder="Postal Code/ZIP" required="" autocomplete="postal-code">
+                <input id="billing-zip" type="text" class="form-control" name="billing-zip" placeholder="Postal Code/ZIP" required="" autocomplete="postal-code" value="{{ form_data.get('billing-zip', '') }}">
               </div>
             </div>
           </div>
