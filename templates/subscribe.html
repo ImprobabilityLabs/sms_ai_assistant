@@ -514,5 +514,29 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.3/js/bootstrap-select.min.js"></script>
     <script src="{{ url_for('static', filename='js/stripe.js') }}"></script>
     <script src="{{ url_for('static', filename='js/improbability.js') }}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const countrySelect = document.getElementById('billing-country');
+            if (countrySelect) {
+                const selectedCountry = countrySelect.value;
+                if (selectedCountry) {
+                    updateStates(selectedCountry);
+                    
+                    // Set the state/province if it was previously selected
+                    const selectedState = "{{ form_data.get('billing-state', '') }}";
+                    if (selectedState) {
+                        const stateSelect = document.getElementById('billing-state');
+                        const options = stateSelect.options;
+                        for (let i = 0; i < options.length; i++) {
+                            if (options[i].value === selectedState) {
+                                options[i].selected = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
   </body>
 </html>
