@@ -24,13 +24,13 @@ function adjustFaqTitle() {
     }
 }
 
+window.addEventListener('load', adjustFaqTitle);
+window.addEventListener('resize', adjustFaqTitle);
+
 
       // Run both functions on load and resize
       window.addEventListener('load', adjustBrandText);
       window.addEventListener('resize', adjustBrandText);
-
-      window.addEventListener('load', adjustFaqTitle);
-      window.addEventListener('resize', adjustFaqTitle);
 
 
 function updateStates(country) {
