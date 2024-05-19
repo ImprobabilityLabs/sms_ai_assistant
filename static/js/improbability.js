@@ -389,10 +389,10 @@ function updateStates(country) {
           let input = e.target.value.toUpperCase(); // Convert to uppercase
           let formattedInput = '';
 
-          if (country === 'USA') {
+          if (country === 'US') {
               // Remove all non-digit characters and limit to 5 digits for US ZIP code
               formattedInput = input.replace(/[^0-9]/g, '').substring(0, 5);
-          } else if (country === 'CAN') {
+          } else if (country === 'CA') {
               // Remove all non-alphanumeric characters
               input = input.replace(/[^A-Z0-9]/g, '');
 
