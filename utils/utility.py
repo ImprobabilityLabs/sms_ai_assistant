@@ -266,6 +266,13 @@ def handle_stripe_operations(user, form_data):
             expand=['latest_invoice.payment_intent'],
         )
 
+        # Check if the payment was successful
+        payment_intent = subscription.latest_invoice.payment_intent
+        if payment_intent.status != 'succeeded':
+            # Delete the subscription if payment was not successful
+            stripe.Subscription.delete(subscription.id)
+            raise ValueError("Payment was not successful.")
+        
         # Extract necessary fields from the subscription
         subscription_id = subscription.id
         current_period_start = subscription.current_period_start
