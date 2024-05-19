@@ -110,8 +110,10 @@ def configure_routes(app):
                                 location_dict = get_location(request.form['user-location'])
                                 if location_dict['location_text'] != 'null':
                                     location_user = location_dict['location_text']
+                                    location_country = location_dict['country_code']
                                 else:
                                     location_user = request.form['user-location']
+                                    location_country = request.form['billing-country']
                                 
                                 new_assistant_preference = AssistantPreference(
                                     user_id=user.id,
@@ -135,9 +137,9 @@ def configure_routes(app):
                                     user_title=request.form['user-title'],
                                     user_measurement=request.form['user-measurement'],
                                     user_bio=request.form.get('user-description', ''),
-                                    user_language=location_user,
-                                    user_location_full=request.form['user-location'],
-                                    user_location_country=request.form.get('billing-country', '')
+                                    user_language=request.form['user-language'],
+                                    user_location_full=location_user, 
+                                    user_location_country=location_country
                                 )
 
                                 db.session.add(new_user_preference)
