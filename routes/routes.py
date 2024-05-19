@@ -352,6 +352,9 @@ def configure_routes(app):
             # Validate the user and get the corresponding assistant
             user_id, subscription_id = validate_incomming_message(from_number, account_sid)
 
+            # Log the user validation details
+            current_app.logger.info(f'Validated User: User ID={user_id}, Subscription ID={subscription_id}, From Number={from_number}')
+
             if not user_id or not subscription_id:
                 return 'Unauthorized', 403
 
