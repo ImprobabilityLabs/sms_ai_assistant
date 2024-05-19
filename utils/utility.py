@@ -13,6 +13,8 @@ import requests
 import stripe
 import os
 from datetime import datetime
+import phonenumbers
+from phonenumbers.phonenumberutil import region_code_for_number
 
 seo_for_data_auth = "cmFoaW1rQGltcHJvYmFiaWxpdHkuaW86NGQ4MzY1OWQ4YWEyNTIwNQ=="
 
@@ -337,7 +339,17 @@ def handle_stripe_operations(user, form_data):
 #    answer = answer_question(question, cleaned_answer)
 #    print("\nAnswer: " + answer)
 
+def clean_phone_number(phone_number):
+    # Remove all non-numeric characters
+    clean_number = re.sub(r'\D', '', phone_number)
+    return clean_number
 
+def get_country_code(phone_number):
+    # Parse the phone number
+    parsed_number = phonenumbers.parse(phone_number, "US")  # Default region as "US" for North America
+    # Extract the country code
+    country_code = parsed_number.country_code
+    return country_code
 
 def get_location(location_txt):
     client = Groq()
