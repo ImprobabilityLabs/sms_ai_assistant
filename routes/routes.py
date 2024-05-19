@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from models import db, User, Subscription, MobileNumber, History, UserPreference, AssistantPreference 
 from oauthlib.oauth2 import WebApplicationClient
 from requests_oauthlib import OAuth2Session
-from utils.utility import fetch_data, check_user_subscription, generate_menu, get_products, handle_stripe_operations, get_location
+from utils.utility import fetch_data, check_user_subscription, generate_menu, get_products, handle_stripe_operations, get_location, get_country_code, clean_phone_number
 import stripe
 
 def configure_routes(app):
@@ -125,10 +125,9 @@ def configure_routes(app):
                                     assistant_attitude=request.form['assistant-attitude']
                                 )
 
-                                # Add the new AssistantPreference to the session
                                 db.session.add(new_assistant_preference)
-                                # Commit the session to save the new record to the database
                                 db.session.commit() 
+
                                 new_user_preference = UserPreference(
                                     user_id=user.id,
                                     subscription_id=subscription_id,
@@ -143,7 +142,20 @@ def configure_routes(app):
 
                                 db.session.add(new_user_preference)
                                 db.session.commit()
-                
+                                
+                                clean_number = clean_phone_number(request.form['user-name'])
+                                ctry_code = 1
+
+                                new_mobile_number = MobileNumber(
+                                    user_id=user.id,
+                                    subscription_id=subscription_id,
+                                    country_code=ctry_code,
+                                    mobile_number=int(clean_number)
+                                )
+    
+                                session.add(new_mobile_number)
+                                session.commit()                
+
                                 return redirect(url_for('dashboard_page'))
                     else:
                         current_app.logger.error(error_message)
