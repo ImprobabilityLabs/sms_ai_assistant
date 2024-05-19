@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from models import db, User, Subscription, MobileNumber, History, UserPreference, AssistantPreference 
 from oauthlib.oauth2 import WebApplicationClient
 from requests_oauthlib import OAuth2Session
-from utils.utility import fetch_data, check_user_subscription, generate_menu, get_products, handle_stripe_operations
+from utils.utility import fetch_data, check_user_subscription, generate_menu, get_products, handle_stripe_operations, get_location
 import stripe
 
 def configure_routes(app):
@@ -107,6 +107,12 @@ def configure_routes(app):
                         if user:
                             success, error_message, subscription_id = handle_stripe_operations(user, request.form)
                             if success:
+                                location_dict = get_location(request.form['user-location'])
+                                if location_dict['location_text'] != 'null':
+                                    location_user = location_dict['location_text']
+                                else:
+                                    location_user = request.form['user-location']
+                                
                                 new_assistant_preference = AssistantPreference(
                                     user_id=user.id,
                                     subscription_id=subscription_id,
@@ -130,7 +136,7 @@ def configure_routes(app):
                                     user_title=request.form['user-title'],
                                     user_measurement=request.form['user-measurement'],
                                     user_bio=request.form.get('user-description', ''),
-                                    user_language=request.form['user-language'],
+                                    user_language=location_user,
                                     user_location_full=request.form['user-location'],
                                     user_location_country=request.form.get('billing-country', '')
                                 )
