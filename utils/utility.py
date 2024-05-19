@@ -240,11 +240,18 @@ def handle_stripe_operations(user, form_data):
         }
         customer.save()
 
-        # Attach the new payment method and set it as the default
-        payment_method = stripe.PaymentMethod.attach(
-            form_data['stripeToken'],
+        # Convert token to PaymentMethod and attach it to the customer
+        payment_method = stripe.PaymentMethod.create(
+            type="card",
+            card={"token": form_data['stripeToken']},
+        )
+
+        stripe.PaymentMethod.attach(
+            payment_method.id,
             customer=user.stripe_customer_id,
         )
+
+        # Set the new payment method as the default
         stripe.Customer.modify(
             user.stripe_customer_id,
             invoice_settings={
