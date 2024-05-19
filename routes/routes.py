@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from models import db, User, Subscription, MobileNumber, History, UserPreference, AssistantPreference 
 from oauthlib.oauth2 import WebApplicationClient
 from requests_oauthlib import OAuth2Session
-from utils.utility import fetch_data, check_user_subscription, generate_menu, get_products
+from utils.utility import fetch_data, check_user_subscription, generate_menu, get_products, handle_stripe_operations
 import stripe
 
 def configure_routes(app):
