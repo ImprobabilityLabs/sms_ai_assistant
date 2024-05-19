@@ -213,8 +213,6 @@ def get_products():
                 'interval': interval,
                 'description': description,
                 'country': country,
-                'tax': f"{tax:.2f}",
-                'tax_name': tax_name,
                 'features': features,
                 'image_url': image_url,
                 'product_name': product.name
@@ -289,8 +287,6 @@ def handle_stripe_operations(user, form_data):
         current_period_start = datetime.utcfromtimestamp(subscription.current_period_start).strftime('%Y-%m-%d %H:%M:%S')
         current_period_end = datetime.utcfromtimestamp(subscription.current_period_end).strftime('%Y-%m-%d %H:%M:%S')
         status = subscription.status
-        tax_percent = float(subscription.plan.metadata.get('tax', 0.0))
-        tax_name = subscription.plan.metadata.get('tax_name', '')
 
         # Create a new Subscription record in the database
         new_subscription = Subscription(
@@ -300,9 +296,7 @@ def handle_stripe_operations(user, form_data):
             stripe_product_id=subscription.plan.product,
             current_period_start=current_period_start,
             current_period_end=current_period_end,
-            status=status,
-            tax_name=tax_name,
-            tax_percent=tax_percent
+            status=status
         )
 
         # Add the new subscription to the database
