@@ -88,8 +88,7 @@
             <input type="radio" name="subscriptionOption" value="{{ product.price_id }}" 
                    data-product-id="{{ product.product_id }}" data-cost="{{ product.amount }}" 
                    data-currency="{{ product.currency }}" data-interval="{{ product.interval }}"
-                   data-country="{{ product.country }}" data-product="{{ product.product_name }}"
-                   data-tax-percent="{{ product.tax }}" data-tax-name="{{ product.tax_name }}"{% if form_data.get('subscriptionOption') == product.price_id %} checked{% endif %}>
+                   data-country="{{ product.country }}" data-product="{{ product.product_name }}"{% if form_data.get('subscriptionOption') == product.price_id %} checked{% endif %}>
             <strong>{{ product.product_name }}</strong>
             <img src="{{ product.image_url }}" alt="{{ product.product_name }} Image" style="height:20px; width:30px;">
         </label>
