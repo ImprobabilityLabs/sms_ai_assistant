@@ -223,6 +223,80 @@ def get_products():
     return product_data
 
 
+def handle_stripe_operations(user, form_data):
+    try:
+        if not user.stripe_customer_id:
+            # Raise an exception if the Stripe customer ID does not exist
+            raise ValueError("Stripe customer ID not found for user.")
+
+        # Retrieve the existing customer and update the billing information
+        customer = stripe.Customer.retrieve(user.stripe_customer_id)
+        customer.name = form_data['card-name']
+        customer.address = {
+            'line1': form_data['billing-address'],
+            'country': form_data['billing-country'],
+            'state': form_data['billing-state'],
+            'postal_code': form_data['billing-zip'],
+        }
+        customer.save()
+
+        # Attach the new payment method and set it as the default
+        payment_method = stripe.PaymentMethod.attach(
+            form_data['stripeToken'],
+            customer=user.stripe_customer_id,
+        )
+        stripe.Customer.modify(
+            user.stripe_customer_id,
+            invoice_settings={
+                'default_payment_method': payment_method.id,
+            },
+        )
+
+        # Create or update the Stripe subscription
+        subscription = stripe.Subscription.create(
+            customer=user.stripe_customer_id,
+            items=[{'price': form_data['subscriptionOption']}],
+            expand=['latest_invoice.payment_intent'],
+        )
+
+        # Extract necessary fields from the subscription
+        subscription_id = subscription.id
+        current_period_start = subscription.current_period_start
+        current_period_end = subscription.current_period_end
+        status = subscription.status
+        tax_percent = float(subscription.plan.metadata.get('tax', 0.0))
+        tax_name = subscription.plan.metadata.get('tax_name', '')
+
+        # Create a new Subscription record in the database
+        new_subscription = Subscription(
+            user_id=user.id,
+            stripe_customer_id=user.stripe_customer_id,
+            stripe_plan_id=subscription.plan.id,
+            stripe_product_id=subscription.plan.product,
+            current_period_start=current_period_start,
+            current_period_end=current_period_end,
+            status=status,
+            tax_name=tax_name,
+            tax_percent=tax_percent
+        )
+
+        # Add the new subscription to the database
+        db.session.add(new_subscription)
+        db.session.commit()
+
+        # Update the user's subscription status in the database
+        user.is_subscribed = True
+        db.session.commit()
+
+        current_app.logger.info('Subscription created successfully.')
+        return True, None
+
+    except stripe.error.StripeError as e:
+        current_app.logger.error(f'Stripe error: {e.user_message}')
+        return False, e.user_message
+    except Exception as e:
+        current_app.logger.error(f'Error: {str(e)}')
+        return False, str(e)
 
 # Assuming extract_questions(msg) returns a list of questions
 #questions = extract_questions(msg)
