@@ -1,5 +1,6 @@
 from .base import db, BaseModel
 from sqlalchemy.dialects.mysql import INTEGER
+from sqlalchemy.dialects.mysql import BIGINT
 import phonenumbers
 
 class MobileNumber(BaseModel):
