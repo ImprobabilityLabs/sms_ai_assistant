@@ -105,8 +105,9 @@ def configure_routes(app):
                     if all(field in request.form for field in required_fields):
                         user = User.query.filter_by(provider_id=session.get('user_provider_id')).first()
                         if user:
-                            success, error_message = handle_stripe_operations(user, request.form)
+                            success, error_message, subscription_id = handle_stripe_operations(user, request.form)
                             if success:
+                                
                                 return redirect(url_for('dashboard_page'))
                     else:
                         current_app.logger.error(error_message)
