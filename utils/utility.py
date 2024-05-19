@@ -340,37 +340,31 @@ def handle_stripe_operations(user, form_data):
 #    print("\nAnswer: " + answer)
 
 
-# Check if at least one additional argument was passed
-#if len(sys.argv) <= 1:
-#    print("No location text was passed. Please run the script with a location argument.")
-#    sys.exit()
 
-#location_txt = sys.argv[1]
+def get_location(location_txt):
+    client = Groq()
+    completion = client.chat.completions.create(
+        model="llama3-8b-8192",
+        messages=[
+            {
+                "role": "system",
+                "content": "Convert the users input into a Location Full Text(City, State or Province, Country) and Country ISO Code( ISO 3166-1 alpha-2). If the location does not match, respond with null.\n\nRespond in a JSON Format with 2 fields (location_text, country_code) and no other text."
+            },
+            {
+                 "role": "user",
+                 "content": json.dumps(location_txt, indent=2)
+            }
+        ],
+        temperature=1,
+        max_tokens=128,
+        top_p=1,
+        stream=False,
+        stop=None,
+    )
 
-#client = Groq()
-#completion = client.chat.completions.create(
-#    model="llama3-8b-8192",
-#    messages=[
-#        {
-#            "role": "system",
-#            "content": "Convert the users input into a Location Full Text(City, State or Province, Country) and Country ISO Code( ISO 3166-1 alpha-2). If the location does not match, respond with null.\n\nRespond in a JSON Format with 2 fields (location_text, country_code) and no other text."
-#        },
-#        {
-#            "role": "user",
-#            "content": json.dumps(location_txt, indent=2)
-#        }
-#    ],
-#    temperature=1,
-#    max_tokens=128,
-#    top_p=1,
-#    stream=False,
-#    stop=None,
-#)
-#print(f"Tokens: {completion.usage}")
-#output = completion.choices[0].message.content
-#print(output)
-# Convert the string to a dictionary
-#data_dict = json.loads(output)
+    output = completion.choices[0].message.content
+
+    return json.loads(output)
 
 # Now you can access the values by their keys
 #location_text = data_dict['location_text']
