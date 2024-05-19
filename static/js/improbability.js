@@ -416,26 +416,15 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateSubscriptionDetails(radio) {
         const details = document.querySelector('.purchase-details-price'); // Using class selector
         const detailstitle = document.querySelector('.purchase-details-price-title'); // Using class selector
-        const taxDetails = document.querySelector('.tax-details'); // Tax details element
+
         if (radio.checked) {
             details.style.display = 'block';
             detailstitle.style.display = 'block';
             document.querySelector('.subscription-name').textContent = radio.dataset.product;
             
-            // Calculate and display total cost including tax
+            // Display total cost
             let total = parseFloat(radio.dataset.cost);
-            let taxPercent = parseFloat(radio.dataset.taxPercent);
-            let taxAmount = total * (taxPercent / 100);
-            let totalWithTax = total + taxAmount;
-            document.querySelector('.plan-final').textContent = `${totalWithTax.toFixed(2)} ${radio.dataset.currency} per ${radio.dataset.interval}`;
-            
-            // Set tax details
-            if (taxPercent > 0) {
-                taxDetails.style.display = 'block';
-                document.querySelector('.tax-info').textContent = `Tax (${radio.dataset.taxName}): ${taxPercent}% (${taxAmount.toFixed(2)} ${radio.dataset.currency})`;
-            } else {
-                taxDetails.style.display = 'none';
-            }
+            document.querySelector('.plan-final').textContent = `${total.toFixed(2)} ${radio.dataset.currency} per ${radio.dataset.interval}`;
         } else {
             details.style.display = 'none';
         }
