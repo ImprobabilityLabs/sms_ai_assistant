@@ -8,7 +8,7 @@ class MobileNumber(BaseModel):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     subscription_id = db.Column(db.Integer, db.ForeignKey('subscriptions.id'), nullable=False)
     country_code = db.Column(INTEGER(unsigned=True), nullable=False)
-    mobile_number = db.Column(INTEGER(unsigned=True), nullable=False)
+    mobile_number = db.Column(BIGINT(unsigned=True), nullable=False)
 
     def __repr__(self):
         # Construct the full international number
