@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, abort, current_app
 from models import db, User, Subscription, MobileNumber, History, UserPreference, AssistantPreference 
+from twilio.request_validator import RequestValidator
 from oauthlib.oauth2 import WebApplicationClient
 from requests_oauthlib import OAuth2Session
 from utils.utility import fetch_data, check_user_subscription, generate_menu, get_products, handle_stripe_operations, get_location, get_country_code, clean_phone_number
@@ -316,20 +317,11 @@ def configure_routes(app):
         return redirect(url_for("dashboard_page"))
 
     @app.route('/api/sms/callback', methods=['POST'])
-    def twillio_callback():
-        """Replies to SMS messages using data from a POST request.
+    def twilio_callback():
 
-        Extracts the user's message and phone number from the request,
-        validates the user, gets and formats relevant information,
-        and uses OpenAI's API to generate a reply. The reply is sent
-        back to the user via SMS.
-
-        Returns:
-            A tuple containing a string response and an HTTP status code.
-        """
         try:
             # Create an instance of RequestValidator
-            validator = RequestValidator(TWILIO_AUTH_TOKEN)
+            validator = RequestValidator(app.config['TWILIO_AUTH_TOKEN'])
 
             # Retrieve the full URL of the incoming request
             url = request.url
@@ -345,27 +337,20 @@ def configure_routes(app):
                 # If invalid, reject the request
                 abort(403)
 
+            # Extract relevant Twilio message fields
             from_number = post_vars['From']
             to_number = post_vars['To']
             message_body = post_vars['Body']
             message_sid = post_vars.get('MessageSid', 'No SID')
-            
-            # Validate the user and get the corresponding assistant
-            user, assistant = validate_user_and_get_assistant(from_number)
+            account_sid = post_vars.get('AccountSid', 'No Account SID')
+            sms_status = post_vars.get('SmsStatus', 'No Status')
+            num_media = post_vars.get('NumMedia', '0')
 
-            # Gather relevant info based on the user's message
-            gathered_info, history = gather_info(message, user)
+            # Log the incoming request details
+            current_app.logger.info(f'Incoming SMS: From={from_number}, To={to_number}, Body={message_body}, SID={message_sid}, Account SID={account_sid}, Status={sms_status}, Media={num_media}')
 
-            # Build a list of messages for the conversation
-            messages = build_messages(gathered_info, history, user, assistant, message)
-
-            # Use OpenAI's API to generate a reply
-            reply = generate_reply(messages, user)
-
-            # Send the reply to the user
-            send_reply(reply, from_number)
-
+            # Placeholder for further processing (to be implemented later)
             return 'OK', 200
         except Exception as e:
-            print(f"Error: {e}")
+            current_app.logger.error(f"Error: {e}")
             return 'Internal Server Error', 500
