@@ -3,7 +3,7 @@ from models import db, User, Subscription, MobileNumber, History, UserPreference
 from twilio.request_validator import RequestValidator
 from oauthlib.oauth2 import WebApplicationClient
 from requests_oauthlib import OAuth2Session
-from utils.utility import fetch_data, check_user_subscription, generate_menu, get_products, handle_stripe_operations, get_location, get_country_code, clean_phone_number
+from utils.utility import fetch_data, check_user_subscription, generate_menu, get_products, handle_stripe_operations, get_location, get_country_code, clean_phone_number, validate_incomming_message
 import stripe
 
 def configure_routes(app):
@@ -349,6 +349,11 @@ def configure_routes(app):
             # Log the incoming request details
             current_app.logger.info(f'Incoming SMS: From={from_number}, To={to_number}, Body={message_body}, SID={message_sid}, Account SID={account_sid}, Status={sms_status}, Media={num_media}')
 
+            # Validate the user and get the corresponding assistant
+            user_id, subscription_id = validate_incomming_message(from_number, account_sid)
+
+        if not user or not assistant:
+            return 'Unauthorized', 403
             # Placeholder for further processing (to be implemented later)
             return 'OK', 200
         except Exception as e:
