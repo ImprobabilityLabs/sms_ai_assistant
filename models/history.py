@@ -5,8 +5,12 @@ class History(BaseModel):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     subscription_id = db.Column(db.Integer, db.ForeignKey('subscriptions.id'), nullable=False)
-    sender = db.Column(db.String(64), nullable=False)  # Renamed 'from' to 'sender' to avoid keyword conflict
-    message = db.Column(db.Text, nullable=False)  # Using Text for large amounts of text
+    message_sid = db.Column(db.String(64), unique=True, nullable=False)  # Twilio SID for the message
+    direction = db.Column(db.String(10), nullable=False)  # 'inbound' or 'outbound'
+    from_number = db.Column(db.String(32), nullable=False)
+    to_number = db.Column(db.String(32), nullable=False)
+    body = db.Column(db.Text, nullable=True)
+    status = db.Column(db.String(32), nullable=True)
 
     def __repr__(self):
         return f"<History from {self.sender}>"
