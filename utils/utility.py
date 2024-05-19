@@ -232,6 +232,7 @@ def handle_stripe_operations(user, form_data):
         # Retrieve the existing customer and update the billing information
         customer = stripe.Customer.retrieve(user.stripe_customer_id)
         customer.name = form_data['card-name']
+        customer.email = user.email
         customer.address = {
             'line1': form_data['billing-address'],
             'country': form_data['billing-country'],
@@ -244,6 +245,16 @@ def handle_stripe_operations(user, form_data):
         payment_method = stripe.PaymentMethod.create(
             type="card",
             card={"token": form_data['stripeToken']},
+            billing_details={
+                'name': form_data['card-name'],
+                'email': user.email, 
+                'address': {
+                    'line1': form_data['billing-address'],
+                    'country': form_data['billing-country'],
+                    'state': form_data['billing-state'],
+                    'postal_code': form_data['billing-zip'],
+                }
+            }
         )
 
         stripe.PaymentMethod.attach(
@@ -272,7 +283,7 @@ def handle_stripe_operations(user, form_data):
             # Delete the subscription if payment was not successful
             stripe.Subscription.delete(subscription.id)
             raise ValueError("Payment was not successful.")
-        
+
         # Extract necessary fields from the subscription
         subscription_id = subscription.id
         current_period_start = datetime.utcfromtimestamp(subscription.current_period_start).strftime('%Y-%m-%d %H:%M:%S')
@@ -301,10 +312,6 @@ def handle_stripe_operations(user, form_data):
         # Update the user's subscription status in the database
         user.is_subscribed = True
         db.session.commit()
-
-        # Finalize the invoice to ensure it's sent
-        invoice = subscription.latest_invoice
-        stripe.Invoice.finalize_invoice(invoice.id)
 
         current_app.logger.info('Subscription created successfully.')
         return True, None
