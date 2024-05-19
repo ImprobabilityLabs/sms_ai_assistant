@@ -263,7 +263,7 @@ def handle_stripe_operations(user, form_data):
         subscription = stripe.Subscription.create(
             customer=user.stripe_customer_id,
             items=[{'price': form_data['subscriptionOption']}],
-            expand=['latest_invoice.payment_intent'],
+            expand=['latest_invoice.payment_intent', 'latest_invoice'],
         )
 
         # Check if the payment was successful
@@ -301,6 +301,10 @@ def handle_stripe_operations(user, form_data):
         # Update the user's subscription status in the database
         user.is_subscribed = True
         db.session.commit()
+
+        # Finalize the invoice to ensure it's sent
+        invoice = subscription.latest_invoice
+        stripe.Invoice.finalize_invoice(invoice.id)
 
         current_app.logger.info('Subscription created successfully.')
         return True, None
