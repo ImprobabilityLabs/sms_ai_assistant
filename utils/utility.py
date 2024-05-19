@@ -314,19 +314,17 @@ def handle_stripe_operations(user, form_data):
         db.session.add(new_subscription)
         db.session.commit()
 
-        # Update the user's subscription status in the database
-        user.is_subscribed = True
-        db.session.commit()
+        subscription_id = new_subscription.id
 
         current_app.logger.info('Subscription created successfully.')
-        return True, None
+        return True, None, subscription_id
 
     except stripe.error.StripeError as e:
         current_app.logger.error(f'Stripe error: {e.user_message}')
-        return False, e.user_message
+        return False, e.user_message, -1
     except Exception as e:
         current_app.logger.error(f'Error: {str(e)}')
-        return False, str(e)
+        return False, str(e), -1
 
 # Assuming extract_questions(msg) returns a list of questions
 #questions = extract_questions(msg)
