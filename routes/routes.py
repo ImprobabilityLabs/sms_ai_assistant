@@ -145,7 +145,7 @@ def configure_routes(app):
                                 db.session.add(new_user_preference)
                                 db.session.commit()
                                 
-                                clean_number = clean_phone_number(request.form['user-name'])
+                                clean_number = clean_phone_number(request.form['user-mobile'])
                                 ctry_code = 1
 
                                 new_mobile_number = MobileNumber(
