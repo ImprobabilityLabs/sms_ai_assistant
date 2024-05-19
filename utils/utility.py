@@ -14,7 +14,7 @@ from requests_oauthlib import OAuth2Session
 import requests
 import stripe
 import os
-
+from datetime import datetime
 
 seo_for_data_auth = "cmFoaW1rQGltcHJvYmFiaWxpdHkuaW86NGQ4MzY1OWQ4YWEyNTIwNQ=="
 
@@ -275,8 +275,8 @@ def handle_stripe_operations(user, form_data):
         
         # Extract necessary fields from the subscription
         subscription_id = subscription.id
-        current_period_start = subscription.current_period_start
-        current_period_end = subscription.current_period_end
+        current_period_start = datetime.utcfromtimestamp(subscription.current_period_start).strftime('%Y-%m-%d %H:%M:%S')
+        current_period_end = datetime.utcfromtimestamp(subscription.current_period_end).strftime('%Y-%m-%d %H:%M:%S')
         status = subscription.status
         tax_percent = float(subscription.plan.metadata.get('tax', 0.0))
         tax_name = subscription.plan.metadata.get('tax_name', '')
