@@ -103,6 +103,7 @@ def configure_routes(app):
                     
                     error_message = 'Please complete all required fields.'
                     if all(field in request.form for field in required_fields):
+                        user = User.query.filter_by(provider_id=user_provider_id).first()
                         if user:
                             success, error_message = handle_stripe_operations(user, request.form)
                             if success:
