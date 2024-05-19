@@ -107,7 +107,23 @@ def configure_routes(app):
                         if user:
                             success, error_message, subscription_id = handle_stripe_operations(user, request.form)
                             if success:
-                                
+                                new_assistant_preference = AssistantPreference(
+                                    user_id=user.id,
+                                    subscription_id=subscription_id,
+                                    assistant_name=request.form['assistant-name'],
+                                    assistant_origin=request.form['assistant-origin'],
+                                    assistant_gender=request.form['assistant-gender'],
+                                    assistant_personality=request.form['assistant-personality'],
+                                    assistant_response_style=request.form['assistant-response-style'],
+                                    assistant_demeanor=request.form['assistant-demeanor'],
+                                    assistant_attitude=request.form['assistant-attitude']
+                                )
+
+                                # Add the new AssistantPreference to the session
+                                db.session.add(new_assistant_preference)
+                                # Commit the session to save the new record to the database
+                                db.session.commit() 
+
                                 return redirect(url_for('dashboard_page'))
                     else:
                         current_app.logger.error(error_message)
