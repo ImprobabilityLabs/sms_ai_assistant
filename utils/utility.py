@@ -9,8 +9,6 @@ from twilio.request_validator import RequestValidator
 from flask_sqlalchemy import SQLAlchemy
 from oauthlib.oauth2 import WebApplicationClient
 from requests_oauthlib import OAuth2Session
-#from config import GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, SECRET_KEY, SQLALCHEMY_DATABASE_URI, STRIPE_API_KEY, MICROSOFT_CLIENT_ID, MICROSOFT_CLIENT_SECRET, MICROSOFT_AUTHORIZATION_URL, MICROSOFT_TOKEN_URL, MICROSOFT_CLIENT_SECRET_ID, MICROSOFT_REDIRECT_URI
-#from werkzeug.middleware.proxy_fix import ProxyFix
 import requests
 import stripe
 import os
