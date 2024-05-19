@@ -123,7 +123,21 @@ def configure_routes(app):
                                 db.session.add(new_assistant_preference)
                                 # Commit the session to save the new record to the database
                                 db.session.commit() 
+                                new_user_preference = UserPreference(
+                                    user_id=user.id,
+                                    subscription_id=subscription_id,
+                                    user_name=request.form['user-name'],
+                                    user_title=request.form['user-title'],
+                                    user_measurement=request.form['user-measurement'],
+                                    user_bio=request.form.get('user-description', ''),
+                                    user_language=request.form['user-language'],
+                                    user_location_full=request.form['user-location'],
+                                    user_location_country=request.form.get('billing-country', '')
+                                )
 
+                                db.session.add(new_user_preference)
+                                db.session.commit()
+                
                                 return redirect(url_for('dashboard_page'))
                     else:
                         current_app.logger.error(error_message)
