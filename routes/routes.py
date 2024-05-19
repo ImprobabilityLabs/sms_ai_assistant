@@ -155,8 +155,8 @@ def configure_routes(app):
                                     mobile_number=int(clean_number)
                                 )
     
-                                session.add(new_mobile_number)
-                                session.commit()                
+                                db.session.add(new_mobile_number)
+                                db.session.commit()
 
                                 return redirect(url_for('dashboard_page'))
                     else:
