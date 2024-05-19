@@ -3,7 +3,7 @@ import json
 from groq import Groq
 import sys
 import re
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify, abort
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, abort, current_app
 from models import db, User, Subscription, MobileNumber, History, UserPreference, AssistantPreference 
 from twilio.request_validator import RequestValidator
 from flask_sqlalchemy import SQLAlchemy
