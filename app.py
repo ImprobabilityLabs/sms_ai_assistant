@@ -10,10 +10,6 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
     app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
-
-    # Create tables if they do not exist
-    with app.app_context():
-        db.create_all()
     
     # Initialize Extensions
     db.init_app(app)
@@ -28,6 +24,10 @@ def create_app():
     # Configure Routes
     configure_routes(app)
 
+    # Create tables if they do not exist
+    with app.app_context():
+        db.create_all()
+        
     return app
 
 app = create_app()  # This line added
