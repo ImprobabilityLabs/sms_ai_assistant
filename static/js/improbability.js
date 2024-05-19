@@ -137,7 +137,7 @@ function updateStates(country) {
     defaultOption.disabled = true; // Optional: make it non-selectable after a selection
     stateSelect.appendChild(defaultOption);
 
-    if (country === 'USA') {
+    if (country === 'US') {
         // List of states for USA
         const states = [{
                   abbreviation: 'AL',
@@ -298,7 +298,7 @@ function updateStates(country) {
             option.text = state.name;
             stateSelect.appendChild(option);
         });
-    } else if (country === 'CAN') {
+    } else if (country === 'CA') {
         // List of provinces for Canada
         const provinces = [{
                   abbreviation: 'AB',
