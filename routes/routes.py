@@ -352,9 +352,10 @@ def configure_routes(app):
             # Validate the user and get the corresponding assistant
             user_id, subscription_id = validate_incomming_message(from_number, account_sid)
 
-        if not user or not assistant:
-            return 'Unauthorized', 403
-            # Placeholder for further processing (to be implemented later)
+            if not user_id or not subscription_id:
+                return 'Unauthorized', 403
+
+
             return 'OK', 200
         except Exception as e:
             current_app.logger.error(f"Error: {e}")
