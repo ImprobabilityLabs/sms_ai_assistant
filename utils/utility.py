@@ -267,11 +267,22 @@ def handle_stripe_operations(user, form_data):
                 'default_payment_method': payment_method.id,
             },
         )
+ 
+        # Conditionally apply tax rates based on the billing country
+        tax_rate_ids = []
+        if form_data['billing-country'] == 'CA':  # Check if the billing country is Canada
+            # Retrieve the tax rate ID for Canada programmatically
+            tax_rates = stripe.TaxRate.list(active=True)
+            for tax_rate in tax_rates:
+                if tax_rate.country == 'CA':
+                    tax_rate_ids.append(tax_rate.id)
+                    break
 
         # Create or update the Stripe subscription
         subscription = stripe.Subscription.create(
             customer=user.stripe_customer_id,
             items=[{'price': form_data['subscriptionOption']}],
+            default_tax_rates=tax_rate_ids,
             expand=['latest_invoice.payment_intent', 'latest_invoice'],
         )
 
