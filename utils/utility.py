@@ -409,8 +409,8 @@ def validate_incomming_message(from_number, account_sid):
             return None, None
 
         # Placeholder: Retrieve user and assistant details (to be implemented)
-        user = None  # Retrieve user based on the mobile_entry.user_id
-        assistant = None  # Retrieve assistant based on user or other logic
+        user_id = subscription.user_id
+        subscription_id = subscription.id
 
         return user, assistant
     except Exception as e:
