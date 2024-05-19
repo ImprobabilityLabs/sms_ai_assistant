@@ -383,4 +383,36 @@ def get_location(location_txt):
 #print("Location Text:", location_text)
 #print("Country Code:", country_code)
 
+def validate_incomming_message(from_number, account_sid):
+    try:
+        # Parse the phone number to extract the country code and mobile number
+        parsed_number = phonenumbers.parse(from_number)
+        country_code = parsed_number.country_code
+        mobile_number = parsed_number.national_number
 
+        # Find the subscription using the account SID and from_number
+        subscription = Subscription.query.filter_by(twillio_number_sid=account_sid).first()
+        if not subscription:
+            current_app.logger.error(f"No subscription found for Account SID: {account_sid}")
+            return None, None
+
+        # Check if the user_id and subscription_id match in the MobileNumber table
+        mobile_entry = MobileNumber.query.filter_by(
+            user_id=subscription.user_id,
+            subscription_id=subscription.id,
+            country_code=country_code,
+            mobile_number=mobile_number
+        ).first()
+
+        if not mobile_entry:
+            current_app.logger.error(f"No matching mobile number found for User ID: {subscription.user_id}, Subscription ID: {subscription.id}, From Number: {from_number}")
+            return None, None
+
+        # Placeholder: Retrieve user and assistant details (to be implemented)
+        user = None  # Retrieve user based on the mobile_entry.user_id
+        assistant = None  # Retrieve assistant based on user or other logic
+
+        return user, assistant
+    except Exception as e:
+        current_app.logger.error(f"Error in validate_user_and_get_assistant: {e}")
+        return None, None
