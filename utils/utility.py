@@ -326,6 +326,41 @@ def handle_stripe_operations(user, form_data):
         current_app.logger.error(f'Error: {str(e)}')
         return False, str(e), -1
 
+def process_questions_answers(text_message):
+    try:
+        # Trim whitespace from the text message
+        text_message = text_message.strip()
+        
+        # Check if text_message is empty
+        if not text_message:
+            current_app.logger.error("Empty text message received.")
+            return None
+        
+        # Check if questions is a list
+        questions = extract_questions(text_message)
+        if not isinstance(questions, list):
+            if isinstance(questions, str):
+                current_app.logger.info(f"Questions is a string: {questions}")
+            else:
+                current_app.logger.error("Questions is not a list.")
+            return None
+
+        answers = []
+        
+        for question in questions:
+            fetched_answer = fetch_data(question)
+            cleaned_answer = clean_data(fetched_answer)
+            answer = answer_question(question, cleaned_answer)
+            current_app.logger.info(f"Answer: {answer}")
+            answers.append(answer)
+
+        return answers
+        
+    except Exception as e:
+        current_app.logger.error(f"Error in process_questions_answers: {e}")
+        return None
+
+
 # Assuming extract_questions(msg) returns a list of questions
 #questions = extract_questions(msg)
 
