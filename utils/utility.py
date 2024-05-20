@@ -447,3 +447,28 @@ def save_sms_history(user_id, subscription_id, message_sid, direction, from_numb
         db.session.rollback()
         print(f"Error saving history record: {e}")
         return False
+
+
+def load_sms_history(user_id, subscription_id, order='asc'):
+    """
+    Load chat history for a specific user and subscription.
+
+    :param user_id: ID of the user
+    :param subscription_id: ID of the subscription
+    :param order: 'asc' for oldest to newest, 'desc' for newest to oldest
+    :return: List of History records
+    """
+    if order not in ['asc', 'desc']:
+        raise ValueError("Order must be 'asc' or 'desc'")
+
+    # Query the History table
+    query = History.query.filter_by(user_id=user_id, subscription_id=subscription_id)
+    
+    # Order by created column
+    if order == 'asc':
+        query = query.order_by(History.created.asc())
+    else:
+        query = query.order_by(History.created.desc())
+
+    # Execute the query and return results
+    return query.all()
