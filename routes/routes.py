@@ -323,6 +323,9 @@ def configure_routes(app):
         try:
             # Create an instance of RequestValidator
             validator = RequestValidator(app.config['TWILIO_AUTH_TOKEN'])
+         
+            # Create an instance of Client
+            client = Client(app.config['TWILIO_ACCOUNT_SID'], app.config['TWILIO_AUTH_TOKEN'])
 
             # Retrieve the full URL of the incoming request
             url = request.url
