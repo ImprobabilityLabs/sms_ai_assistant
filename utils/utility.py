@@ -411,7 +411,7 @@ def validate_incomming_message(from_number, phone_sid):
         user_id = subscription.user_id
         subscription_id = subscription.id
 
-        return user, assistant
+        return user_id, subscription_id
     except Exception as e:
-        current_app.logger.error(f"Error in validate_user_and_get_assistant: {e}")
+        current_app.logger.error(f"Error in validate_incomming_message: {e}")
         return None, None
