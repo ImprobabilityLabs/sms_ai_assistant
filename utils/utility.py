@@ -507,3 +507,26 @@ def build_system_prompt(user_preferences, assistant_preferences, extra_info=None
 
     return json.dumps({"system_prompt": system_prompt})
 
+def clean_string(s):
+    """Cleans the input string by removing non-ASCII characters."""
+    return "".join(c for c in s if c.isascii())
+
+def send_reply(user_id, subscription_id, reply, to_number, from_number):
+    """Sends a reply to the user.
+
+    Args:
+        reply: The reply to send.
+        to_number: The user's phone number.
+        from_number: The Twilio phone number to send the message from.
+    """
+    reply = clean_string(reply)  # clean the reply string
+    twilio_client = Client(os.getenv('TWILIO_ACCOUNT_SID'), os.getenv('TWILIO_AUTH_TOKEN'))
+
+    # Send the message and get the response
+    sent = twilio_client.messages.create(
+        body=reply,
+        from_=from_number,
+        to=to_number
+    )
+
+    save_sms_history(user_id, subscription_id, sent.sid, 'outgoing', from_number, to_number, sent.body, sent.status)
