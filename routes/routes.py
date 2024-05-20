@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, abort, current_app
 from models import db, User, Subscription, MobileNumber, History, UserPreference, AssistantPreference 
 from twilio.request_validator import RequestValidator
+from twilio.rest import Client
 from oauthlib.oauth2 import WebApplicationClient
 from requests_oauthlib import OAuth2Session
 from utils.utility import fetch_data, check_user_subscription, generate_menu, get_products, handle_stripe_operations, get_location, get_country_code, clean_phone_number, validate_incomming_message
@@ -345,12 +346,21 @@ def configure_routes(app):
             account_sid = post_vars.get('AccountSid', 'No Account SID')
             sms_status = post_vars.get('SmsStatus', 'No Status')
             num_media = post_vars.get('NumMedia', '0')
+            twilio_phone_number = client.incoming_phone_numbers.list(phone_number=to_number)
+            
+            if twilio_phone_number:
+                twilio_phone_number_sid = twilio_phone_number[0].sid
+            else:
+                twilio_phone_number_sid = None;
+                
+            if not twilio_phone_number_sid:
+                return 'Unauthorized', 403
 
             # Log the incoming request details
-            current_app.logger.info(f'Incoming SMS: From={from_number}, To={to_number}, Body={message_body}, SID={message_sid}, Account SID={account_sid}, Status={sms_status}, Media={num_media}')
+            current_app.logger.info(f'Incoming SMS: From={from_number}, To={to_number}, Body={message_body}, SID={message_sid}, Account SID={account_sid}, Phone Number SID: {twilio_phone_number_sid}, Status={sms_status}, Media={num_media}')
 
             # Validate the user and get the corresponding assistant
-            user_id, subscription_id = validate_incomming_message(from_number, account_sid)
+            user_id, subscription_id = validate_incomming_message(from_number, twilio_phone_number_sid)
 
             # Log the user validation details
             current_app.logger.info(f'Validated User: User ID={user_id}, Subscription ID={subscription_id}, From Number={from_number}')
