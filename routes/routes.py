@@ -4,7 +4,7 @@ from twilio.request_validator import RequestValidator
 from twilio.rest import Client
 from oauthlib.oauth2 import WebApplicationClient
 from requests_oauthlib import OAuth2Session
-from utils.utility import fetch_data, check_user_subscription, generate_menu, get_products, handle_stripe_operations, get_location, get_country_code, clean_phone_number, validate_incomming_message
+from utils.utility import fetch_data, check_user_subscription, generate_menu, get_products, handle_stripe_operations, get_location, get_country_code, clean_phone_number, validate_incomming_message, save_sms_history
 import stripe
 
 def configure_routes(app):
@@ -367,6 +367,8 @@ def configure_routes(app):
 
             # Log the user validation details
             current_app.logger.info(f'Validated User: User ID={user_id}, Subscription ID={subscription_id}, From Number={from_number}')
+
+            save_sms_history(user_id, subscription_id, message_sid, 'incomming', from_number, to_number, message_body, sms_status)
 
             if not user_id or not subscription_id:
                 return 'Unauthorized', 403
