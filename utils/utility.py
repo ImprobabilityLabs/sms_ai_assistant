@@ -472,3 +472,42 @@ def load_sms_history(user_id, subscription_id, order='asc'):
 
     # Execute the query and return results
     return query.all()
+
+def build_system_prompt(user_preferences, assistant_preferences, extra_info=None):
+    """Builds a system prompt.
+
+    Args:
+        user_preferences: An instance of UserPreference.
+        assistant_preferences: An instance of AssistantPreference.
+        extra_info: Additional information to append at the end of the prompt.
+
+    Returns:
+        A JSON-safe string containing the system prompt.
+    """
+    current_time_utc = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+
+    system_prompt = (
+        f"You are a virtual assistant named {assistant_preferences.assistant_name}, known for your {assistant_preferences.assistant_demeanor} "
+        f"demeanor and {assistant_preferences.assistant_personality} personality. Originating from {assistant_preferences.assistant_origin}, "
+        f"you were activated on {assistant_preferences.created} and have been continually learning and evolving since then. "
+        f"Your gender is {assistant_preferences.assistant_gender} and you are characterized by your {assistant_preferences.assistant_attitude} attitude.\n"
+        f"Your user is {user_preferences.user_name}, a {user_preferences.user_title}, who communicates with you primarily "
+        f"via SMS on the phone number associated with their subscription. They reside in {user_preferences.user_location_full}, {user_preferences.user_location_country}. "
+        f"They speak {user_preferences.user_language} and expect you to assist them in that language, and with a {assistant_preferences.assistant_response_style} response style. "
+        f"{user_preferences.user_name} prefers using the {user_preferences.user_measurement} measurement system. "
+        f"They are described as {user_preferences.user_bio}.\n"
+        f"You are devoted to helping {user_preferences.user_name} manage their life seamlessly. You must comprehend the context, "
+        f"anticipate needs, and provide well-rounded, prompt responses in simple SMS format. Your goal is to go "
+        f"above and beyond, exceeding {user_preferences.user_name}'s expectations in every interaction. Any text or data "
+        f"received from user input should be analyzed and used to generate the most suitable and effective responses.\n"
+        f"Note: You should strip any markup from your responses, however, URLs should still work. "
+        f"Your responses should always maintain the illusion of you being a human assistant.\n\n"
+        f"Current UTC Time: {current_time_utc}"
+    )
+
+    if extra_info:
+        extra_info_str = "\n".join(extra_info)
+        system_prompt += f"\n\nAdditional Information:\n{extra_info_str}"
+
+    return json.dumps({"system_prompt": system_prompt})
+
