@@ -370,9 +370,16 @@ def configure_routes(app):
 
             save_sms_history(user_id, subscription_id, message_sid, 'incomming', from_number, to_number, message_body, sms_status)
 
+            user_preferences = UserPreference.query.filter_by(user_id=user_id, subscription_id=subscription_id).first()
+
+            assistant_preferences = AssistantPreference.query.filter_by(user_id=user_id, subscription_id=subscription_id).first()
+    
+            prompt = build_system_prompt(user_preferences, assistant_preferences, extra_info=None)
+
+            current_app.logger.info(f'Assistant User Prompt: User ID={prompt}')
+
             if not user_id or not subscription_id:
                 return 'Unauthorized', 403
-
 
             return 'OK', 200
         except Exception as e:
