@@ -27,13 +27,32 @@ def remove_keys(data, keys_to_remove):
     else:
         return data
 
-def fetch_data(question):
+def fetch_data_old(question, location=None):
     """ Fetch data from the DataForSEO API for the specified question. """
     url = "https://api.dataforseo.com/v3/serp/google/organic/live/advanced"
     payload = json.dumps([{
         "keyword": question,
         "location_code": 2840,
         "language_code": "en",
+        "device": "desktop",
+        "os": "windows",
+        "depth": 1
+    }])
+    headers = {
+        'Authorization': f"Basic {seo_for_data_auth}",
+        'Content-Type': 'application/json'
+    }
+    response = requests.post(url, headers=headers, data=payload)
+    data = response.json()
+    return data['tasks'][0]['result']
+
+def fetch_data(question, location='United States', language='English'):
+    """ Fetch data from the DataForSEO API for the specified question. """
+    url = "https://api.dataforseo.com/v3/serp/google/organic/live/advanced"
+    payload = json.dumps([{
+        "keyword": question,
+        "location_name": location,
+        "language_name": language,
         "device": "desktop",
         "os": "windows",
         "depth": 1
