@@ -345,7 +345,7 @@ def handle_stripe_operations(user, form_data):
         current_app.logger.error(f'Error: {str(e)}')
         return False, str(e), -1
 
-def process_questions_answers(text_message):
+def process_questions_answers(text_message, location, language):
     try:
         # Trim whitespace from the text message
         text_message = text_message.strip()
@@ -367,7 +367,7 @@ def process_questions_answers(text_message):
         answers = []
         
         for question in questions:
-            fetched_answer = fetch_data(question)
+            fetched_answer = fetch_data(question, location, language)
             cleaned_answer = clean_data(fetched_answer)
             answer = answer_question(question, cleaned_answer)
             current_app.logger.info(f"Answer: {answer}")
