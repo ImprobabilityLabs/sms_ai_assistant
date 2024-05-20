@@ -46,7 +46,7 @@ def fetch_data_old(question, location=None):
     data = response.json()
     return data['tasks'][0]['result']
 
-def fetch_data(question, location='United States', language='English'):
+def fetch_data_1(question, location='United States', language='English'):
     """ Fetch data from the DataForSEO API for the specified question. """
     current_app.logger.info(f"fetch_data - location: {location}")
     current_app.logger.info(f"fetch_data - language: {language}")
@@ -68,6 +68,46 @@ def fetch_data(question, location='United States', language='English'):
     response = requests.post(url, headers=headers, data=payload)
     data = response.json()
     return data['tasks'][0]['result']
+
+
+def fetch_data(question, location='United States', language='English'):
+    """Fetch data from the DataForSEO API for the specified question."""
+    current_app.logger.info(f"fetch_data - location: {location}")
+    current_app.logger.info(f"fetch_data - language: {language}")
+
+    url = "https://api.dataforseo.com/v3/serp/google/organic/live/advanced"
+    payload = json.dumps([{
+        "keyword": question,
+        "location_name": location,
+        "language_name": language,
+        "device": "desktop",
+        "os": "windows",
+        "depth": 1
+    }])
+    current_app.logger.info(f"fetch_data - payload: {payload}")
+    
+    headers = {
+        'Authorization': f"Basic {seo_for_data_auth}",  # Make sure seo_for_data_auth is defined
+        'Content-Type': 'application/json'
+    }
+    
+    try:
+        response = requests.post(url, headers=headers, data=payload)
+        current_app.logger.info(f"fetch_data - response status: {response.status_code}")
+        response.raise_for_status()  # Raise an HTTPError for bad responses
+        data = response.json()
+        current_app.logger.info(f"fetch_data - response data: {data}")
+        
+        if 'tasks' in data and len(data['tasks']) > 0 and 'result' in data['tasks'][0]:
+            return data['tasks'][0]['result']
+        else:
+            current_app.logger.error(f"fetch_data - Unexpected response structure: {data}")
+            return None
+    except requests.exceptions.RequestException as e:
+        current_app.logger.error(f"fetch_data - Request exception: {str(e)}")
+        return None
+
+
 
 def clean_data(data):
     """ Remove unnecessary keys from the data. """
