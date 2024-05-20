@@ -422,7 +422,7 @@ def validate_incomming_message(from_number, phone_sid):
         return None, None
 
 
-def save_history(user_id, subscription_id, message_sid, direction, from_number, to_number, body=None, status=None):
+def save_sms_history(user_id, subscription_id, message_sid, direction, from_number, to_number, body=None, status=None):
     # Create a new History instance
     history_record = History(
         user_id=user_id,
