@@ -391,7 +391,12 @@ def validate_incomming_message(from_number, phone_sid):
         mobile_number = parsed_number.national_number
 
         # Find the subscription using the account SID and from_number
-        subscription = Subscription.query.filter_by(twillio_number_sid=phone_sid).first()
+        subscription = Subscription.query.filter_by(
+            twillio_number_sid=phone_sid,
+            enabled=1,
+            billing_error=0
+        ).first()
+
         if not subscription:
             current_app.logger.error(f"No subscription found for Twilio Number SID: {phone_sid}")
             return None, None
