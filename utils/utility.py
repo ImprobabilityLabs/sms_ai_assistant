@@ -48,6 +48,9 @@ def fetch_data_old(question, location=None):
 
 def fetch_data(question, location='United States', language='English'):
     """ Fetch data from the DataForSEO API for the specified question. """
+    current_app.logger.info(f"fetch_data - location: {location}")
+    current_app.logger.info(f"fetch_data - language: {language}")
+
     url = "https://api.dataforseo.com/v3/serp/google/organic/live/advanced"
     payload = json.dumps([{
         "keyword": question,
@@ -57,6 +60,7 @@ def fetch_data(question, location='United States', language='English'):
         "os": "windows",
         "depth": 1
     }])
+    current_app.logger.info(f"fetch_data - payload: {payload}")
     headers = {
         'Authorization': f"Basic {seo_for_data_auth}",
         'Content-Type': 'application/json'
@@ -346,6 +350,9 @@ def handle_stripe_operations(user, form_data):
         return False, str(e), -1
 
 def process_questions_answers(text_message, location, language):
+    current_app.logger.info(f"process_questions_answers - location: {location}")
+    current_app.logger.info(f"process_questions_answers - language: {language}")
+
     try:
         # Trim whitespace from the text message
         text_message = text_message.strip()
