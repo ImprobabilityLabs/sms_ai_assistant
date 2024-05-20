@@ -511,16 +511,16 @@ def clean_string(s):
     """Cleans the input string by removing non-ASCII characters."""
     return "".join(c for c in s if c.isascii())
 
-def send_reply(user_id, subscription_id, reply, to_number, from_number):
+def send_reply(user_id, subscription_id, reply, to_number, from_number, twilio_client):
     """Sends a reply to the user.
 
     Args:
         reply: The reply to send.
         to_number: The user's phone number.
         from_number: The Twilio phone number to send the message from.
+        twilio_client: The Twilio Client object for sending the message.
     """
-    reply = clean_string(reply)  # clean the reply string
-    twilio_client = Client(os.getenv('TWILIO_ACCOUNT_SID'), os.getenv('TWILIO_AUTH_TOKEN'))
+    reply = clean_string(reply)  
 
     # Send the message and get the response
     sent = twilio_client.messages.create(
