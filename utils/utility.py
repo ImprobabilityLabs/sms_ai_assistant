@@ -420,3 +420,30 @@ def validate_incomming_message(from_number, phone_sid):
     except Exception as e:
         current_app.logger.error(f"Error in validate_incomming_message: {e}")
         return None, None
+
+
+def save_history(user_id, subscription_id, message_sid, direction, from_number, to_number, body=None, status=None):
+    # Create a new History instance
+    history_record = History(
+        user_id=user_id,
+        subscription_id=subscription_id,
+        message_sid=message_sid,
+        direction=direction,
+        from_number=from_number,
+        to_number=to_number,
+        body=body,
+        status=status
+    )
+
+    # Add the record to the session
+    db.session.add(history_record)
+
+    # Commit the session to the database
+    try:
+        db.session.commit()
+        return True
+    except Exception as e:
+        # Handle any exceptions that occur during commit
+        db.session.rollback()
+        print(f"Error saving history record: {e}")
+        return False
