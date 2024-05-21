@@ -383,13 +383,17 @@ def configure_routes(app):
             current_app.logger.info(f'Assistant System Prompt: {prompt}')       
  
             chat_history = load_sms_history(user_id, subscription_id, order='desc')
-        
+
+            current_app.logger.debug(f"twilio_callback() Position 1")
+
             outgoing_message = build_and_send_messages(prompt, chat_history)     
 
             current_app.logger.info(f'Assistant Response: {outgoing_message}')
 
             send_reply(user_id, subscription_id, outgoing_message, from_number, to_number, client)
 
+            current_app.logger.debug(f"twilio_callback() Position 2")
+            
             if not user_id or not subscription_id:
                 return 'Unauthorized', 403
 
