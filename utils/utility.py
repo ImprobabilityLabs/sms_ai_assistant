@@ -349,12 +349,7 @@ def process_questions_answers(text_message, location, location_country = 'US'):
         
         # Check if questions is a list
         questions = extract_questions(text_message)
-        if not isinstance(questions, list):
-            if isinstance(questions, str):
-                current_app.logger.info(f"Questions is a string: {questions}")
-            else:
-                current_app.logger.error("Questions is not a list.")
-            return None
+        current_app.logger.info(f"Questions is a string: {questions}")
 
         answers = []
         
