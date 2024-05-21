@@ -104,7 +104,7 @@ def extract_questions(message_text):
             }
         ],
         temperature=1,
-        max_tokens=512,
+        max_tokens=256,
         top_p=1,
         stream=False,
         stop=None,
@@ -401,13 +401,6 @@ def get_location(location_txt):
     output = completion.choices[0].message.content
 
     return json.loads(output)
-
-# Now you can access the values by their keys
-#location_text = data_dict['location_text']
-#country_code = data_dict['country_code']
-
-#print("Location Text:", location_text)
-#print("Country Code:", country_code)
 
 def validate_incomming_message(from_number, phone_sid):
     try:
