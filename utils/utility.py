@@ -593,7 +593,7 @@ def build_and_send_messages(system_prompt, history_records):
     sorted_history = sorted(history_records, key=lambda x: x.created, reverse=True)
 
     # Take the 8 most recent messages
-    recent_history = sorted_history[:8]
+    recent_history = sorted_history[:5]
 
     # Build the messages list
     messages = [{"role": "system", "content": json.dumps(system_prompt)}]
