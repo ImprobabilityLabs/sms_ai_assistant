@@ -15,6 +15,9 @@ import os
 from datetime import datetime
 import phonenumbers
 from phonenumbers.phonenumberutil import region_code_for_number
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
+
 
 seo_for_data_auth = "cmFoaW1rQGltcHJvYmFiaWxpdHkuaW86NGQ4MzY1OWQ4YWEyNTIwNQ=="
 
@@ -26,9 +29,6 @@ def remove_keys(data, keys_to_remove):
         return [remove_keys(item, keys_to_remove) for item in data]
     else:
         return data
-
-import json
-import requests
 
 def fetch_data(question, location=None):
     """Fetch data from the DataForSEO API for the specified question."""
@@ -58,18 +58,32 @@ def fetch_data(question, location=None):
         'Content-Type': 'application/json'
     }
     
+    # Configure retries and timeout
+    retry_strategy = Retry(
+        total=3,  # Total number of retries
+        status_forcelist=[429, 500, 502, 503, 504],  # Retry on these HTTP status codes
+        method_whitelist=["HEAD", "GET", "OPTIONS", "POST"],  # Retry for these methods
+        backoff_factor=1  # Exponential backoff factor
+    )
+    
+    adapter = HTTPAdapter(max_retries=retry_strategy)
+    http = requests.Session()
+    http.mount("https://", adapter)
+    http.mount("http://", adapter)
+    
     try:
-        response = requests.post(url, headers=headers, data=payload)
-        current_app.logger.debug(f"fetch_data() Position 1")
+        response = http.post(url, headers=headers, data=payload, timeout=10)  # Added timeout
+        current_app.logger.debug(f"fetch_data() Position 1 - Response Status: {response.status_code}")
         response.raise_for_status()  # Raise HTTPError for bad responses
-        current_app.logger.debug(f"fetch_data() Position 2")
+        current_app.logger.debug(f"fetch_data() Position 2 - Response Text: {response.text}")
         data = response.json()
-        current_app.logger.debug(f"fetch_data() Position 3")
+        current_app.logger.debug(f"fetch_data() Position 3 - JSON Data: {data}")
         
         # Check if the response contains the expected data
         if 'tasks' in data and len(data['tasks']) > 0 and 'result' in data['tasks'][0]:
             return data['tasks'][0]['result']
         else:
+            current_app.logger.warning("fetch_data() - No result found in the response")
             return None  # Or handle the case where the result is not found
     
     except requests.exceptions.RequestException as e:
@@ -84,8 +98,6 @@ def fetch_data(question, location=None):
     except KeyError:
         current_app.logger.error("fetch_data() KeyError - Unexpected response structure")
         return None
-
-
 
 def clean_data(data):
     """ Remove unnecessary keys from the data. """
