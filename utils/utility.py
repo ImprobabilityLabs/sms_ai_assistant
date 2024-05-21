@@ -334,7 +334,6 @@ def handle_stripe_operations(user, form_data):
         return False, str(e), -1
 
 def process_questions_answers(text_message, location, location_country = 'US'):
-    current_app.logger.info(f"process_questions_answers - location: {location}")
 
     try:
         # Trim whitespace from the text message
@@ -349,11 +348,11 @@ def process_questions_answers(text_message, location, location_country = 'US'):
         
         # Check if questions is a list
         questions = extract_questions(text_message)
-        current_app.logger.info(f"Questions is a string: {questions}")
 
         answers = []
         
         for question in questions:
+            current_app.logger.info(f"Question: {question}")
             fetched_answer = fetch_data(question, location_country)
             cleaned_answer = clean_data(fetched_answer)
             answer = answer_question(question, cleaned_answer)
@@ -365,20 +364,6 @@ def process_questions_answers(text_message, location, location_country = 'US'):
     except Exception as e:
         current_app.logger.error(f"Error in process_questions_answers: {e}")
         return None
-
-
-# Assuming extract_questions(msg) returns a list of questions
-#questions = extract_questions(msg)
-
-# Iterate through the list and print each question
-#for question in questions:
-#    print("\n")
-#    print("Question: " + question)
-#    print("\n")
-#    fetched_answer = fetch_data(question)
-#    cleaned_answer = clean_data(fetched_answer)
-#    answer = answer_question(question, cleaned_answer)
-#    print("\nAnswer: " + answer)
 
 def clean_phone_number(phone_number):
     # Remove all non-numeric characters
