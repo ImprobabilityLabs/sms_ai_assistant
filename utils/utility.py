@@ -60,8 +60,11 @@ def fetch_data(question, location=None):
     
     try:
         response = requests.post(url, headers=headers, data=payload)
+        current_app.logger.debug(f"fetch_data() Position 1")
         response.raise_for_status()  # Raise HTTPError for bad responses
+        current_app.logger.debug(f"fetch_data() Position 2")
         data = response.json()
+        current_app.logger.debug(f"fetch_data() Position 3")
         
         # Check if the response contains the expected data
         if 'tasks' in data and len(data['tasks']) > 0 and 'result' in data['tasks'][0]:
@@ -118,6 +121,7 @@ def answer_question(question, data):
             stream=False,
             stop=None,
         )
+        current_app.logger.debug(f"answer_question() Position 1")
         return completion.choices[0].message.content
     except Exception as e:
         current_app.logger.error(f"An error occurred: {e}")
@@ -145,7 +149,7 @@ def extract_questions(message_text):
                 }
             ],
             temperature=1,
-            max_tokens=256,
+            max_tokens=386,
             top_p=1,
             stream=False,
             stop=None,
@@ -392,17 +396,22 @@ def process_questions_answers(text_message, location, location_country = 'US'):
         if not text_message:
             current_app.logger.error("Empty text message received.")
             return None
-        
+
+        current_app.logger.debug(f"process_questions_answers() Position 1")
         # Check if questions is a list
         questions = extract_questions(text_message)
-
+        current_app.logger.debug(f"process_questions_answers() Position 2")
+        
         answers = []
         current_app.logger.debug(f"process_questions_answers - Questions: {questions}")
         for question in questions:
             current_app.logger.debug(f"process_questions_answers - Question: {question}")
             fetched_answer = fetch_data(question, location_country)
+            current_app.logger.debug(f"process_questions_answers() Position 3")
             cleaned_answer = clean_data(fetched_answer)
+            current_app.logger.debug(f"process_questions_answers() Position 4")
             answer = answer_question(question, cleaned_answer)
+            current_app.logger.debug(f"process_questions_answers() Position 5")
             current_app.logger.debug(f"Answer: {answer}")
             answers.append(answer)
 
