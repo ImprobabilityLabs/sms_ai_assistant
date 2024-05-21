@@ -4,7 +4,7 @@ from twilio.request_validator import RequestValidator
 from twilio.rest import Client
 from oauthlib.oauth2 import WebApplicationClient
 from requests_oauthlib import OAuth2Session
-from utils.utility import fetch_data, check_user_subscription, generate_menu, get_products, handle_stripe_operations, get_location, get_country_code, clean_phone_number, validate_incomming_message, save_sms_history, load_sms_history, build_system_prompt, process_questions_answers
+from utils.utility import fetch_data, check_user_subscription, generate_menu, get_products, handle_stripe_operations, get_location, get_country_code, clean_phone_number, validate_incomming_message, save_sms_history, load_sms_history, build_system_prompt, process_questions_answers, build_and_send_messages
 import stripe
 
 def configure_routes(app):
@@ -378,7 +378,13 @@ def configure_routes(app):
     
             prompt = build_system_prompt(user_preferences, assistant_preferences, message_answers)
 
-            current_app.logger.info(f'Assistant User Prompt: {prompt}')            
+            current_app.logger.info(f'Assistant System Prompt: {prompt}')       
+ 
+            chat_history = load_sms_history(user_id, subscription_id, order='desc')
+        
+            outgoing_message = build_and_send_messages(prompt, chat_history)     
+
+            current_app.logger.info(f'Assistant Response: {outgoing_message}')
 
             if not user_id or not subscription_id:
                 return 'Unauthorized', 403
