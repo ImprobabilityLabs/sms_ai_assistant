@@ -374,6 +374,8 @@ def configure_routes(app):
 
             assistant_preferences = AssistantPreference.query.filter_by(user_id=user_id, subscription_id=subscription_id).first()
 
+            message_answers = None
+
             message_answers = process_questions_answers(message_body, user_preferences.user_location_full, user_preferences.user_location_country)
     
             prompt = build_system_prompt(user_preferences, assistant_preferences, message_answers)
