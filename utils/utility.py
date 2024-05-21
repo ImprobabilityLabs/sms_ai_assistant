@@ -81,7 +81,7 @@ def answer_question(question, data):
             }
         ],
         temperature=1,
-        max_tokens=512,
+        max_tokens=256,
         top_p=1,
         stream=False,
         stop=None,
@@ -104,7 +104,7 @@ def extract_questions(message_text):
             }
         ],
         temperature=1,
-        max_tokens=1024,
+        max_tokens=512,
         top_p=1,
         stream=False,
         stop=None,
