@@ -637,18 +637,36 @@ def send_reply(user_id, subscription_id, reply, to_number, from_number, twilio_c
     """Sends a reply to the user.
 
     Args:
+        user_id: The user's ID.
+        subscription_id: The subscription ID.
         reply: The reply to send.
         to_number: The user's phone number.
         from_number: The Twilio phone number to send the message from.
         twilio_client: The Twilio Client object for sending the message.
     """
-    reply = clean_string(reply)  
+    try:
+        # Log initial input parameters
+        current_app.logger.debug(f"send_reply: user_id {user_id}, subscription_id {subscription_id}, to_number {to_number}, from_number {from_number}")
+        current_app.logger.debug(f"send_reply: original_reply {reply}")
 
-    # Send the message and get the response
-    sent = twilio_client.messages.create(
-        body=reply,
-        from_=from_number,
-        to=to_number
-    )
+        # Clean the reply string
+        reply = clean_string(reply)
+        current_app.logger.debug(f"send_reply: cleaned_reply {reply}")
+
+        # Send the message and log the attempt
+        sent = twilio_client.messages.create(
+            body=reply,
+            from_=from_number,
+            to=to_number
+        )
+
+        # Log the Twilio response
+        current_app.logger.debug(f"send_reply: Twilio response SID {sent.sid}")
+        current_app.logger.info(f"Message sent to {to_number} from {from_number}: {reply}")
+
+    except Exception as e:
+        # Log any errors that occur
+        current_app.logger.error(f"send_reply: Error sending message to {to_number} from {from_number}: {str(e)}")
+        current_app.logger.error("send_reply: Exception details")
 
     save_sms_history(user_id, subscription_id, sent.sid, 'outgoing', from_number, to_number, sent.body, sent.status)
