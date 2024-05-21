@@ -397,9 +397,9 @@ def process_questions_answers(text_message, location, location_country = 'US'):
         questions = extract_questions(text_message)
 
         answers = []
-        current_app.logger.debug(f'Error: {str(e)}')
+        current_app.logger.debug(f"process_questions_answers - Questions: {questions}")
         for question in questions:
-            current_app.logger.debug(f"process_questions_answers - Questions: {questions}")
+            current_app.logger.debug(f"process_questions_answers - Question: {question}")
             fetched_answer = fetch_data(question, location_country)
             cleaned_answer = clean_data(fetched_answer)
             answer = answer_question(question, cleaned_answer)
