@@ -373,14 +373,12 @@ def configure_routes(app):
             user_preferences = UserPreference.query.filter_by(user_id=user_id, subscription_id=subscription_id).first()
 
             assistant_preferences = AssistantPreference.query.filter_by(user_id=user_id, subscription_id=subscription_id).first()
-    
-            prompt = build_system_prompt(user_preferences, assistant_preferences, extra_info=None)
-
-            current_app.logger.info(f'Assistant User Prompt: User ID={prompt}')
 
             message_answers = process_questions_answers(message_body, user_preferences.user_location_full, user_preferences.user_location_country)
+    
+            prompt = build_system_prompt(user_preferences, assistant_preferences, message_answers)
 
-            current_app.logger.info(f'Users Answers: {str(message_answers)}')
+            current_app.logger.info(f'Assistant User Prompt: {prompt}')            
 
             if not user_id or not subscription_id:
                 return 'Unauthorized', 403
