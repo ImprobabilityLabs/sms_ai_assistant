@@ -333,14 +333,15 @@ def handle_stripe_operations(user, form_data):
         current_app.logger.error(f'Error: {str(e)}')
         return False, str(e), -1
 
-def process_questions_answers(text_message, location, language):
+def process_questions_answers(text_message, location, location_country = 'US'):
     current_app.logger.info(f"process_questions_answers - location: {location}")
-    current_app.logger.info(f"process_questions_answers - language: {language}")
 
     try:
         # Trim whitespace from the text message
         text_message = text_message.strip()
-        
+        text_loc = f"Users Location for Questions: {location}\n"
+        text_message = text_loc + text_message         
+
         # Check if text_message is empty
         if not text_message:
             current_app.logger.error("Empty text message received.")
@@ -358,7 +359,7 @@ def process_questions_answers(text_message, location, language):
         answers = []
         
         for question in questions:
-            fetched_answer = fetch_data(question, location, language)
+            fetched_answer = fetch_data(question, location_country)
             cleaned_answer = clean_data(fetched_answer)
             answer = answer_question(question, cleaned_answer)
             current_app.logger.info(f"Answer: {answer}")
