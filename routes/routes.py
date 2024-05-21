@@ -380,7 +380,7 @@ def configure_routes(app):
 
             message_answers = process_questions_answers(message_body, user_preferences.user_location_full, user_preferences.user_location_country)
 
-            current_app.logger.info(f'Users Answers: {message_answers}')
+            current_app.logger.info(f'Users Answers: {str(message_answers)}')
 
             if not user_id or not subscription_id:
                 return 'Unauthorized', 403
