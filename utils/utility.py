@@ -568,7 +568,10 @@ def build_and_send_messages(system_prompt, history_records):
         stop=None,
     )
 
-    return completion.choices[0].message['content']
+    output = completion.choices[0].message.content
+
+    return json.loads(output)
+
 
 # Example usage
 # Assuming you have the system_prompt and history_records ready
