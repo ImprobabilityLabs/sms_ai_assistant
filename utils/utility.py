@@ -34,6 +34,8 @@ def fetch_data(question, location=None):
     """Fetch data from the DataForSEO API for the specified question."""
     url = "https://api.dataforseo.com/v3/serp/google/organic/live/advanced"
     
+    current_app.logger.debug(f"fetch_data() Question Input: {question}")
+
     # Set location code based on input
     location_code = 2840  # Default to US location code
     if location == 'US':
@@ -68,15 +70,16 @@ def fetch_data(question, location=None):
             return None  # Or handle the case where the result is not found
     
     except requests.exceptions.RequestException as e:
-        print(f"Request failed: {e}")
+        current_app.logger.error(f"Request failed: {e}")
+        current_app.logger.error("fetch_data() Request Exception Error")
         return None
 
     except json.JSONDecodeError:
-        print("Failed to decode JSON response")
+        current_app.logger.error("fetch_data() JSONDecodeError - Failed to decode JSON response")
         return None
 
     except KeyError:
-        print("Unexpected response structure")
+        current_app.logger.error("fetch_data() KeyError - Unexpected response structure")
         return None
 
 
@@ -94,6 +97,7 @@ def clean_data(data):
     return json.dumps(cleaned_data, indent=2)
 
 def answer_question(question, data):
+    current_app.logger.debug(f"answer_question - Question Input: {question}")
     try:
         client = Groq()
         completion = client.chat.completions.create(
@@ -116,10 +120,12 @@ def answer_question(question, data):
         )
         return completion.choices[0].message.content
     except Exception as e:
-        print(f"An error occurred: {e}")
+        current_app.logger.error(f"An error occurred: {e}")
+        current_app.logger.error("answer_question() Exception Error")
         return None
 
 def extract_questions(message_text):
+    current_app.logger.debug(f"extract_questions - Message Text: {message_text}")
     try:
         # Ensure message_text is a string
         if not isinstance(message_text, str):
@@ -148,16 +154,18 @@ def extract_questions(message_text):
         print(f"Tokens: {completion.usage}")
 
         lines = completion.choices[0].message.content.split('\n')
+        current_app.logger.debug(f"extract_questions - Dirty Questions: {lines}")
 
         # Filter lines containing the question mark and clean them
         filtered_questions = [
             re.sub(r"[^\w\s?.]", "", line).strip() for line in lines if '?' in line
         ]
-
+        current_app.logger.debug(f"extract_questions - Filtered Questions: {filtered_questions}")
         return filtered_questions
 
     except Exception as e:
-        print(f"An error occurred: {e}")
+        current_app.logger.error(f"An error occurred: {e}")
+        current_app.logger.error("extract_questions() Exception Error")
         return []
 
 
@@ -389,13 +397,13 @@ def process_questions_answers(text_message, location, location_country = 'US'):
         questions = extract_questions(text_message)
 
         answers = []
-        
+        current_app.logger.debug(f'Error: {str(e)}')
         for question in questions:
-            current_app.logger.info(f"Question: {question}")
+            current_app.logger.debug(f"process_questions_answers - Questions: {questions}")
             fetched_answer = fetch_data(question, location_country)
             cleaned_answer = clean_data(fetched_answer)
             answer = answer_question(question, cleaned_answer)
-            current_app.logger.info(f"Answer: {answer}")
+            current_app.logger.debug(f"Answer: {answer}")
             answers.append(answer)
 
         return answers
