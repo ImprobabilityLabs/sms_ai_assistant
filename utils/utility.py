@@ -620,13 +620,6 @@ def build_and_send_messages(system_prompt, history_records):
     return json.loads(output)
 
 
-# Example usage
-# Assuming you have the system_prompt and history_records ready
-# system_prompt = {"system": "Your system prompt here"}
-# response = build_and_send_messages(system_prompt, history_records)
-# print(response)
-
-
 def clean_string(s):
     """Cleans the input string by removing non-ASCII characters."""
     return "".join(c for c in s if c.isascii())
