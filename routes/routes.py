@@ -378,7 +378,9 @@ def configure_routes(app):
 
             current_app.logger.info(f'Assistant User Prompt: User ID={prompt}')
 
-            process_questions_answers(message_body, user_preferences.user_location_full, user_preferences.user_location_country)
+            message_answers = process_questions_answers(message_body, user_preferences.user_location_full, user_preferences.user_location_country)
+
+            current_app.logger.info(f'Users Answers: {message_answers}')
 
             if not user_id or not subscription_id:
                 return 'Unauthorized', 403
