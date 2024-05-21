@@ -386,7 +386,7 @@ def configure_routes(app):
 
             current_app.logger.info(f'Assistant Response: {outgoing_message}')
 
-            send_reply(user_id, subscription_id, outgoing_message, to_number, from_number, client)
+            send_reply(user_id, subscription_id, outgoing_message, from_number, to_number, client)
 
             if not user_id or not subscription_id:
                 return 'Unauthorized', 403
