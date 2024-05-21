@@ -368,7 +368,7 @@ def configure_routes(app):
             # Log the user validation details
             current_app.logger.info(f'Validated User: User ID={user_id}, Subscription ID={subscription_id}, From Number={from_number}')
 
-            save_sms_history(user_id, subscription_id, message_sid, 'incomming', from_number, to_number, message_body, sms_status)
+            save_sms_history(user_id, subscription_id, message_sid, 'incoming', from_number, to_number, message_body, sms_status)
 
             user_preferences = UserPreference.query.filter_by(user_id=user_id, subscription_id=subscription_id).first()
 
