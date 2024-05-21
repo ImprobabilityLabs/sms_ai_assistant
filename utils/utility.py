@@ -529,7 +529,52 @@ def build_system_prompt(user_preferences, assistant_preferences, extra_info=None
             extra_info_str = str(extra_info)
         system_prompt += f"\n\nAdditional Information:\n{extra_info_str}"
 
-    return json.dumps({"system_prompt": system_prompt})
+    return json.dumps(system_prompt)
+
+def build_and_send_messages(system_prompt, history_records):
+    """
+    Builds a list of messages for the conversation and sends them using the Groq client.
+
+    Args:
+        system_prompt: The system prompt in JSON format.
+        history_records: List of History records.
+
+    Returns:
+        The assistant's response.
+    """
+    # Order history records by created date in descending order to get the newest messages first
+    sorted_history = sorted(history_records, key=lambda x: x.created, reverse=True)
+
+    # Take the 8 most recent messages
+    recent_history = sorted_history[:8]
+
+    # Build the messages list
+    messages = [{"role": "system", "content": json.dumps(system_prompt)}]
+
+    # Process history records to build the conversation
+    for record in reversed(recent_history):  # Reverse to maintain chronological order
+        role = "user" if record.direction == 'inbound' else "assistant"
+        messages.append({"role": role, "content": json.dumps(record.body)})
+
+    # Initialize Groq client and create a completion
+    client = Groq()
+    completion = client.chat.completions.create(
+        model="llama3-70b-8192",
+        messages=messages,
+        temperature=1,
+        max_tokens=1024,
+        top_p=1,
+        stream=False,
+        stop=None,
+    )
+
+    return completion.choices[0].message['content']
+
+# Example usage
+# Assuming you have the system_prompt and history_records ready
+# system_prompt = {"system": "Your system prompt here"}
+# response = build_and_send_messages(system_prompt, history_records)
+# print(response)
 
 
 def clean_string(s):
