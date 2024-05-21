@@ -520,7 +520,7 @@ def build_system_prompt(user_preferences, assistant_preferences, extra_info=None
     Args:
         user_preferences: An instance of UserPreference.
         assistant_preferences: An instance of AssistantPreference.
-        extra_info: Additional information to append at the end of the prompt.
+        extra_info: Additional information to append at the end of the prompt. Can be a string, a list of strings, or None.
 
     Returns:
         A JSON-safe string containing the system prompt.
@@ -543,10 +543,16 @@ def build_system_prompt(user_preferences, assistant_preferences, extra_info=None
     )
 
     if extra_info:
-        extra_info_str = "\n".join(extra_info)
+        if isinstance(extra_info, str):
+            extra_info_str = extra_info
+        elif isinstance(extra_info, list):
+            extra_info_str = "\n".join(extra_info)
+        else:
+            extra_info_str = str(extra_info)
         system_prompt += f"\n\nAdditional Information:\n{extra_info_str}"
 
     return json.dumps({"system_prompt": system_prompt})
+
 
 def clean_string(s):
     """Cleans the input string by removing non-ASCII characters."""
