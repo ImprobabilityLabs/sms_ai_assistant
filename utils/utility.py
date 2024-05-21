@@ -27,15 +27,21 @@ def remove_keys(data, keys_to_remove):
     else:
         return data
 
+import json
+import requests
+
 def fetch_data(question, location=None):
-    """ Fetch data from the DataForSEO API for the specified question. """
+    """Fetch data from the DataForSEO API for the specified question."""
     url = "https://api.dataforseo.com/v3/serp/google/organic/live/advanced"
+    
+    # Set location code based on input
+    location_code = 2840  # Default to US location code
     if location == 'US':
         location_code = 2840
     elif location == 'CA':
         location_code = 2124
-    else:
-        location_code = 2840
+    
+    # Prepare payload
     payload = json.dumps([{
         "keyword": question,
         "location_code": location_code,
@@ -44,13 +50,35 @@ def fetch_data(question, location=None):
         "os": "windows",
         "depth": 1
     }])
+    
     headers = {
         'Authorization': f"Basic {seo_for_data_auth}",
         'Content-Type': 'application/json'
     }
-    response = requests.post(url, headers=headers, data=payload)
-    data = response.json()
-    return data['tasks'][0]['result']
+    
+    try:
+        response = requests.post(url, headers=headers, data=payload)
+        response.raise_for_status()  # Raise HTTPError for bad responses
+        data = response.json()
+        
+        # Check if the response contains the expected data
+        if 'tasks' in data and len(data['tasks']) > 0 and 'result' in data['tasks'][0]:
+            return data['tasks'][0]['result']
+        else:
+            return None  # Or handle the case where the result is not found
+    
+    except requests.exceptions.RequestException as e:
+        print(f"Request failed: {e}")
+        return None
+
+    except json.JSONDecodeError:
+        print("Failed to decode JSON response")
+        return None
+
+    except KeyError:
+        print("Unexpected response structure")
+        return None
+
 
 
 def clean_data(data):
@@ -66,60 +94,71 @@ def clean_data(data):
     return json.dumps(cleaned_data, indent=2)
 
 def answer_question(question, data):
-    client = Groq()
-    completion = client.chat.completions.create(
-        #model="mixtral-8x7b-32768",
-        model="llama3-8b-8192",
-        messages=[
-            {
-                "role": "system",
-                "content": "Extract the answer to '"+question+"', and output it in a paragraph with any additional relevant information."
-            },
-            {
-                "role": "user",
-                "content": data
-            }
-        ],
-        temperature=1,
-        max_tokens=256,
-        top_p=1,
-        stream=False,
-        stop=None,
-    )
-
-    return completion.choices[0].message.content
+    try:
+        client = Groq()
+        completion = client.chat.completions.create(
+            model="llama3-8b-8192",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "Extract the answer to '"+question+"', and output it in a paragraph with any additional relevant information."
+                },
+                {
+                    "role": "user",
+                    "content": data
+                }
+            ],
+            temperature=1,
+            max_tokens=256,
+            top_p=1,
+            stream=False,
+            stop=None,
+        )
+        return completion.choices[0].message.content
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
 
 def extract_questions(message_text):
-    client = Groq()
-    completion = client.chat.completions.create(
-        model="llama3-8b-8192",
-        messages=[
-            {
-                "role": "system",
-                "content": "Extract questions from the text. Reframe each question to make it standalone and understandable without requiring additional context. Output each question on a separate line with a question mark. Only output Questions. Ignore questions related to personal or specific context that cannot be understood or answered without additional private knowledge. Do not include Notes or extra information. If no questions are found reply without a question mark."
-            },
-            {
-                "role": "user",
-                "content": json.dumps(message_text)
-            }
-        ],
-        temperature=1,
-        max_tokens=256,
-        top_p=1,
-        stream=False,
-        stop=None,
-    )
+    try:
+        # Ensure message_text is a string
+        if not isinstance(message_text, str):
+            raise ValueError("message_text must be a string")
 
-    print(f"Tokens: {completion.usage}")
+        client = Groq()
+        completion = client.chat.completions.create(
+            model="llama3-8b-8192",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "Extract questions from the text. Reframe each question to make it standalone and understandable without requiring additional context. Output each question on a separate line with a question mark. Only output Questions. Ignore questions related to personal or specific context that cannot be understood or answered without additional private knowledge. Do not include Notes or extra information. If no questions are found reply without a question mark."
+                },
+                {
+                    "role": "user",
+                    "content": json.dumps(message_text)
+                }
+            ],
+            temperature=1,
+            max_tokens=256,
+            top_p=1,
+            stream=False,
+            stop=None,
+        )
 
-    lines = completion.choices[0].message.content.split('\n')
+        print(f"Tokens: {completion.usage}")
 
-    # Filter lines containing the question mark and clean them
-    filtered_questions = [
-        re.sub(r"[^a-zA-Z0-9? \[\]]", "", line) for line in lines if '?' in line
-    ]
+        lines = completion.choices[0].message.content.split('\n')
 
-    return filtered_questions
+        # Filter lines containing the question mark and clean them
+        filtered_questions = [
+            re.sub(r"[^\w\s?.]", "", line).strip() for line in lines if '?' in line
+        ]
+
+        return filtered_questions
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return []
 
 
 def check_user_subscription(provider_id):
