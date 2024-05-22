@@ -745,6 +745,22 @@ def build_system_prompt(user_preferences, assistant_preferences, extra_info=None
 
     return json.dumps(system_prompt)
 
+def clean_json_string(json_string):
+    """
+    Cleans up the JSON string by parsing and re-serializing it.
+    
+    Args:
+        json_string: The JSON string to clean.
+    
+    Returns:
+        A cleaned JSON string.
+    """
+    # Parse the JSON string
+    parsed_json = json.loads(json_string)
+    # Re-serialize the JSON with ensure_ascii=False to avoid unnecessary escaping
+    cleaned_json = json.dumps(parsed_json, ensure_ascii=False, indent=4)
+    return cleaned_json
+
 def build_and_send_messages(system_prompt, history_records):
     """
     Builds a list of messages for the conversation and sends them using the Groq client.
@@ -764,13 +780,15 @@ def build_and_send_messages(system_prompt, history_records):
     recent_history = sorted_history[:5]
     current_app.logger.debug(f"build_and_send_messages: 2")
     # Build the messages list
-    messages = [{"role": "system", "content": json.dumps(system_prompt, ensure_ascii=False)}]
+    cleaned_system_prompt = clean_json_string(system_prompt)
+    messages = [{"role": "system", "content": cleaned_system_prompt}]
     current_app.logger.debug(f"build_and_send_messages: 3")
     # Process history records to build the conversation
     current_app.logger.debug(f"build_and_send_messages: recent_history: {recent_history}")
     for record in reversed(recent_history):  # Reverse to maintain chronological order
-        role = "user" if record.direction == 'inbound' else "assistant"
-        messages.append({"role": role, "content": json.dumps(record.body, ensure_ascii=False)})
+        role = "assistant" if record.direction == 'inbound' else "user"
+        cleaned_record_body = clean_json_string(record.body)
+        messages.append({"role": role, "content": cleaned_record_body})
     current_app.logger.debug(f"build_and_send_messages: 4")
 
     current_app.logger.debug(f"build_and_send_messages: messages: {messages}")
@@ -778,9 +796,9 @@ def build_and_send_messages(system_prompt, history_records):
     client = Groq()
     completion = client.chat.completions.create(
         model="llama3-70b-8192",
-        messages=json.dumps(messages, ensure_ascii=False),
+        messages=messages,
         temperature=1,
-        max_tokens=2048,
+        max_tokens=1024,
         top_p=1,
         stream=False,
         stop=None,
@@ -792,7 +810,6 @@ def build_and_send_messages(system_prompt, history_records):
     output = completion.choices[0].message.content
 
     return json.loads(output)
-
 
 def clean_string(s):
     """Cleans the input string by removing non-ASCII characters, except hyphens."""
