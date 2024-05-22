@@ -799,6 +799,8 @@ def build_and_send_messages(system_prompt, history_records):
     
     output = completion.choices[0].message.content
 
+    current_app.logger.debug(f"{output}")
+
     return json.loads(output)
 
 def clean_string(s):
