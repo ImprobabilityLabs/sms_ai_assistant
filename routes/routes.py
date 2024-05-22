@@ -381,7 +381,7 @@ def configure_routes(app):
             # Run the asynchronous process_questions_answers function
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
-            message_answers = process_questions_answers(message_body, user_preferences.user_location_full, user_preferences.user_location_country)
+            message_answers = loop.run_until_complete(process_questions_answers(message_body, user_preferences.user_location_full, user_preferences.user_location_country))
 
             prompt = build_system_prompt(user_preferences, assistant_preferences, message_answers)
 
