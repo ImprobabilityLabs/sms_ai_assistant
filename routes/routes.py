@@ -352,7 +352,7 @@ def configure_routes(app):
             account_sid = post_vars.get('AccountSid', 'No Account SID')
             sms_status = post_vars.get('SmsStatus', 'No Status')
             num_media = post_vars.get('NumMedia', '0')
-            twilio_phone_number = await client.incoming_phone_numbers.list(phone_number=to_number)
+            twilio_phone_number = client.incoming_phone_numbers.list(phone_number=to_number)
         
             if twilio_phone_number:
                 twilio_phone_number_sid = twilio_phone_number[0].sid
@@ -373,15 +373,15 @@ def configure_routes(app):
 
             save_sms_history(user_id, subscription_id, message_sid, 'incoming', from_number, to_number, message_body, sms_status)
 
-            user_preferences = await UserPreference.query.filter_by(user_id=user_id, subscription_id=subscription_id).first()
+            user_preferences = UserPreference.query.filter_by(user_id=user_id, subscription_id=subscription_id).first()
 
-            assistant_preferences = await AssistantPreference.query.filter_by(user_id=user_id, subscription_id=subscription_id).first()
+            assistant_preferences = AssistantPreference.query.filter_by(user_id=user_id, subscription_id=subscription_id).first()
 
             message_answers = None
             # Run the asynchronous process_questions_answers function
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
-            message_answers = await process_questions_answers(message_body, user_preferences.user_location_full, user_preferences.user_location_country)
+            message_answers = process_questions_answers(message_body, user_preferences.user_location_full, user_preferences.user_location_country)
 
             prompt = build_system_prompt(user_preferences, assistant_preferences, message_answers)
 
