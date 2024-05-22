@@ -810,7 +810,7 @@ def clean_string(s):
 
 
 def send_reply(user_id, subscription_id, reply, to_number, from_number, twilio_client):
-    """Sends a reply to the user.
+    """Sends a reply to the user, handling multipart messages if necessary.
 
     Args:
         user_id: The user's ID.
@@ -829,20 +829,37 @@ def send_reply(user_id, subscription_id, reply, to_number, from_number, twilio_c
         reply = clean_string(reply)
         current_app.logger.debug(f"send_reply: cleaned_reply {reply}")
 
-        # Send the message and log the attempt
-        sent = twilio_client.messages.create(
-            body=reply,
-            from_=from_number,
-            to=to_number
-        )
+        # Check if message length exceeds Twilio's limit for a single message
+        if len(reply) > 1600:
+            # Split the message into parts of length less than or equal to 1600
+            reply_parts = [reply[i:i+1600] for i in range(0, len(reply), 1600)]
+        else:
+            reply_parts = [reply]
 
-        # Log the Twilio response
-        current_app.logger.debug(f"send_reply: Twilio response SID {sent.sid}")
-        current_app.logger.info(f"Message sent to {to_number} from {from_number}: {reply}")
+        # Send each part as a separate message
+        sent_sids = []
+        for part in reply_parts:
+            sent = twilio_client.messages.create(
+                body=part,
+                from_=from_number,
+                to=to_number
+            )
+            sent_sids.append(sent.sid)
+            current_app.logger.debug(f"send_reply: Twilio response SID {sent.sid} for part: {part}")
+            current_app.logger.info(f"Message sent to {to_number} from {from_number}: {part}")
+
+        # If there are multiple parts, save the sids as an array
+        if len(sent_sids) > 1:
+            sent_sid = sent_sids
+        else:
+            sent_sid = sent_sids[0]
 
     except Exception as e:
         # Log any errors that occur
         current_app.logger.error(f"send_reply: Error sending message to {to_number} from {from_number}: {str(e)}")
         current_app.logger.error("send_reply: Exception details")
+        sent_sid = None
 
-    save_sms_history(user_id, subscription_id, sent.sid, 'outgoing', from_number, to_number, sent.body, sent.status)
+    # Save the SMS history
+    save_sms_history(user_id, subscription_id, sent_sid, 'outgoing', from_number, to_number, reply, 'sent')
+
