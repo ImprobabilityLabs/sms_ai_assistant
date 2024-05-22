@@ -173,7 +173,45 @@ def clean_data(data):
     cleaned_data = remove_keys(data, keys_to_remove)
     return json.dumps(cleaned_data, indent=2)
 
-def answer_question(question, data):
+async def answer_question(question, data):
+    current_app.logger.debug(f"answer_question - Question Input: {question}")
+    try:
+        url = "https://api.groq.com/openai/v1/chat/completions"
+        headers = {
+            "Authorization": f"Bearer {YOUR_API_KEY}",
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "model": "llama3-8b-8192",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": f"Extract the answer to '{question}', and output it in a paragraph with any additional relevant information."
+                },
+                {
+                    "role": "user",
+                    "content": data
+                }
+            ],
+            "temperature": 1,
+            "max_tokens": 256,
+            "top_p": 1,
+            "stream": False,
+            "stop": None
+        }
+
+        async with aiohttp.ClientSession() as session:
+            async with session.post(url, headers=headers, json=payload, timeout=10) as response:
+                response.raise_for_status()
+                response_json = await response.json()
+                current_app.logger.debug(f"answer_question() Position 1 - Response JSON: {response_json}")
+                return response_json['choices'][0]['message']['content']
+    except Exception as e:
+        current_app.logger.error(f"An error occurred: {e}")
+        current_app.logger.error("answer_question() Exception Error")
+        return None
+        
+def answer_question_old(question, data):
     current_app.logger.debug(f"answer_question - Question Input: {question}")
     try:
         client = Groq()
@@ -490,7 +528,7 @@ async def process_questions_answers(text_message, location, location_country='US
             
             cleaned_answer = clean_data(fetched_answer)
             current_app.logger.debug(f"process_questions_answers() Position 4")
-            answer = answer_question(question, cleaned_answer)
+            answer = await answer_question(question, cleaned_answer)
             current_app.logger.debug(f"process_questions_answers() Position 5")
             current_app.logger.debug(f"Answer: {answer}")
             answers.append(answer)
