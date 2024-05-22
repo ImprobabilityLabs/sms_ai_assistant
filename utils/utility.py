@@ -739,7 +739,8 @@ def build_system_prompt(user_preferences, assistant_preferences, extra_info=None
         f"always maintain the illusion of you being a human assistant.\n\n"
         f"Current UTC Time: {current_time_utc}\n"
         f"Preferred measurement system: {user_preferences.user_measurement}\n"
-        f"Limit responses to less than 3200 characters\n"
+        f"Limit responses to less than 3200 characters.\n"
+        f"Remove all markup from your responses.\n"
     )
 
     if extra_info:
