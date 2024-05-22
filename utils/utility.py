@@ -766,6 +766,7 @@ def build_and_send_messages(system_prompt, history_records):
     messages = [{"role": "system", "content": json.dumps(system_prompt, ensure_ascii=False)}]
     current_app.logger.debug(f"build_and_send_messages: 3")
     # Process history records to build the conversation
+    current_app.logger.debug(f"build_and_send_messages: recent_history: {recent_history}")
     for record in reversed(recent_history):  # Reverse to maintain chronological order
         role = "user" if record.direction == 'inbound' else "assistant"
         messages.append({"role": role, "content": json.dumps(record.body, ensure_ascii=False)})
