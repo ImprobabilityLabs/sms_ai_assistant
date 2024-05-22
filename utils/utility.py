@@ -777,13 +777,15 @@ def build_and_send_messages(system_prompt, history_records):
         messages.append({"role": role, "content": cleaned_record_body})
     current_app.logger.debug(f"build_and_send_messages: 4")
 
-    current_app.logger.debug(f"build_and_send_messages: messages: {messages}")
+    cleaned_messages = json.loads(json.dumps(messages))
+
+    current_app.logger.debug(f"build_and_send_messages: messages: {cleaned_messages}")
 
     # Initialize Groq client and create a completion
     client = Groq()
     completion = client.chat.completions.create(
         model="llama3-70b-8192",
-        messages=messages,
+        messages=cleaned_messages,
         temperature=1,
         max_tokens=1024,
         top_p=1,
