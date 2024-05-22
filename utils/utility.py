@@ -801,7 +801,7 @@ def build_and_send_messages_openai(system_prompt, history_records):
 
     current_app.logger.debug(f"{completion.choices[0].message}")
     
-    output = completion.choices[0].message["content"]["text"]
+    output = clean_string(completion.choices[0].message.content)
 
     current_app.logger.debug(f"{output}")
 
