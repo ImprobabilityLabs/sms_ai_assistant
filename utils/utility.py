@@ -771,17 +771,17 @@ def build_and_send_messages_openai(system_prompt, history_records):
     recent_history = sorted_history[:6]
     current_app.logger.debug(f"build_and_send_messages: 2")
     # Build the messages list
-    messages = [{"role": "system", "content": {"type": "text", "text": system_prompt}}]
+    messages = [{"role": "system", "content": [ {"type": "text", "text": system_prompt} ] }]
     current_app.logger.debug(f"build_and_send_messages: 3")
     # Process history records to build the conversation
 
     for record in reversed(recent_history):  # Reverse to maintain chronological order
         role = "user" if record.direction == 'incoming' else "assistant"
         cleaned_record_body = clean_string(record.body)
-        messages.append({"role": role, "content": {"type": "text", "text": cleaned_record_body}})
+        messages.append({"role": role, "content": [ {"type": "text", "text": cleaned_record_body} ] })
     current_app.logger.debug(f"build_and_send_messages: 4")
 
-    cleaned_messages = json.loads(json.dumps(messages))
+    #cleaned_messages = json.loads(json.dumps(messages))
 
     current_app.logger.debug(f"build_and_send_messages: messages: {cleaned_messages}")
 
