@@ -13,4 +13,4 @@ class History(BaseModel):
     status = db.Column(db.String(32), nullable=True)
 
     def __repr__(self):
-        return f"<History from {self.sender}>"
+        return f"<History from {self.from_number} to {self.to_number}>"
