@@ -768,7 +768,7 @@ def build_and_send_messages_openai(system_prompt, history_records):
     sorted_history = sorted(history_records, key=lambda x: x.created, reverse=True)
     current_app.logger.debug(f"build_and_send_messages: 1")
     # Take the 6 most recent messages
-    recent_history = sorted_history[:6]
+    recent_history = history_records[:6]
     current_app.logger.debug(f"build_and_send_messages: 2")
     # Build the messages list
     messages = [{"role": "system", "content": [ {"type": "text", "text": system_prompt} ] }]
@@ -791,7 +791,7 @@ def build_and_send_messages_openai(system_prompt, history_records):
         model="gpt-4o",
         messages=cleaned_messages,
         temperature=1,
-        max_tokens=512,
+        max_tokens=256,
         top_p=1,
         frequency_penalty=0,
         presence_penalty=0
