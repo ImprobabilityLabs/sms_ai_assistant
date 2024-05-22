@@ -274,7 +274,7 @@ def extract_questions(message_text):
 
         # Filter lines containing the question mark and clean them
         filtered_questions = [
-            re.sub(r"[^\w\s?.]", "", line).strip() for line in lines if '?' in line
+            re.sub(r"[^\w\s?.-]", "", line).strip() for line in lines if '?' in line
         ]
         current_app.logger.debug(f"extract_questions - Filtered Questions: {filtered_questions}")
         return filtered_questions
