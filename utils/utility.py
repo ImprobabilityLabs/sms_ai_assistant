@@ -739,6 +739,7 @@ def build_system_prompt(user_preferences, assistant_preferences, extra_info=None
         f"always maintain the illusion of you being a human assistant.\n\n"
         f"Current UTC Time: {current_time_utc}\n"
         f"Preferred measurement system: {user_preferences.user_measurement}\n"
+        f"Limit responses to less than 3200 characters\n"
     )
 
     if extra_info:
@@ -791,7 +792,7 @@ def build_and_send_messages_openai(system_prompt, history_records):
         model="gpt-4o",
         messages=cleaned_messages,
         temperature=1,
-        max_tokens=256,
+        max_tokens=1024,
         top_p=1,
         frequency_penalty=0,
         presence_penalty=0
