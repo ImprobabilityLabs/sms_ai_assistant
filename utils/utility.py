@@ -187,7 +187,7 @@ async def answer_question(question, data):
             "messages": [
                 {
                     "role": "system",
-                    "content": f"Extract the answer to '{question}', and output it in a paragraph with any additional relevant information."
+                    "content": f"Extract the answer to '{question}', and output it in a paragraph with any additional relevant information. Try and convert any company name to their stock symbols in the outputted questions."
                 },
                 {
                     "role": "user",
