@@ -769,7 +769,7 @@ def build_and_send_messages(system_prompt, history_records):
     # Process history records to build the conversation
 
     for record in reversed(recent_history):  # Reverse to maintain chronological order
-        if record.direction == 'inbound':
+        if record.direction == 'incoming':
             role = "user" 
         else:
             role = "assistant"
