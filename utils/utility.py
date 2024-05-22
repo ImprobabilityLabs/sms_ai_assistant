@@ -19,6 +19,7 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 import aiohttp
 import asyncio
+from openai import OpenAI
 
 
 seo_for_data_auth = "cmFoaW1rQGltcHJvYmFiaWxpdHkuaW86NGQ4MzY1OWQ4YWEyNTIwNQ=="
@@ -750,6 +751,62 @@ def build_system_prompt(user_preferences, assistant_preferences, extra_info=None
         system_prompt += f"\n\nAdditional Information:\n{extra_info_str}"
 
     return json.dumps(system_prompt)
+
+
+def build_and_send_messages_openai(system_prompt, history_records):
+    """
+    Builds a list of messages for the conversation and sends them using the OpenAI client.
+
+    Args:
+        system_prompt: The system prompt in JSON format.
+        history_records: List of History records.
+
+    Returns:
+        The assistant's response.
+    """
+    # Order history records by created date in descending order to get the newest messages first
+    sorted_history = sorted(history_records, key=lambda x: x.created, reverse=True)
+    current_app.logger.debug(f"build_and_send_messages: 1")
+    # Take the 6 most recent messages
+    recent_history = sorted_history[:6]
+    current_app.logger.debug(f"build_and_send_messages: 2")
+    # Build the messages list
+    messages = [{"role": "system", "content": {"type": "text", "text": system_prompt}}]
+    current_app.logger.debug(f"build_and_send_messages: 3")
+    # Process history records to build the conversation
+
+    for record in reversed(recent_history):  # Reverse to maintain chronological order
+        role = "user" if record.direction == 'incoming' else "assistant"
+        cleaned_record_body = clean_string(record.body)
+        messages.append({"role": role, "content": {"type": "text", "text": cleaned_record_body}})
+    current_app.logger.debug(f"build_and_send_messages: 4")
+
+    cleaned_messages = json.loads(json.dumps(messages))
+
+    current_app.logger.debug(f"build_and_send_messages: messages: {cleaned_messages}")
+
+    # Initialize OpenAI client and create a completion
+    client = OpenAI()
+    completion = client.chat.completions.create(
+        model="gpt-4o",
+        messages=cleaned_messages,
+        temperature=1,
+        max_tokens=512,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
+
+    current_app.logger.debug(f"build_and_send_messages: 5")
+
+    current_app.logger.debug(f"{completion.choices[0].message}")
+    
+    output = completion.choices[0].message["content"]["text"]
+
+    current_app.logger.debug(f"{output}")
+
+    # Return the output content
+    return json.loads(json.dumps(output))
 
 
 def build_and_send_messages(system_prompt, history_records):
