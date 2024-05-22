@@ -759,6 +759,7 @@ def build_and_send_messages(system_prompt, history_records):
     # Order history records by created date in descending order to get the newest messages first
     sorted_history = sorted(history_records, key=lambda x: x.created, reverse=True)
     current_app.logger.debug(f"build_and_send_messages: 1")
+    current_app.logger.debug(f"build_and_send_messages: history_records: {history_records}")
     # Take the 8 most recent messages
     recent_history = sorted_history[:5]
     current_app.logger.debug(f"build_and_send_messages: 2")
