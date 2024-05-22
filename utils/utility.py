@@ -743,7 +743,7 @@ def build_system_prompt(user_preferences, assistant_preferences, extra_info=None
             extra_info_str = str(extra_info)
         system_prompt += f"\n\nAdditional Information:\n{extra_info_str}"
 
-    return json.dumps(messages)
+    return json.dumps(system_prompt)
 
 def build_and_send_messages(system_prompt, history_records):
     """
