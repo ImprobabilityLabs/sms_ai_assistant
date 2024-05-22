@@ -5,7 +5,7 @@ class History(BaseModel):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     subscription_id = db.Column(db.Integer, db.ForeignKey('subscriptions.id'), nullable=False)
-    message_sid = db.Column(db.String(64), unique=True, nullable=False)  # Twilio SID for the message
+    message_sid = db.Column(db.Text, nullable=False)  # Twilio SID for the message
     direction = db.Column(db.String(10), nullable=False)  # 'inbound' or 'outbound'
     from_number = db.Column(db.String(32), nullable=False)
     to_number = db.Column(db.String(32), nullable=False)
