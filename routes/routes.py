@@ -378,7 +378,9 @@ def configure_routes(app):
             assistant_preferences = await AssistantPreference.query.filter_by(user_id=user_id, subscription_id=subscription_id).first()
 
             message_answers = None
-
+            # Run the asynchronous process_questions_answers function
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
             message_answers = await process_questions_answers(message_body, user_preferences.user_location_full, user_preferences.user_location_country)
 
             prompt = build_system_prompt(user_preferences, assistant_preferences, message_answers)
