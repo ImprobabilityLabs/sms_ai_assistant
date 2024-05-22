@@ -740,7 +740,7 @@ def build_and_send_messages(system_prompt, history_records):
         model="llama3-70b-8192",
         messages=messages,
         temperature=1,
-        max_tokens=1024,
+        max_tokens=2048,
         top_p=1,
         stream=False,
         stop=None,
