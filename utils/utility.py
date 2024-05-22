@@ -656,30 +656,36 @@ def validate_incomming_message(from_number, phone_sid):
 
 
 def save_sms_history(user_id, subscription_id, message_sid, direction, from_number, to_number, body=None, status=None):
+    current_app.logger.debug(f"save_sms_history() called with user_id={user_id}, subscription_id={subscription_id}, message_sid={message_sid}, direction={direction}, from_number={from_number}, to_number={to_number}, body={body}, status={status}")
+
     # Create a new History instance
-    history_record = History(
-        user_id=user_id,
-        subscription_id=subscription_id,
-        message_sid=message_sid,
-        direction=direction,
-        from_number=from_number,
-        to_number=to_number,
-        body=body,
-        status=status
-    )
-
-    # Add the record to the session
-    db.session.add(history_record)
-
-    # Commit the session to the database
     try:
+        history_record = History(
+            user_id=user_id,
+            subscription_id=subscription_id,
+            message_sid=message_sid,
+            direction=direction,
+            from_number=from_number,
+            to_number=to_number,
+            body=body,
+            status=status
+        )
+        current_app.logger.debug("History record created successfully")
+
+        # Add the record to the session
+        db.session.add(history_record)
+        current_app.logger.debug("History record added to the session")
+
+        # Commit the session to the database
         db.session.commit()
+        current_app.logger.info("History record committed to the database successfully")
         return True
     except Exception as e:
         # Handle any exceptions that occur during commit
         db.session.rollback()
-        print(f"Error saving history record: {e}")
+        current_app.logger.error(f"Error saving history record: {e}", exc_info=True)
         return False
+
 
 
 def load_sms_history(user_id, subscription_id, order='asc'):
