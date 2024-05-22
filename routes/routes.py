@@ -319,87 +319,88 @@ def configure_routes(app):
         session["user_provider_id"] = provider_id
         return redirect(url_for("dashboard_page"))
 
-    @app.route('/api/sms/callback', methods=['POST'])
-    def twilio_callback():
 
-        try:
-            # Create an instance of RequestValidator
-            validator = RequestValidator(app.config['TWILIO_AUTH_TOKEN'])
-         
-            # Create an instance of Client
-            client = Client(app.config['TWILIO_ACCOUNT_SID'], app.config['TWILIO_AUTH_TOKEN'])
 
-            # Retrieve the full URL of the incoming request
-            url = request.url
+@app.route('/api/sms/callback', methods=['POST'])
+async def twilio_callback():
+    try:
+        # Create an instance of RequestValidator
+        validator = RequestValidator(app.config['TWILIO_AUTH_TOKEN'])
+     
+        # Create an instance of Client
+        client = Client(app.config['TWILIO_ACCOUNT_SID'], app.config['TWILIO_AUTH_TOKEN'])
 
-            # Get the POST data as a dictionary
-            post_vars = request.form.to_dict()
+        # Retrieve the full URL of the incoming request
+        url = request.url
 
-            # Retrieve the X-Twilio-Signature header from the request
-            signature = request.headers.get('X-Twilio-Signature', '')
+        # Get the POST data as a dictionary
+        post_vars = request.form.to_dict()
 
-            # Validate the request
-            if not validator.validate(url, post_vars, signature):
-                # If invalid, reject the request
-                abort(403)
+        # Retrieve the X-Twilio-Signature header from the request
+        signature = request.headers.get('X-Twilio-Signature', '')
 
-            # Extract relevant Twilio message fields
-            from_number = post_vars['From']
-            to_number = post_vars['To']
-            message_body = post_vars['Body']
-            message_sid = post_vars.get('MessageSid', 'No SID')
-            account_sid = post_vars.get('AccountSid', 'No Account SID')
-            sms_status = post_vars.get('SmsStatus', 'No Status')
-            num_media = post_vars.get('NumMedia', '0')
-            twilio_phone_number = client.incoming_phone_numbers.list(phone_number=to_number)
-            
-            if twilio_phone_number:
-                twilio_phone_number_sid = twilio_phone_number[0].sid
-            else:
-                twilio_phone_number_sid = None;
-                
-            if not twilio_phone_number_sid:
-                return 'Unauthorized', 403
+        # Validate the request
+        if not validator.validate(url, post_vars, signature):
+            # If invalid, reject the request
+            abort(403)
 
-            # Log the incoming request details
-            current_app.logger.info(f'Incoming SMS: From={from_number}, To={to_number}, Body={message_body}, SID={message_sid}, Account SID={account_sid}, Phone Number SID: {twilio_phone_number_sid}, Status={sms_status}, Media={num_media}')
+        # Extract relevant Twilio message fields
+        from_number = post_vars['From']
+        to_number = post_vars['To']
+        message_body = post_vars['Body']
+        message_sid = post_vars.get('MessageSid', 'No SID')
+        account_sid = post_vars.get('AccountSid', 'No Account SID')
+        sms_status = post_vars.get('SmsStatus', 'No Status')
+        num_media = post_vars.get('NumMedia', '0')
+        twilio_phone_number = await client.incoming_phone_numbers.list(phone_number=to_number)
+        
+        if twilio_phone_number:
+            twilio_phone_number_sid = twilio_phone_number[0].sid
+        else:
+            twilio_phone_number_sid = None
+        
+        if not twilio_phone_number_sid:
+            return 'Unauthorized', 403
 
-            # Validate the user and get the corresponding assistant
-            user_id, subscription_id = validate_incomming_message(from_number, twilio_phone_number_sid)
+        # Log the incoming request details
+        current_app.logger.info(f'Incoming SMS: From={from_number}, To={to_number}, Body={message_body}, SID={message_sid}, Account SID={account_sid}, Phone Number SID: {twilio_phone_number_sid}, Status={sms_status}, Media={num_media}')
 
-            # Log the user validation details
-            current_app.logger.info(f'Validated User: User ID={user_id}, Subscription ID={subscription_id}, From Number={from_number}')
+        # Validate the user and get the corresponding assistant
+        user_id, subscription_id = validate_incomming_message(from_number, twilio_phone_number_sid)
 
-            save_sms_history(user_id, subscription_id, message_sid, 'incoming', from_number, to_number, message_body, sms_status)
+        # Log the user validation details
+        current_app.logger.info(f'Validated User: User ID={user_id}, Subscription ID={subscription_id}, From Number={from_number}')
 
-            user_preferences = UserPreference.query.filter_by(user_id=user_id, subscription_id=subscription_id).first()
+        save_sms_history(user_id, subscription_id, message_sid, 'incoming', from_number, to_number, message_body, sms_status)
 
-            assistant_preferences = AssistantPreference.query.filter_by(user_id=user_id, subscription_id=subscription_id).first()
+        user_preferences = await UserPreference.query.filter_by(user_id=user_id, subscription_id=subscription_id).first()
 
-            message_answers = None
+        assistant_preferences = await AssistantPreference.query.filter_by(user_id=user_id, subscription_id=subscription_id).first()
 
-            message_answers = process_questions_answers(message_body, user_preferences.user_location_full, user_preferences.user_location_country)
-    
-            prompt = build_system_prompt(user_preferences, assistant_preferences, message_answers)
+        message_answers = None
 
-            current_app.logger.info(f'Assistant System Prompt: {prompt}')       
- 
-            chat_history = load_sms_history(user_id, subscription_id, order='desc')
+        message_answers = await process_questions_answers(message_body, user_preferences.user_location_full, user_preferences.user_location_country)
 
-            current_app.logger.debug(f"twilio_callback() Position 1")
+        prompt = build_system_prompt(user_preferences, assistant_preferences, message_answers)
 
-            outgoing_message = build_and_send_messages(prompt, chat_history)     
+        current_app.logger.info(f'Assistant System Prompt: {prompt}')       
 
-            current_app.logger.info(f'Assistant Response: {outgoing_message}')
+        chat_history = load_sms_history(user_id, subscription_id, order='desc')
 
-            send_reply(user_id, subscription_id, outgoing_message, from_number, to_number, client)
+        current_app.logger.debug(f"twilio_callback() Position 1")
 
-            current_app.logger.debug(f"twilio_callback() Position 2")
-            
-            if not user_id or not subscription_id:
-                return 'Unauthorized', 403
+        outgoing_message = build_and_send_messages(prompt, chat_history)     
 
-            return 'OK', 200
-        except Exception as e:
-            current_app.logger.error(f"Error: {e}")
-            return 'Internal Server Error', 500
+        current_app.logger.info(f'Assistant Response: {outgoing_message}')
+
+        send_reply(user_id, subscription_id, outgoing_message, from_number, to_number, client)
+
+        current_app.logger.debug(f"twilio_callback() Position 2")
+        
+        if not user_id or not subscription_id:
+            return 'Unauthorized', 403
+
+        return 'OK', 200
+    except Exception as e:
+        current_app.logger.error(f"Error: {e}")
+        return 'Internal Server Error', 500
