@@ -17,6 +17,8 @@ import phonenumbers
 from phonenumbers.phonenumberutil import region_code_for_number
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
+import aiohttp
+import asyncio
 
 
 seo_for_data_auth = "cmFoaW1rQGltcHJvYmFiaWxpdHkuaW86NGQ4MzY1OWQ4YWEyNTIwNQ=="
@@ -30,7 +32,7 @@ def remove_keys(data, keys_to_remove):
     else:
         return data
 
-def fetch_data(question, location=None):
+def fetch_data_old(question, location=None):
     """Fetch data from the DataForSEO API for the specified question."""
     url = "https://api.dataforseo.com/v3/serp/google/organic/live/advanced"
     
@@ -98,6 +100,66 @@ def fetch_data(question, location=None):
     except KeyError:
         current_app.logger.error("fetch_data() KeyError - Unexpected response structure")
         return None
+
+
+async def fetch_data(question, location=None):
+    """Fetch data from the DataForSEO API for the specified question."""
+    url = "https://api.dataforseo.com/v3/serp/google/organic/live/advanced"
+    
+    current_app.logger.debug(f"fetch_data() Question Input: {question}")
+
+    # Set location code based on input
+    location_code = 2840  # Default to US location code
+    if location == 'US':
+        location_code = 2840
+    elif location == 'CA':
+        location_code = 2124
+    
+    # Prepare payload
+    payload = json.dumps([{
+        "keyword": question,
+        "location_code": location_code,
+        "language_code": "en",
+        "device": "desktop",
+        "os": "windows",
+        "depth": 1
+    }])
+    
+    headers = {
+        'Authorization': f"Basic {seo_for_data_auth}",
+        'Content-Type': 'application/json'
+    }
+
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.post(url, headers=headers, data=payload, timeout=10) as response:
+                current_app.logger.debug(f"fetch_data() Position 1 - Response Status: {response.status}")
+                response.raise_for_status()  # Raise an exception for bad responses
+                response_text = await response.text()
+                current_app.logger.debug(f"fetch_data() Position 2 - Response Text: {response_text}")
+                data = await response.json()
+                current_app.logger.debug(f"fetch_data() Position 3 - JSON Data: {data}")
+                
+                # Check if the response contains the expected data
+                if 'tasks' in data and len(data['tasks']) > 0 and 'result' in data['tasks'][0]:
+                    return data['tasks'][0]['result']
+                else:
+                    current_app.logger.warning("fetch_data() - No result found in the response")
+                    return None  # Or handle the case where the result is not found
+
+        except aiohttp.ClientError as e:
+            current_app.logger.error(f"Request failed: {e}")
+            current_app.logger.error("fetch_data() Request Exception Error")
+            return None
+
+        except json.JSONDecodeError:
+            current_app.logger.error("fetch_data() JSONDecodeError - Failed to decode JSON response")
+            return None
+
+        except KeyError:
+            current_app.logger.error("fetch_data() KeyError - Unexpected response structure")
+            return None
+
 
 def clean_data(data):
     """ Remove unnecessary keys from the data. """
@@ -396,7 +458,53 @@ def handle_stripe_operations(user, form_data):
         current_app.logger.error(f'Error: {str(e)}')
         return False, str(e), -1
 
-def process_questions_answers(text_message, location, location_country = 'US'):
+
+
+async def process_questions_answers(text_message, location, location_country='US'):
+    try:
+        # Trim whitespace from the text message
+        text_message = text_message.strip()
+        text_loc = f"Users Location for Questions: {location}\n"
+        text_message = text_loc + text_message         
+
+        # Check if text_message is empty
+        if not text_message:
+            current_app.logger.error("Empty text message received.")
+            return None
+
+        current_app.logger.debug(f"process_questions_answers() Position 1")
+        # Check if questions is a list
+        questions = extract_questions(text_message)
+        current_app.logger.debug(f"process_questions_answers() Position 2")
+        
+        answers = []
+        current_app.logger.debug(f"process_questions_answers - Questions: {questions}")
+        for question in questions:
+            current_app.logger.debug(f"process_questions_answers - Question: {question}")
+            fetched_answer = await fetch_data(question, location_country)
+            current_app.logger.debug(f"process_questions_answers() Position 3")
+            
+            if fetched_answer is None:
+                current_app.logger.warning(f"No answer fetched for question: {question}")
+                continue
+            
+            cleaned_answer = clean_data(fetched_answer)
+            current_app.logger.debug(f"process_questions_answers() Position 4")
+            answer = answer_question(question, cleaned_answer)
+            current_app.logger.debug(f"process_questions_answers() Position 5")
+            current_app.logger.debug(f"Answer: {answer}")
+            answers.append(answer)
+
+        return answers
+        
+    except Exception as e:
+        current_app.logger.error(f"Error in process_questions_answers: {e}")
+        return None
+
+
+
+
+def process_questions_answers_old(text_message, location, location_country = 'US'):
 
     try:
         # Trim whitespace from the text message
