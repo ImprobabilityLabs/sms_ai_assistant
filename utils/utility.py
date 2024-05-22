@@ -743,7 +743,7 @@ def build_system_prompt(user_preferences, assistant_preferences, extra_info=None
             extra_info_str = str(extra_info)
         system_prompt += f"\n\nAdditional Information:\n{extra_info_str}"
 
-    return json.dumps(system_prompt)
+    return messagesjson.dumps(system_prompt)
 
 def build_and_send_messages(system_prompt, history_records):
     """
@@ -763,12 +763,12 @@ def build_and_send_messages(system_prompt, history_records):
     recent_history = sorted_history[:5]
     current_app.logger.debug(f"build_and_send_messages: 2")
     # Build the messages list
-    messages = [{"role": "system", "content": json.dumps(system_prompt)}]
+    messages = [{"role": "system", "content": json.dumps(system_prompt, ensure_ascii=False)}]
     current_app.logger.debug(f"build_and_send_messages: 3")
     # Process history records to build the conversation
     for record in reversed(recent_history):  # Reverse to maintain chronological order
         role = "user" if record.direction == 'inbound' else "assistant"
-        messages.append({"role": role, "content": json.dumps(record.body)})
+        messages.append({"role": role, "content": json.dumps(record.body, ensure_ascii=False)})
     current_app.logger.debug(f"build_and_send_messages: 4")
 
     current_app.logger.debug(f"build_and_send_messages: messages: {messages}")
@@ -776,7 +776,7 @@ def build_and_send_messages(system_prompt, history_records):
     client = Groq()
     completion = client.chat.completions.create(
         model="llama3-70b-8192",
-        messages=messages,
+        messages=json.dumps(messages, ensure_ascii=False),
         temperature=1,
         max_tokens=2048,
         top_p=1,
@@ -793,8 +793,9 @@ def build_and_send_messages(system_prompt, history_records):
 
 
 def clean_string(s):
-    """Cleans the input string by removing non-ASCII characters."""
-    return "".join(c for c in s if c.isascii())
+    """Cleans the input string by removing non-ASCII characters, except hyphens."""
+    return "".join(c for c in s if c.isascii() and c != '\u2013' and c != '\u2014')
+
 
 def send_reply(user_id, subscription_id, reply, to_number, from_number, twilio_client):
     """Sends a reply to the user.
