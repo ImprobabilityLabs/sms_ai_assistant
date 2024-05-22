@@ -8,6 +8,7 @@ from utils.utility import fetch_data, check_user_subscription, generate_menu, ge
 import stripe
 import aiohttp
 import asyncio
+import openai
 
 def configure_routes(app):
 
