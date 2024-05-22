@@ -745,21 +745,6 @@ def build_system_prompt(user_preferences, assistant_preferences, extra_info=None
 
     return json.dumps(system_prompt)
 
-def clean_json_string(json_string):
-    """
-    Cleans up the JSON string by parsing and re-serializing it.
-    
-    Args:
-        json_string: The JSON string to clean.
-    
-    Returns:
-        A cleaned JSON string.
-    """
-    # Parse the JSON string
-    parsed_json = json.loads(json_string)
-    # Re-serialize the JSON with ensure_ascii=False to avoid unnecessary escaping
-    cleaned_json = json.dumps(parsed_json, ensure_ascii=False, indent=4)
-    return cleaned_json
 
 def build_and_send_messages(system_prompt, history_records):
     """
@@ -775,23 +760,25 @@ def build_and_send_messages(system_prompt, history_records):
     # Order history records by created date in descending order to get the newest messages first
     sorted_history = sorted(history_records, key=lambda x: x.created, reverse=True)
     current_app.logger.debug(f"build_and_send_messages: 1")
-    current_app.logger.debug(f"build_and_send_messages: history_records: {history_records}")
     # Take the 8 most recent messages
-    recent_history = sorted_history[:5]
+    recent_history = sorted_history[:6]
     current_app.logger.debug(f"build_and_send_messages: 2")
     # Build the messages list
-    cleaned_system_prompt = clean_json_string(system_prompt)
-    messages = [{"role": "system", "content": cleaned_system_prompt}]
+    messages = [{"role": "system", "content": system_prompt}]
     current_app.logger.debug(f"build_and_send_messages: 3")
     # Process history records to build the conversation
-    current_app.logger.debug(f"build_and_send_messages: recent_history: {recent_history}")
+
     for record in reversed(recent_history):  # Reverse to maintain chronological order
-        role = "assistant" if record.direction == 'inbound' else "user"
-        cleaned_record_body = clean_json_string(record.body)
+        if record.direction == 'inbound':
+            role = "user" 
+        else:
+            role = "assistant"
+        cleaned_record_body = clean_string(record.body)
         messages.append({"role": role, "content": cleaned_record_body})
     current_app.logger.debug(f"build_and_send_messages: 4")
 
     current_app.logger.debug(f"build_and_send_messages: messages: {messages}")
+
     # Initialize Groq client and create a completion
     client = Groq()
     completion = client.chat.completions.create(
