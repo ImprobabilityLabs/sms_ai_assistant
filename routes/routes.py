@@ -322,7 +322,7 @@ def configure_routes(app):
 
 
     @app.route('/api/sms/callback', methods=['POST'])
-    async def twilio_callback():
+    def twilio_callback():
         try:
             # Create an instance of RequestValidator
             validator = RequestValidator(app.config['TWILIO_AUTH_TOKEN'])
