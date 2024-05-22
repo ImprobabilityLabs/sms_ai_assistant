@@ -867,5 +867,5 @@ def send_reply(user_id, subscription_id, reply, to_number, from_number, twilio_c
         sent_sid = None
 
     # Save the SMS history
-    save_sms_history(user_id, subscription_id, sent_sid, 'outgoing', from_number, to_number, reply, 'sent')
+    save_sms_history(user_id, subscription_id, str(sent_sid), 'outgoing', from_number, to_number, reply, 'sent')
 
