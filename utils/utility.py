@@ -792,10 +792,11 @@ def build_and_send_messages(system_prompt, history_records):
         stream=False,
         stop=None,
     )
+
     current_app.logger.debug(f"build_and_send_messages: 5")
 
-    current_app.logger.debug(f"messages: {messages}")
-
+    current_app.logger.debug(f"{completion.choices[0].message}")
+    
     output = completion.choices[0].message.content
 
     return json.loads(output)
