@@ -786,7 +786,7 @@ def build_and_send_messages_openai(system_prompt, history_records):
     current_app.logger.debug(f"build_and_send_messages: messages: {cleaned_messages}")
 
     # Initialize OpenAI client and create a completion
-    client = OpenAI()
+    client = OpenAI(api_key='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')
     completion = client.chat.completions.create(
         model="gpt-4o",
         messages=cleaned_messages,
