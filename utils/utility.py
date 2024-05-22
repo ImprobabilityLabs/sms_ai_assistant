@@ -801,7 +801,8 @@ def build_and_send_messages(system_prompt, history_records):
 
     current_app.logger.debug(f"{output}")
 
-    return json.loads(output)
+    # Return the output content
+    return json.loads(json.dumps(output))
 
 def clean_string(s):
     """Cleans the input string by removing non-ASCII characters, except hyphens."""
