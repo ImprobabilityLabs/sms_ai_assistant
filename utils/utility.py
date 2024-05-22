@@ -781,7 +781,7 @@ def build_and_send_messages_openai(system_prompt, history_records):
         messages.append({"role": role, "content": [ {"type": "text", "text": cleaned_record_body} ] })
     current_app.logger.debug(f"build_and_send_messages: 4")
 
-    #cleaned_messages = json.loads(json.dumps(messages))
+    cleaned_messages = json.loads(json.dumps(messages))
 
     current_app.logger.debug(f"build_and_send_messages: messages: {cleaned_messages}")
 
