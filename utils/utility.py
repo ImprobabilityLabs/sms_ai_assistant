@@ -721,7 +721,7 @@ def build_and_send_messages_openai(system_prompt, history_records):
     # Initialize OpenAI client and create a completion
     client = OpenAI(api_key=current_app.config['OPEN_AI_KEY'])
     completion = client.chat.completions.create(
-        model=f"app.config['OPEN_AI_MODEL']",
+        model=current_app.config['OPEN_AI_MODEL'],
         messages=cleaned_messages,
         temperature=1,
         max_tokens=1024,
