@@ -25,11 +25,13 @@ def configure_routes(app):
     def index_page():
         if session.get('user_provider_id'):
             member = check_user_subscription(session.get('user_provider_id'))
+            is_user = member['is_user']
         else:
             member = check_user_subscription(None)
+            is_user = False
         current_app.logger.info('Info: Index Page - Member Object: ' + str(member))
         menu = generate_menu(member)
-        return render_template('index.html', menu=menu)
+        return render_template('index.html', menu=menu, is_user)
 
     @app.route('/terms')
     def terms_page():
