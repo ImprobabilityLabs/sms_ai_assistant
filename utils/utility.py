@@ -54,7 +54,7 @@ def fetch_data_old(question, location=None):
     }])
     
     headers = {
-        'Authorization': f"Basic {app.config['SEO_FOR_DATA_KEY']}",
+        'Authorization': f"Basic {current_app.config['SEO_FOR_DATA_KEY']}",
         'Content-Type': 'application/json'
     }
     
