@@ -28,9 +28,18 @@ h4 {
   /* Slightly darker on hover */
 }
 
-.wrap-text {
-    white-space: normal !important;
-}
+    .wrap-text {
+        white-space: normal !important;
+    }
+    .arrow-up {
+        color: green;
+    }
+    .arrow-down {
+        color: red;
+    }
+    .table td {
+        vertical-align: middle !important;
+    }
 
 .btn-custom-primary {
   color: #FFFFFF;
