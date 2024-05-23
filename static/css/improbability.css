@@ -28,6 +28,10 @@ h4 {
   /* Slightly darker on hover */
 }
 
+.wrap-text {
+    white-space: normal !important;
+}
+
 .btn-custom-primary {
   color: #FFFFFF;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
