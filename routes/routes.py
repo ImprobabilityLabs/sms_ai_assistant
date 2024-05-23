@@ -31,7 +31,7 @@ def configure_routes(app):
             is_user = False
         current_app.logger.info('Info: Index Page - Member Object: ' + str(member))
         menu = generate_menu(member)
-        return render_template('index.html', menu=menu, is_user)
+        return render_template('index.html', menu=menu, is_user=is_user)
 
     @app.route('/terms')
     def terms_page():
