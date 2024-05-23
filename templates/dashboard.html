@@ -306,47 +306,59 @@
           <div class="row">
             <div class="col-md-12 col-sm-12">
               <div class="table-responsive">
-                <table id="invoicetable" class="table text-center table-bordered table-striped black-title">
-    <thead>
-        <tr>
-            <th class="text-center black-title hidden-xs hidden-sm">Date</th>
-            <th class="text-center black-title hidden-md hidden-lg">Date</th>
-            <th class="text-center black-title hidden-xs hidden-sm">From</th>
-            <th class="text-center black-title hidden-xs hidden-sm">To</th>
-            <th class="text-center black-title">Message</th>
-            <th class="text-center black-title hidden-xs hidden-sm">Direction</th>
-            <th class="text-center black-title hidden-md hidden-lg">Dir</th>
-        </tr>
-    </thead>
-    <tbody id="invoices">
-        <tr>
-            <td class="text-center black-title hidden-xs hidden-sm">01/14/2017</td>
-            <td class="text-center black-title hidden-md hidden-lg">01/14/17</td>
-            <td class="text-center black-title hidden-xs hidden-sm">+1234567890</td>
-            <td class="text-center black-title hidden-xs hidden-sm">+0987654321</td>
-            <td class="text-center black-title">This is a sample message that could be quite long and needs more space.</td>
-            <td class="text-center hidden-xs hidden-sm text-capitalize">
-                <strong><i class="fa fa-arrow-up" aria-hidden="true"></i> Outgoing</strong>
-            </td>
-            <td class="text-center hidden-md hidden-lg text-capitalize">
-                <strong><i class="fa fa-arrow-up" aria-hidden="true"></i></strong>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center black-title hidden-xs hidden-sm">01/11/2017</td>
-            <td class="text-center black-title hidden-md hidden-lg">01/11/17</td>
-            <td class="text-center black-title hidden-xs hidden-sm">+1234567890</td>
-            <td class="text-center black-title hidden-xs hidden-sm">+0987654321</td>
-            <td class="text-center black-title">Another example message that needs to be displayed clearly and concisely.</td>
-            <td class="text-center hidden-xs hidden-sm text-capitalize">
-                <strong><i class="fa fa-arrow-down" aria-hidden="true"></i> Incoming</strong>
-            </td>
-            <td class="text-center hidden-md hidden-lg text-capitalize">
-                <strong><i class="fa fa-arrow-down" aria-hidden="true"></i></strong>
-            </td>
-        </tr>
-    </tbody>
+                <table id="invoicetable" class="table text-center table-bordered table-striped">
+  <thead>
+    <tr>
+      <th class="text-center hidden-xs hidden-sm">Date</th>
+      <th class="text-center hidden-md hidden-lg">Date</th>
+      <th class="text-center hidden-xs hidden-sm">From</th>
+      <th class="text-center hidden-xs hidden-sm">To</th>
+      <th class="text-center">Message</th>
+      <th class="text-center">Direction</th>
+    </tr>
+  </thead>
+  <tbody id="invoices">
+    <tr>
+      <td class="text-center hidden-xs hidden-sm">January 14th, 2017</td>
+      <td class="text-center hidden-md hidden-lg">01/14/17</td>
+      <td class="text-center hidden-xs hidden-sm">1234567890</td>
+      <td class="text-center hidden-xs hidden-sm">0987654321</td>
+      <td class="text-center message-cell">This is a sample message that should wrap and fit within the table cell regardless of the screen size.</td>
+      <td class="text-center">
+        <i class="fa fa-arrow-down text-danger" aria-hidden="true" title="Incoming"></i>
+      </td>
+    </tr>
+    <tr>
+      <td class="text-center hidden-xs hidden-sm">January 11th, 2017</td>
+      <td class="text-center hidden-md hidden-lg">01/11/17</td>
+      <td class="text-center hidden-xs hidden-sm">1234567890</td>
+      <td class="text-center hidden-xs hidden-sm">0987654321</td>
+      <td class="text-center message-cell">Another sample message to test the wrapping functionality in smaller screens.</td>
+      <td class="text-center">
+        <i class="fa fa-arrow-up text-success" aria-hidden="true" title="Outgoing"></i>
+      </td>
+    </tr>
+  </tbody>
 </table>
+
+<style>
+  .message-cell {
+    white-space: normal;
+    word-wrap: break-word;
+  }
+
+  @media (max-width: 767px) {
+    .hidden-xs, .hidden-sm {
+      display: none !important;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .hidden-md, .hidden-lg {
+      display: none !important;
+    }
+  }
+</style>
               </div>
             </div>
             <ul class="list-group-primary pagination pull-right" style="border-color:inherit" id="invoicePager"></ul>
