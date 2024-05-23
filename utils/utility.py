@@ -21,9 +21,6 @@ import aiohttp
 import asyncio
 from openai import OpenAI
 
-
-seo_for_data_auth = "cmFoaW1rQGltcHJvYmFiaWxpdHkuaW86NGQ4MzY1OWQ4YWEyNTIwNQ=="
-
 def remove_keys(data, keys_to_remove):
     """ Recursively remove specified keys from a dictionary. """
     if isinstance(data, dict):
@@ -57,7 +54,7 @@ def fetch_data_old(question, location=None):
     }])
     
     headers = {
-        'Authorization': f"Basic {seo_for_data_auth}",
+        'Authorization': f"Basic {app.config['SEO_FOR_DATA_KEY']}",
         'Content-Type': 'application/json'
     }
     
@@ -127,7 +124,7 @@ async def fetch_data(question, location=None):
     }])
     
     headers = {
-        'Authorization': f"Basic {seo_for_data_auth}",
+        'Authorization': f"Basic {app.config['SEO_FOR_DATA_KEY']}",
         'Content-Type': 'application/json'
     }
 
@@ -174,12 +171,13 @@ def clean_data(data):
     cleaned_data = remove_keys(data, keys_to_remove)
     return json.dumps(cleaned_data, indent=2)
 
+
 async def answer_question(question, data):
     current_app.logger.debug(f"answer_question - Question Input: {question}")
     try:
         url = "https://api.groq.com/openai/v1/chat/completions"
         headers = {
-            "Authorization": "Bearer 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",
+            "Authorization": f"Bearer {app.config['GROQ_KEY']}",
             "Content-Type": "application/json"
         }
         payload = {
@@ -212,35 +210,6 @@ async def answer_question(question, data):
         current_app.logger.error("answer_question() Exception Error")
         return None
         
-def answer_question_old(question, data):
-    current_app.logger.debug(f"answer_question - Question Input: {question}")
-    try:
-        client = Groq()
-        completion = client.chat.completions.create(
-            model="llama3-8b-8192",
-            messages=[
-                {
-                    "role": "system",
-                    "content": "Extract the answer to '"+question+"', and output it in a paragraph with any additional relevant information."
-                },
-                {
-                    "role": "user",
-                    "content": data
-                }
-            ],
-            temperature=1,
-            max_tokens=256,
-            top_p=1,
-            stream=False,
-            stop=None,
-        )
-        current_app.logger.debug(f"answer_question() Position 1")
-        return completion.choices[0].message.content
-    except Exception as e:
-        current_app.logger.error(f"An error occurred: {e}")
-        current_app.logger.error("answer_question() Exception Error")
-        return None
-
 def extract_questions(message_text):
     current_app.logger.debug(f"extract_questions - Message Text: {message_text}")
     try:
@@ -528,49 +497,9 @@ async def process_questions_answers(text_message, location, location_country='US
                 continue
             
             cleaned_answer = clean_data(fetched_answer)
-            current_app.logger.debug(f"process_questions_answers() Position 4")
+           
             answer = await answer_question(question, cleaned_answer)
-            current_app.logger.debug(f"process_questions_answers() Position 5")
-            current_app.logger.debug(f"Answer: {answer}")
-            answers.append(answer)
-
-        return answers
-        
-    except Exception as e:
-        current_app.logger.error(f"Error in process_questions_answers: {e}")
-        return None
-
-
-
-
-def process_questions_answers_old(text_message, location, location_country = 'US'):
-
-    try:
-        # Trim whitespace from the text message
-        text_message = text_message.strip()
-        text_loc = f"Users Location for Questions: {location}\n"
-        text_message = text_loc + text_message         
-
-        # Check if text_message is empty
-        if not text_message:
-            current_app.logger.error("Empty text message received.")
-            return None
-
-        current_app.logger.debug(f"process_questions_answers() Position 1")
-        # Check if questions is a list
-        questions = extract_questions(text_message)
-        current_app.logger.debug(f"process_questions_answers() Position 2")
-        
-        answers = []
-        current_app.logger.debug(f"process_questions_answers - Questions: {questions}")
-        for question in questions:
-            current_app.logger.debug(f"process_questions_answers - Question: {question}")
-            fetched_answer = fetch_data(question, location_country)
-            current_app.logger.debug(f"process_questions_answers() Position 3")
-            cleaned_answer = clean_data(fetched_answer)
-            current_app.logger.debug(f"process_questions_answers() Position 4")
-            answer = answer_question(question, cleaned_answer)
-            current_app.logger.debug(f"process_questions_answers() Position 5")
+           
             current_app.logger.debug(f"Answer: {answer}")
             answers.append(answer)
 
@@ -766,13 +695,13 @@ def build_and_send_messages_openai(system_prompt, history_records):
     """
     # Order history records by created date in descending order to get the newest messages first
     sorted_history = sorted(history_records, key=lambda x: x.created, reverse=True)
-    current_app.logger.debug(f"build_and_send_messages: 1")
+    
     # Take the 6 most recent messages
     recent_history = history_records[:6]
-    current_app.logger.debug(f"build_and_send_messages: 2")
+
     # Build the messages list
     messages = [{"role": "system", "content": [ {"type": "text", "text": system_prompt} ] }]
-    current_app.logger.debug(f"build_and_send_messages: 3")
+    
     # Process history records to build the conversation
 
     reversed_history = list(reversed(recent_history))  # Reverse to maintain chronological order
@@ -790,7 +719,7 @@ def build_and_send_messages_openai(system_prompt, history_records):
     current_app.logger.debug(f"build_and_send_messages: messages: {cleaned_messages}")
 
     # Initialize OpenAI client and create a completion
-    client = OpenAI(api_key='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')
+    client = OpenAI(api_key=f"app.config['OPEN_AI_KEY']")
     completion = client.chat.completions.create(
         model="gpt-4o",
         messages=cleaned_messages,
