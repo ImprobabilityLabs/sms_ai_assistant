@@ -306,51 +306,44 @@
           <div class="row">
             <div class="col-md-12 col-sm-12">
               <div class="table-responsive">
-                <style>
-  .message-cell {
-    white-space: normal;
-    word-wrap: break-word;
-  }
-
-
-</style>
-                <table id="invoicetable" class="table text-center table-bordered table-striped">
-  <thead>
-    <tr>
-      <th class="text-center hidden-xs hidden-sm">Date</th>
-      <th class="text-center hidden-md hidden-lg">Date</th>
-      <th class="text-center hidden-xs hidden-sm">From</th>
-      <th class="text-center hidden-xs hidden-sm">To</th>
-      <th class="text-center">Message</th>
-      <th class="text-center">Direction</th>
-    </tr>
-  </thead>
-  <tbody id="invoices">
-    <tr>
-      <td class="text-center hidden-xs hidden-sm">January 14th, 2017</td>
-      <td class="text-center hidden-md hidden-lg">01/14/17</td>
-      <td class="text-center hidden-xs hidden-sm">1234567890</td>
-      <td class="text-center hidden-xs hidden-sm">0987654321</td>
-      <td class="text-center message-cell">This is a sample message that should wrap and fit within the table cell regardless of the screen size.</td>
-      <td class="text-center">
-        <i class="fa fa-arrow-down text-danger" aria-hidden="true" title="Incoming"></i>
-      </td>
-    </tr>
-    <tr>
-      <td class="text-center hidden-xs hidden-sm">January 11th, 2017</td>
-      <td class="text-center hidden-md hidden-lg">01/11/17</td>
-      <td class="text-center hidden-xs hidden-sm">1234567890</td>
-      <td class="text-center hidden-xs hidden-sm">0987654321</td>
-      <td class="text-center message-cell">Another sample message to test the wrapping functionality in smaller screens.</td>
-      <td class="text-center">
-        <i class="fa fa-arrow-up text-success" aria-hidden="true" title="Outgoing"></i>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-
-              </div>
+                <table id="smslogtable" class="table text-center table-bordered table-striped">
+    <thead>
+        <tr>
+            <th class="text-center hidden-xs hidden-sm">Date</th>
+            <th class="text-center hidden-md hidden-lg">Date</th>
+            <th class="text-center hidden-xs hidden-sm">From Number</th>
+            <th class="text-center hidden-xs hidden-sm">To Number</th>
+            <th class="text-center">Message</th>
+            <th class="text-center">Direction</th>
+        </tr>
+    </thead>
+    <tbody id="smslogs">
+        <tr>
+            <td class="text-center hidden-xs hidden-sm">01/14/2017 14:32</td>
+            <td class="text-center hidden-md hidden-lg">01/14</td>
+            <td class="text-center hidden-xs hidden-sm">+1234567890</td>
+            <td class="text-center hidden-xs hidden-sm">+0987654321</td>
+            <td class="text-center" style="word-wrap: break-word;">
+                This is a sample incoming message that should wrap correctly on smaller screens.
+            </td>
+            <td class="text-center">
+                <i class="fa fa-arrow-down" aria-hidden="true"></i>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center hidden-xs hidden-sm">01/14/2017 14:32</td>
+            <td class="text-center hidden-md hidden-lg">01/14</td>
+            <td class="text-center hidden-xs hidden-sm">+1234567890</td>
+            <td class="text-center hidden-xs hidden-sm">+0987654321</td>
+            <td class="text-center" style="word-wrap: break-word;">
+                This is a sample outgoing message that should wrap correctly on smaller screens.
+            </td>
+            <td class="text-center">
+                <i class="fa fa-arrow-up" aria-hidden="true"></i>
+            </td>
+        </tr>
+    </tbody>
+</table></div>
             </div>
             <ul class="list-group-primary pagination pull-right" style="border-color:inherit" id="invoicePager"></ul>
           </div>
