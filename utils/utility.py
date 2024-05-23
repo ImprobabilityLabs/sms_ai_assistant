@@ -177,7 +177,7 @@ async def answer_question(question, data):
     try:
         url = "https://api.groq.com/openai/v1/chat/completions"
         headers = {
-            "Authorization": f"Bearer {app.config['GROQ_KEY']}",
+            "Authorization": f"Bearer {current_app.config['GROQ_KEY']}",
             "Content-Type": "application/json"
         }
         payload = {
