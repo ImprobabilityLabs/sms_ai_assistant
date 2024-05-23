@@ -306,6 +306,24 @@
           <div class="row">
             <div class="col-md-12 col-sm-12">
               <div class="table-responsive">
+                <style>
+  .message-cell {
+    white-space: normal;
+    word-wrap: break-word;
+  }
+
+  @media (max-width: 767px) {
+    .hidden-xs, .hidden-sm {
+      display: none !important;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .hidden-md, .hidden-lg {
+      display: none !important;
+    }
+  }
+</style>
                 <table id="invoicetable" class="table text-center table-bordered table-striped">
   <thead>
     <tr>
@@ -341,24 +359,7 @@
   </tbody>
 </table>
 
-<style>
-  .message-cell {
-    white-space: normal;
-    word-wrap: break-word;
-  }
 
-  @media (max-width: 767px) {
-    .hidden-xs, .hidden-sm {
-      display: none !important;
-    }
-  }
-
-  @media (min-width: 768px) {
-    .hidden-md, .hidden-lg {
-      display: none !important;
-    }
-  }
-</style>
               </div>
             </div>
             <ul class="list-group-primary pagination pull-right" style="border-color:inherit" id="invoicePager"></ul>
