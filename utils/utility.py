@@ -739,8 +739,6 @@ def build_system_prompt(user_preferences, assistant_preferences, extra_info=None
         f"always maintain the illusion of you being a human assistant.\n\n"
         f"Current UTC Time: {current_time_utc}\n"
         f"Preferred measurement system: {user_preferences.user_measurement}\n"
-        f"Limit responses to less than 3200 characters.\n"
-        f"Remove all markup from your responses.\n"
     )
 
     if extra_info:
@@ -762,7 +760,7 @@ def build_and_send_messages_openai(system_prompt, history_records):
     Args:
         system_prompt: The system prompt in JSON format.
         history_records: List of History records.
-
+          
     Returns:
         The assistant's response.
     """
@@ -777,12 +775,16 @@ def build_and_send_messages_openai(system_prompt, history_records):
     current_app.logger.debug(f"build_and_send_messages: 3")
     # Process history records to build the conversation
 
-    for record in reversed(recent_history):  # Reverse to maintain chronological order
+    reversed_history = list(reversed(recent_history))  # Reverse to maintain chronological order
+    for idx, record in enumerate(reversed_history):
         role = "user" if record.direction == 'incoming' else "assistant"
         cleaned_record_body = clean_string(record.body)
-        messages.append({"role": role, "content": [ {"type": "text", "text": cleaned_record_body} ] })
-    current_app.logger.debug(f"build_and_send_messages: 4")
-
+    
+        if idx == len(reversed_history) - 1:  # Check if this is the last iteration
+            cleaned_record_body += f"\n Limit responses to less than 3200 characters.\nRemove all markup from your responses.\n"
+    
+        messages.append({"role": role, "content": [{"type": "text", "text": cleaned_record_body}]})
+    
     cleaned_messages = json.loads(json.dumps(messages))
 
     current_app.logger.debug(f"build_and_send_messages: messages: {cleaned_messages}")
