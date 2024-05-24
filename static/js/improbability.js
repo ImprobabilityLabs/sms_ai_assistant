@@ -557,11 +557,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
       $(document).ready(function() {
 
-          $('#invoices').pageMe({
-              pagerSelector: '#invoicePager',
+          $('#smsHistory').pageMe({
+              pagerSelector: '#smsPager',
               showPrevNext: true,
               hidePageNumbers: false,
-              perPage: 4
+              perPage: 10
           });
 
       });
