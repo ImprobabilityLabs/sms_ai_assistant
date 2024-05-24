@@ -746,6 +746,46 @@ a.footer-links:hover {
 
 
 
+.pagination {
+    list-style: none;
+    display: flex;
+    justify-content: flex-end;
+    padding: 0;
+}
+
+.pagination li {
+    margin: 0 5px;
+}
+
+.pagination li a {
+    text-decoration: none;
+    color: #d2d6de; /* Purple color for non-selected links */
+    padding: 5px 10px;
+    border: 1px solid #d2d6de;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.pagination li a:hover {
+    background-color: #d2d6de;
+    color: #fff;
+}
+
+.pagination li a.active {
+    background-color: #d2d6de; /* Purple color for selected link */
+    color: #fff;
+    border-color: #d2d6de;
+}
+
+.pagination li a.prev_link, .pagination li a.next_link {
+    color: #d2d6de; /* Purple color for prev and next links */
+    border-color: #d2d6de;
+}
+
+.pagination li a.prev_link:hover, .pagination li a.next_link:hover {
+    background-color: #d2d6de;
+    color: #fff;
+}
 
 
 
@@ -753,25 +793,4 @@ a.footer-links:hover {
 .responsive-container {
     display: flex;
     flex-direction: column;
-}
-
-.invoice-header, .invoice-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-}
-
-.invoice-field {
-    flex: 1;
-    text-align: center;
-}
-
-.invoice-field.actions {
-    flex: 0 0 100px; /* adjust width as needed */
-}
-
-.pagination {
-    list-style: none;
-    display: flex;
-    justify-content: flex-end;
 }
