@@ -105,7 +105,8 @@ $.fn.pageMe = function(opts) {
         }
 
         pager.children().removeClass("active");
-        pager.children().eq(page + 1).addClass("active");
+        pager.find('.page_link').removeClass("active"); // Ensure all page links are inactive
+        pager.children().eq(page + 1).find('a').addClass("active"); // Add active class to the correct page link
     }
 };
 
