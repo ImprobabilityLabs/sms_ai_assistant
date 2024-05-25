@@ -742,6 +742,10 @@ a.footer-links:hover {
 }
 
 
+.responsive-container {
+    display: flex;
+    flex-direction: column;
+}
 
 
 
@@ -759,38 +763,44 @@ a.footer-links:hover {
 
 .pagination li a {
     text-decoration: none;
-    color: #d2d6de; /* Purple color for non-selected links */
+    color: #6666CC; /* Light Purple color for non-selected links */
     padding: 5px 10px;
-    border: 1px solid #d2d6de;
+    border: 1px solid #6666CC;
     border-radius: 4px;
     transition: background-color 0.3s, color 0.3s;
 }
 
 .pagination li a:hover {
-    background-color: #d2d6de;
+    background-color: #6666CC;
     color: #fff;
 }
 
 .pagination li a.active {
-    background-color: #d2d6de; /* Purple color for selected link */
-    color: #fff;
-    border-color: #d2d6de;
+    color: #FFFFFF;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    background-color: #6666CC;
+    background-image: -moz-linear-gradient(top, #3900CE, #6666CC);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#3900CE), to(#6666CC));
+    background-image: -webkit-linear-gradient(top, #3900CE, #6666CC);
+    background-image: -o-linear-gradient(top, #3900CE, #6666CC);
+    background-image: linear-gradient(to bottom, #3900CE, #6666CC);
+    background-repeat: repeat-x;
+    border-color: #6666CC;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3900CE', endColorstr='#6666CC', GradientType=0);
 }
 
 .pagination li a.prev_link, .pagination li a.next_link {
-    color: #d2d6de; /* Purple color for prev and next links */
-    border-color: #d2d6de;
+    color: #6666CC; /* Light Purple color for prev and next links */
+    border-color: #6666CC;
 }
 
 .pagination li a.prev_link:hover, .pagination li a.next_link:hover {
-    background-color: #d2d6de;
+    background-color: #6666CC;
     color: #fff;
 }
 
 
 
 
-.responsive-container {
-    display: flex;
-    flex-direction: column;
-}
+
