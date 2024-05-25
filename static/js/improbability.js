@@ -16,14 +16,14 @@ $.fn.pageMe = function(opts) {
         children = listElement.find(settings.childSelector);
     }
 
-    var numItems = children.length;
-    var numPages = Math.ceil(numItems / perPage);
-
     if (typeof settings.pagerSelector !== "undefined") {
         var pager = $(settings.pagerSelector);
     } else {
         var pager = $('<ul class="pagination"></ul>').appendTo(listElement.parent());
     }
+
+    var numItems = children.length;
+    var numPages = Math.ceil(numItems / perPage);
 
     pager.data("curr", 0);
 
@@ -110,6 +110,18 @@ $.fn.pageMe = function(opts) {
         pager.children().removeClass("active");
         pager.find('.page_link').removeClass("active");
         pager.children().eq(page + 1).find('a').addClass("active");
+
+        if (page == 0) {
+            pager.find('.prev_link').hide();
+        } else {
+            pager.find('.prev_link').show();
+        }
+
+        if (page == numPages - 1) {
+            pager.find('.next_link').hide();
+        } else {
+            pager.find('.next_link').show();
+        }
     }
 
     goTo(0);
@@ -124,7 +136,6 @@ $(document).ready(function() {
         numbersPerPage: 3
     });
 });
-
 
 
 
