@@ -101,7 +101,8 @@ $.fn.pageMe = function(opts) {
 
         if (settings.numbersPerPage > 1) {
             $('.page_link').hide();
-            $('.page_link').slice(page, settings.numbersPerPage + page).show();
+            var start = Math.max(0, page - 1); // Adjust to show previous and next page
+            $('.page_link').slice(start, settings.numbersPerPage + start).show();
         }
 
         pager.children().removeClass("active");
