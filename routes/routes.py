@@ -187,7 +187,49 @@ def configure_routes(app):
         elif not member['is_subscribed']:
             return redirect(url_for('subscribe_page'))
         elif member['is_subscribed']:
-            return render_template('account.html', menu=menu)
+            user = User.query.filter_by(provider_id=session.get('user_provider_id')).first()
+            subscription = Subscription.query.filter_by(user_id=user.id, enabled=True).first()
+            try:
+                # Fetch customer subscriptions
+                subscriptions = stripe.Subscription.list(customer=user.stripe_customer_id)
+        
+                # Find the subscription with the specified price ID
+                subscription_id = None
+                for sub in subscriptions.auto_paging_iter():
+                    for item in sub['items']['data']:
+                        if item['price']['id'] == subscription.stripe_plan_id:
+                            subscription_id = sub['id']
+                            break
+                    if subscription_id:
+                        break
+        
+                if not subscription_id:
+                    return jsonify({'error': 'No subscription found for the specified price ID'}), 404
+
+                # Fetch invoices for the subscription
+                invoices = stripe.Invoice.list(
+                    customer=user.stripe_customer_id,
+                    subscription=subscription_id,
+                    limit=24  # Adjust the limit as needed
+                )
+
+                # Extract relevant data from each invoice
+                invoice_data = []
+                for invoice in invoices.auto_paging_iter():
+                    invoice_data.append({
+                        'number': invoice.number,
+                        'type': 'Subscription',  # Assuming all invoices are for subscriptions
+                        'date': datetime.fromtimestamp(invoice.created).strftime('%Y-%m-%d %H:%M:%S'),
+                        'amount': invoice.amount_due / 100,  # Convert cents to dollars
+                        'status': invoice.status,
+                        'receipt_url': invoice.hosted_invoice_url  # URL for the printable receipt
+                    })
+
+            return render_template('account.html', menu=menu, invoices=invoice_data)
+        
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500
+
 
     @app.route('/cancel', methods=['GET', 'POST'])
     def cancel_page():
