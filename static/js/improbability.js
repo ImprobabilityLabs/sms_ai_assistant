@@ -2,8 +2,8 @@ $.fn.pageMe = function(opts) {
     var $this = this,
         defaults = {
             perPage: 7,
-            showPrevNext: false,
-            numbersPerPage: 5,
+            showPrevNext: true,
+            numbersPerPage: 3,
             hidePageNumbers: false
         },
         settings = $.extend(defaults, opts);
@@ -21,7 +21,7 @@ $.fn.pageMe = function(opts) {
         pager = $(settings.pagerSelector);
     }
 
-    var numItems = children.length;
+    var numItems = children.length;  // Changed from size() to length
     var numPages = Math.ceil(numItems / perPage);
 
     pager.data("curr", 0);
@@ -36,18 +36,13 @@ $.fn.pageMe = function(opts) {
         curr++;
     }
 
-    if (settings.numbersPerPage > 1) {
-        $('.page_link').hide();
-        $('.page_link').slice(pager.data("curr"), settings.numbersPerPage).show();
-    }
-
     if (settings.showPrevNext) {
         $('<li><a href="#" class="next_link">»</a></li>').appendTo(pager);
     }
 
     pager.find('.page_link:first').addClass('active');
     pager.find('.prev_link').hide();
-    if (numPages <= 1) {
+    if (numPages <= settings.numbersPerPage) {
         pager.find('.next_link').hide();
     }
     pager.children().eq(1).addClass("active");
@@ -85,7 +80,7 @@ $.fn.pageMe = function(opts) {
 
         children.css('display', 'none').slice(startAt, endOn).show();
 
-        if (page >= 1) {
+        if (page > 0) {
             pager.find('.prev_link').show();
         } else {
             pager.find('.prev_link').hide();
@@ -101,8 +96,8 @@ $.fn.pageMe = function(opts) {
 
         if (settings.numbersPerPage > 1) {
             $('.page_link').hide();
-            var start = Math.max(0, page - 1); // Show the previous page button when on the second page
-            var end = start + 3; // Show a total of three page number buttons
+            var start = Math.max(0, page - 1); // Adjust to show previous, current, and next page
+            var end = Math.min(numPages, page + settings.numbersPerPage - 1);
             $('.page_link').slice(start, end).show();
         }
 
