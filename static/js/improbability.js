@@ -1,5 +1,4 @@
 $.fn.pageMe = function(opts) {
-    console.log('pageMe function called with opts:', opts); // Debugging: log function call
     var $this = this,
         defaults = {
             perPage: 7,
@@ -9,13 +8,9 @@ $.fn.pageMe = function(opts) {
         },
         settings = $.extend(defaults, opts);
 
-    console.log('Settings after extend:', settings); // Debugging: log settings to check if perPage is correctly set
-
     var listElement = $this,
         perPage = settings.perPage,
         children = listElement.children();
-
-    console.log('Number of children:', children.length); // Debugging: log number of children
 
     if (typeof settings.childSelector !== "undefined") {
         children = listElement.find(settings.childSelector);
@@ -29,8 +24,6 @@ $.fn.pageMe = function(opts) {
 
     var numItems = children.length;
     var numPages = Math.ceil(numItems / perPage);
-
-    console.log('numItems:', numItems, 'numPages:', numPages); // Debugging: log number of items and pages
 
     pager.data("curr", 0);
 
@@ -129,12 +122,9 @@ function isMobile() {
     return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 760;
 }
 
-$(document).ready(function() {
-    var smsPerPage = isMobile() ? 10 : 25;
+function initializePagination() {
+    var smsPerPage = isMobile() ? 10 : 20;
     var invoicePerPage = isMobile() ? 6 : 12;
-
-    console.log('SMS Per Page:', smsPerPage); // Debugging: log perPage value for SMS
-    console.log('Invoice Per Page:', invoicePerPage); // Debugging: log perPage value for Invoice
 
     $('#smsHistory').pageMe({
         pagerSelector: '#smsPager',
@@ -151,7 +141,17 @@ $(document).ready(function() {
         perPage: invoicePerPage,
         numbersPerPage: 3
     });
+}
+
+$(document).ready(function() {
+    initializePagination();
+
+    $(window).resize(function() {
+        console.log('Window resized'); // Debugging: log when window is resized
+        initializePagination(); // Reinitialize pagination on window resize
+    });
 });
+
 
 
 
