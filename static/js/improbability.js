@@ -21,7 +21,7 @@ $.fn.pageMe = function(opts) {
         pager = $(settings.pagerSelector);
     }
 
-    var numItems = children.length;  // Changed from size() to length
+    var numItems = children.length;
     var numPages = Math.ceil(numItems / perPage);
 
     pager.data("curr", 0);
@@ -30,10 +30,10 @@ $.fn.pageMe = function(opts) {
         $('<li><a href="#" class="prev_link">«</a></li>').appendTo(pager);
     }
 
-    var curr = 0;
-    while (numPages > curr && (settings.hidePageNumbers === false)) {
-        $('<li><a href="#" class="page_link">' + (curr + 1) + '</a></li>').appendTo(pager);
-        curr++;
+    if (settings.hidePageNumbers === false) {
+        for (var i = 0; i < numPages; i++) {
+            $('<li><a href="#" class="page_link">' + (i + 1) + '</a></li>').appendTo(pager);
+        }
     }
 
     if (settings.showPrevNext) {
@@ -80,7 +80,7 @@ $.fn.pageMe = function(opts) {
 
         children.css('display', 'none').slice(startAt, endOn).show();
 
-        if (page > 0) {
+        if (page >= 1) {
             pager.find('.prev_link').show();
         } else {
             pager.find('.prev_link').hide();
@@ -96,14 +96,18 @@ $.fn.pageMe = function(opts) {
 
         if (settings.numbersPerPage > 1) {
             $('.page_link').hide();
-            var start = Math.max(0, page - 1); // Adjust to show previous, current, and next page
-            var end = Math.min(numPages, page + settings.numbersPerPage - 1);
-            $('.page_link').slice(start, end).show();
+            if (page <= 1) {
+                $('.page_link').slice(0, settings.numbersPerPage).show();
+            } else if (page >= numPages - 2) {
+                $('.page_link').slice(numPages - settings.numbersPerPage, numPages).show();
+            } else {
+                $('.page_link').slice(page - 1, page + 2).show();
+            }
         }
 
         pager.children().removeClass("active");
-        pager.find('.page_link').removeClass("active"); // Ensure all page links are inactive
-        pager.children().eq(page + 1).find('a').addClass("active"); // Add active class to the correct page link
+        pager.find('.page_link').removeClass("active");
+        pager.children().eq(page + 1).find('a').addClass("active");
     }
 };
 
@@ -112,7 +116,8 @@ $(document).ready(function() {
         pagerSelector: '#smsPager',
         showPrevNext: true,
         hidePageNumbers: false,
-        perPage: 5
+        perPage: 5,
+        numbersPerPage: 3
     });
 });
 
