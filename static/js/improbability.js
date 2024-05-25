@@ -129,7 +129,7 @@ function isMobile() {
 }
 
 function initializePagination() {
-    var smsPerPage = isMobile() ? 10 : 25;
+    var smsPerPage = isMobile() ? 10 : 20;
     var invoicePerPage = isMobile() ? 6 : 12;
 
     console.log('SMS Per Page:', smsPerPage); // Debugging: log perPage value for SMS
