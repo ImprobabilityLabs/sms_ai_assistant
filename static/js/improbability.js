@@ -8,21 +8,22 @@ $.fn.pageMe = function(opts) {
         },
         settings = $.extend(defaults, opts);
 
-    var listElement = $this;
-    var perPage = settings.perPage;
-    var children = listElement.children();
-    var pager = $('.pagination');
+    var listElement = $this,
+        perPage = settings.perPage,
+        children = listElement.children();
 
     if (typeof settings.childSelector !== "undefined") {
         children = listElement.find(settings.childSelector);
     }
 
-    if (typeof settings.pagerSelector !== "undefined") {
-        pager = $(settings.pagerSelector);
-    }
-
     var numItems = children.length;
     var numPages = Math.ceil(numItems / perPage);
+
+    if (typeof settings.pagerSelector !== "undefined") {
+        var pager = $(settings.pagerSelector);
+    } else {
+        var pager = $('<ul class="pagination"></ul>').appendTo(listElement.parent());
+    }
 
     pager.data("curr", 0);
 
@@ -30,10 +31,8 @@ $.fn.pageMe = function(opts) {
         $('<li><a href="#" class="prev_link">«</a></li>').appendTo(pager);
     }
 
-    if (settings.hidePageNumbers === false) {
-        for (var i = 0; i < numPages; i++) {
-            $('<li><a href="#" class="page_link">' + (i + 1) + '</a></li>').appendTo(pager);
-        }
+    for (var i = 0; i < numPages; i++) {
+        $('<li><a href="#" class="page_link">' + (i + 1) + '</a></li>').appendTo(pager);
     }
 
     if (settings.showPrevNext) {
@@ -45,7 +44,6 @@ $.fn.pageMe = function(opts) {
     if (numPages <= settings.numbersPerPage) {
         pager.find('.next_link').hide();
     }
-    pager.children().eq(1).addClass("active");
 
     children.hide();
     children.slice(0, perPage).show();
@@ -94,21 +92,27 @@ $.fn.pageMe = function(opts) {
 
         pager.data("curr", page);
 
-        if (settings.numbersPerPage > 1) {
-            $('.page_link').hide();
-            if (page <= 1) {
-                $('.page_link').slice(0, settings.numbersPerPage).show();
-            } else if (page >= numPages - 2) {
-                $('.page_link').slice(numPages - settings.numbersPerPage, numPages).show();
-            } else {
-                $('.page_link').slice(page - 1, page + 2).show();
-            }
+        var maxVisiblePages = settings.numbersPerPage;
+        var currentPage = page + 1;
+        var endPage = numPages;
+
+        pager.find('.page_link').hide();
+        if (currentPage <= maxVisiblePages) {
+            pager.find('.page_link').slice(0, maxVisiblePages).show();
+        } else if (currentPage >= (endPage - maxVisiblePages + 1)) {
+            pager.find('.page_link').slice(endPage - maxVisiblePages, endPage).show();
+        } else {
+            var startPage = currentPage - Math.floor(maxVisiblePages / 2);
+            var endPage = currentPage + Math.ceil(maxVisiblePages / 2) - 1;
+            pager.find('.page_link').slice(startPage - 1, endPage).show();
         }
 
         pager.children().removeClass("active");
         pager.find('.page_link').removeClass("active");
         pager.children().eq(page + 1).find('a').addClass("active");
     }
+
+    goTo(0);
 };
 
 $(document).ready(function() {
