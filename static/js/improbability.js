@@ -22,6 +22,9 @@ $.fn.pageMe = function(opts) {
         var pager = $('<ul class="pagination"></ul>').appendTo(listElement.parent());
     }
 
+    // Clear existing pagination elements
+    pager.empty();
+
     var numItems = children.length;
     var numPages = Math.ceil(numItems / perPage);
 
@@ -123,8 +126,11 @@ function isMobile() {
 }
 
 function initializePagination() {
-    var smsPerPage = isMobile() ? 10 : 20;
+    var smsPerPage = isMobile() ? 10 : 25;
     var invoicePerPage = isMobile() ? 6 : 12;
+
+    console.log('SMS Per Page:', smsPerPage); // Debugging: log perPage value for SMS
+    console.log('Invoice Per Page:', invoicePerPage); // Debugging: log perPage value for Invoice
 
     $('#smsHistory').pageMe({
         pagerSelector: '#smsPager',
@@ -151,6 +157,7 @@ $(document).ready(function() {
         initializePagination(); // Reinitialize pagination on window resize
     });
 });
+
 
 
 
