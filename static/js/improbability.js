@@ -118,16 +118,30 @@ $.fn.pageMe = function(opts) {
     goTo(0);  // Initialize pagination to the first page
 };
 
+function isTableMobile() {
+    return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 760;
+}
+
 $(document).ready(function() {
+    var smsPerPage = isTableMobile() ? 10 : 25;
+    var invoicePerPage = isTableMobile() ? 6 : 12;
+
     $('#smsHistory').pageMe({
         pagerSelector: '#smsPager',
         showPrevNext: true,
         hidePageNumbers: false,
-        perPage: 5,
+        perPage: smsPerPage,
+        numbersPerPage: 3
+    });
+
+    $('#invoiceHistory').pageMe({
+        pagerSelector: '#invoicePager',
+        showPrevNext: true,
+        hidePageNumbers: false,
+        perPage: invoicePerPage,
         numbersPerPage: 3
     });
 });
-
 
 
 
