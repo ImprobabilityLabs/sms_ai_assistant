@@ -57,7 +57,7 @@ $.fn.pageMe = function(opts) {
 
     pager.find('li .page_link').click(function() {
         var clickedPage = $(this).html().valueOf() - 1;
-        goTo(clickedPage, perPage);
+        goTo(clickedPage);
         return false;
     });
     pager.find('li .prev_link').click(function() {
