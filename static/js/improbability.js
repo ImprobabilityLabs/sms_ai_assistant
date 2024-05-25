@@ -78,18 +78,6 @@ $.fn.pageMe = function(opts) {
 
         children.css('display', 'none').slice(startAt, endOn).show();
 
-        if (page >= 1) {
-            pager.find('.prev_link').show();
-        } else {
-            pager.find('.prev_link').hide();
-        }
-
-        if (page < (numPages - 1)) {
-            pager.find('.next_link').show();
-        } else {
-            pager.find('.next_link').hide();
-        }
-
         pager.data("curr", page);
 
         var maxVisiblePages = settings.numbersPerPage;
