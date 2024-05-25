@@ -72,48 +72,46 @@ $.fn.pageMe = function(opts) {
         goTo(goToPage);
     }
 
-    function goTo(page) {
-        var startAt = page * perPage,
-            endOn = startAt + perPage;
+   function goTo(page) {
+    var startAt = page * perPage,
+        endOn = startAt + perPage;
 
-        children.css('display', 'none').slice(startAt, endOn).show();
+    children.css('display', 'none').slice(startAt, endOn).show();
 
-        pager.data("curr", page);
+    pager.data("curr", page);
 
-        var maxVisiblePages = settings.numbersPerPage;
-        var currentPage = page + 1;
-        var endPage = numPages;
+    var maxVisiblePages = settings.numbersPerPage;
+    var currentPage = page + 1;
+    var endPage = numPages;
 
-        pager.find('.page_link').hide();
-        if (currentPage <= maxVisiblePages) {
-            pager.find('.page_link').slice(0, maxVisiblePages).show();
-        } else if (currentPage >= (endPage - maxVisiblePages + 1)) {
-            pager.find('.page_link').slice(endPage - maxVisiblePages, endPage).show();
-        } else {
-            var startPage = currentPage - Math.floor(maxVisiblePages / 2);
-            var endPage = currentPage + Math.ceil(maxVisiblePages / 2) - 1;
-            pager.find('.page_link').slice(startPage - 1, endPage).show();
-        }
-
-        pager.children().removeClass("active");
-        pager.find('.page_link').removeClass("active");
-        pager.children().eq(page + 1).find('a').addClass("active");
-
-        if (page == 0) {
-            pager.find('.prev_link').hide();
-        } else {
-            pager.find('.prev_link').show();
-        }
-
-        if (page == numPages - 1) {
-            pager.find('.next_link').hide();
-        } else {
-            pager.find('.next_link').show();
-        }
+    pager.find('.page_link').hide();
+    if (currentPage <= maxVisiblePages) {
+        pager.find('.page_link').slice(0, maxVisiblePages).show();
+    } else if (currentPage >= (endPage - maxVisiblePages + 1)) {
+        pager.find('.page_link').slice(endPage - maxVisiblePages, endPage).show();
+    } else {
+        var startPage = currentPage - Math.floor(maxVisiblePages / 2);
+        var endPage = currentPage + Math.ceil(maxVisiblePages / 2) - 1;
+        pager.find('.page_link').slice(startPage - 1, endPage).show();
     }
 
-    goTo(0);
-};
+    pager.children().removeClass("active");
+    pager.find('.page_link').removeClass("active");
+    pager.children().eq(page + 1).find('a').addClass("active");
+
+    if (page == 0) {
+        pager.find('.prev_link').hide();
+    } else {
+        pager.find('.prev_link').show();
+    }
+
+    if (page == numPages - 1) {
+        pager.find('.next_link').hide();
+        pager.find('.page_link').eq(endPage-1).show();  // show the last page number
+    } else {
+        pager.find('.next_link').show();
+    }
+}
 
 $(document).ready(function() {
     $('#smsHistory').pageMe({
