@@ -8,6 +8,8 @@ $.fn.pageMe = function(opts) {
         },
         settings = $.extend(defaults, opts);
 
+    console.log('Settings:', settings); // Debugging: log settings to check if perPage is correctly set
+
     var listElement = $this,
         perPage = settings.perPage,
         children = listElement.children();
@@ -118,13 +120,16 @@ $.fn.pageMe = function(opts) {
     goTo(0);  // Initialize pagination to the first page
 };
 
-function isTableMobile() {
+function isMobile() {
     return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 760;
 }
 
 $(document).ready(function() {
-    var smsPerPage = isTableMobile() ? 10 : 25;
-    var invoicePerPage = isTableMobile() ? 6 : 12;
+    var smsPerPage = isMobile() ? 10 : 25;
+    var invoicePerPage = isMobile() ? 6 : 12;
+
+    console.log('SMS Per Page:', smsPerPage); // Debugging: log perPage value for SMS
+    console.log('Invoice Per Page:', invoicePerPage); // Debugging: log perPage value for Invoice
 
     $('#smsHistory').pageMe({
         pagerSelector: '#smsPager',
@@ -142,8 +147,6 @@ $(document).ready(function() {
         numbersPerPage: 3
     });
 });
-
-
 
 
 
