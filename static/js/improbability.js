@@ -1,98 +1,101 @@
 $.fn.pageMe = function(opts) {
     var $this = this,
         defaults = {
-            perPage: 7,               // Default items per page
-            showPrevNext: true,       // Default to show prev/next buttons
-            numbersPerPage: 3,        // Default visible page numbers
-            hidePageNumbers: false    // Default to show page numbers
+            perPage: 7,
+            showPrevNext: true,
+            numbersPerPage: 3,
+            hidePageNumbers: false
         },
-        settings = $.extend(defaults, opts);  // Merge user options with defaults
+        settings = $.extend(defaults, opts);
 
     var listElement = $this,
         perPage = settings.perPage,
         children = listElement.children();
 
     if (typeof settings.childSelector !== "undefined") {
-        children = listElement.find(settings.childSelector);  // Find child elements if a selector is specified
+        children = listElement.find(settings.childSelector);
     }
 
     if (typeof settings.pagerSelector !== "undefined") {
-        var pager = $(settings.pagerSelector);  // Use specified pager selector
+        var pager = $(settings.pagerSelector);
     } else {
-        var pager = $('<ul class="pagination"></ul>').appendTo(listElement.parent());  // Create pager if not specified
+        var pager = $('<ul class="pagination"></ul>').appendTo(listElement.parent());
     }
 
     var numItems = children.length;
-    var numPages = Math.ceil(numItems / perPage);  // Calculate total number of pages
+    var numPages = Math.ceil(numItems / perPage);
 
-    pager.data("curr", 0);  // Initialize current page to 0
+    pager.data("curr", 0);
 
     if (settings.showPrevNext) {
-        $('<li><a href="#" class="prev_link">«</a></li>').appendTo(pager);  // Add prev button
+        $('<li><a href="#" class="prev_link">«</a></li>').appendTo(pager);
     }
 
     for (var i = 0; i < numPages; i++) {
-        $('<li><a href="#" class="page_link">' + (i + 1) + '</a></li>').appendTo(pager);  // Add page numbers
+        $('<li><a href="#" class="page_link">' + (i + 1) + '</a></li>').appendTo(pager);
     }
 
     if (settings.showPrevNext) {
-        $('<li><a href="#" class="next_link">»</a></li>').appendTo(pager);  // Add next button
+        $('<li><a href="#" class="next_link">»</a></li>').appendTo(pager);
     }
 
-    pager.find('.page_link:first').addClass('active');  // Set the first page as active
-    pager.find('.prev_link').hide();  // Hide prev button initially
+    pager.find('.page_link:first').addClass('active');
+    pager.find('.prev_link').hide();
     if (numPages <= settings.numbersPerPage) {
-        pager.find('.next_link').hide();  // Hide next button if total pages are less than visible page numbers
+        pager.find('.next_link').hide();
     }
 
     children.hide();
-    children.slice(0, perPage).show();  // Show the first set of items
+    children.slice(0, perPage).show();
 
     pager.find('li .page_link').click(function() {
         var clickedPage = $(this).html().valueOf() - 1;
-        goTo(clickedPage);  // Go to clicked page
+        goTo(clickedPage);
         return false;
     });
     pager.find('li .prev_link').click(function() {
-        previous();  // Go to previous page
+        previous();
         return false;
     });
     pager.find('li .next_link').click(function() {
-        next();  // Go to next page
+        next();
         return false;
     });
 
     function previous() {
         var goToPage = parseInt(pager.data("curr")) - 1;
-        goTo(goToPage);  // Navigate to previous page
+        goTo(goToPage);
     }
 
     function next() {
         var goToPage = parseInt(pager.data("curr")) + 1;
-        goTo(goToPage);  // Navigate to next page
+        goTo(goToPage);
     }
 
     function goTo(page) {
         var startAt = page * perPage,
             endOn = startAt + perPage;
 
-        children.css('display', 'none').slice(startAt, endOn).show();  // Show the items for the selected page
+        children.css('display', 'none').slice(startAt, endOn).show();
 
-        pager.data("curr", page);  // Update current page
+        pager.data("curr", page);
 
         var maxVisiblePages = settings.numbersPerPage;
         var currentPage = page + 1;
         var endPage = numPages;
 
         pager.find('.page_link').hide();  // Hide all page links initially
-        if (currentPage <= maxVisiblePages) {
-            pager.find('.page_link').slice(0, maxVisiblePages).show();  // Show first few pages
-        } else if (currentPage >= (endPage - maxVisiblePages + 1)) {
-            pager.find('.page_link').slice(endPage - maxVisiblePages, endPage).show();  // Show last few pages
+
+        if (numPages <= maxVisiblePages) {
+            pager.find('.page_link').slice(0, numPages).show();  // Show all pages if total pages is less than or equal to maxVisiblePages
+        } else if (currentPage <= Math.ceil(maxVisiblePages / 2)) {
+            pager.find('.page_link').slice(0, maxVisiblePages).show();  // Show first maxVisiblePages pages
+        } else if (currentPage >= (endPage - Math.floor(maxVisiblePages / 2))) {
+            pager.find('.page_link').slice(endPage - maxVisiblePages, endPage).show();  // Show last maxVisiblePages pages
         } else {
-            var startPage = currentPage - Math.floor(maxVisiblePages / 2);
-            var endPage = currentPage + Math.ceil(maxVisiblePages / 2) - 1;
-            pager.find('.page_link').slice(startPage - 1, endPage).show();  // Show middle pages
+            var startPage = currentPage - Math.floor(maxVisiblePages / 2) - 1;
+            var endPage = currentPage + Math.floor(maxVisiblePages / 2);
+            pager.find('.page_link').slice(startPage, endPage).show();  // Show middle pages
         }
 
         pager.children().removeClass("active");
@@ -107,7 +110,6 @@ $.fn.pageMe = function(opts) {
 
         if (page == numPages - 1) {
             pager.find('.next_link').hide();  // Hide next button on last page
-            pager.find('.page_link:eq(' + (numPages - 1) + ')').show();  // Show last page number
         } else {
             pager.find('.next_link').show();
         }
@@ -125,6 +127,7 @@ $(document).ready(function() {
         numbersPerPage: 3
     });
 });
+
 
 
 
