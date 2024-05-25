@@ -127,6 +127,7 @@ $(document).ready(function() {
 
 
 
+
 document.addEventListener('DOMContentLoaded', function() {
     var form = document.getElementById("improbability-sms-contact-form");
 
