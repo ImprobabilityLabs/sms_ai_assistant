@@ -1,3 +1,6 @@
+let currentPageSms = 0;
+let currentPageInvoice = 0;
+
 $.fn.pageMe = function(opts) {
     var $this = this,
         defaults = {
@@ -147,6 +150,19 @@ function initializePagination() {
         perPage: invoicePerPage,
         numbersPerPage: 3
     });
+
+    // Go to the saved current page
+    $('#smsHistory').pageMe({
+        pagerSelector: '#smsPager',
+        perPage: smsPerPage,
+        currentPage: currentPageSms,
+    });
+
+    $('#invoiceHistory').pageMe({
+        pagerSelector: '#invoicePager',
+        perPage: invoicePerPage,
+        currentPage: currentPageInvoice,
+    });
 }
 
 $(document).ready(function() {
@@ -154,9 +170,12 @@ $(document).ready(function() {
 
     $(window).resize(function() {
         console.log('Window resized'); // Debugging: log when window is resized
+        currentPageSms = $('#smsPager').data('curr') || 0;
+        currentPageInvoice = $('#invoicePager').data('curr') || 0;
         initializePagination(); // Reinitialize pagination on window resize
     });
 });
+
 
 
 
