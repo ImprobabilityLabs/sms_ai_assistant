@@ -21,7 +21,7 @@ $.fn.pageMe = function(opts) {
         pager = $(settings.pagerSelector);
     }
 
-    var numItems = children.length;  // Changed from size() to length
+    var numItems = children.length;
     var numPages = Math.ceil(numItems / perPage);
 
     pager.data("curr", 0);
@@ -101,8 +101,9 @@ $.fn.pageMe = function(opts) {
 
         if (settings.numbersPerPage > 1) {
             $('.page_link').hide();
-            var start = Math.max(0, page - 1); // Adjust to show previous and next page
-            $('.page_link').slice(start, settings.numbersPerPage + start).show();
+            var start = Math.max(0, page - 1); // Show the previous page button when on the second page
+            var end = start + 3; // Show a total of three page number buttons
+            $('.page_link').slice(start, end).show();
         }
 
         pager.children().removeClass("active");
@@ -119,7 +120,6 @@ $(document).ready(function() {
         perPage: 5
     });
 });
-
 
 
 
