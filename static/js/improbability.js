@@ -1,4 +1,3 @@
-// Global variables to track current page
 let currentPageSms = sessionStorage.getItem('currentPageSms') ? parseInt(sessionStorage.getItem('currentPageSms')) : 0;
 let currentPageInvoice = sessionStorage.getItem('currentPageInvoice') ? parseInt(sessionStorage.getItem('currentPageInvoice')) : 0;
 
@@ -159,14 +158,23 @@ function initializePagination() {
     });
 }
 
+function debounce(func, wait) {
+    let timeout;
+    return function() {
+        const context = this, args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), wait);
+    };
+}
+
 $(document).ready(function() {
     initializePagination();
 
-    $(window).resize(function() {
+    $(window).resize(debounce(function() {
         currentPageSms = $('#smsPager').data('curr') || 0;
         currentPageInvoice = $('#invoicePager').data('curr') || 0;
         initializePagination(); // Reinitialize pagination on window resize
-    });
+    }, 250));
 });
 
 
