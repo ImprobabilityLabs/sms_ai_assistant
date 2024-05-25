@@ -1,4 +1,5 @@
 $.fn.pageMe = function(opts) {
+    console.log('pageMe function called with opts:', opts); // Debugging: log function call
     var $this = this,
         defaults = {
             perPage: 7,
@@ -8,11 +9,13 @@ $.fn.pageMe = function(opts) {
         },
         settings = $.extend(defaults, opts);
 
-    console.log('Settings:', settings); // Debugging: log settings to check if perPage is correctly set
+    console.log('Settings after extend:', settings); // Debugging: log settings to check if perPage is correctly set
 
     var listElement = $this,
         perPage = settings.perPage,
         children = listElement.children();
+
+    console.log('Number of children:', children.length); // Debugging: log number of children
 
     if (typeof settings.childSelector !== "undefined") {
         children = listElement.find(settings.childSelector);
@@ -26,6 +29,8 @@ $.fn.pageMe = function(opts) {
 
     var numItems = children.length;
     var numPages = Math.ceil(numItems / perPage);
+
+    console.log('numItems:', numItems, 'numPages:', numPages); // Debugging: log number of items and pages
 
     pager.data("curr", 0);
 
@@ -147,6 +152,7 @@ $(document).ready(function() {
         numbersPerPage: 3
     });
 });
+
 
 
 
