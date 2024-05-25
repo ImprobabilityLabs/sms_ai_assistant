@@ -1,5 +1,6 @@
-let currentPageSms = 0;
-let currentPageInvoice = 0;
+// Global variables to track current page
+let currentPageSms = sessionStorage.getItem('currentPageSms') ? parseInt(sessionStorage.getItem('currentPageSms')) : 0;
+let currentPageInvoice = sessionStorage.getItem('currentPageInvoice') ? parseInt(sessionStorage.getItem('currentPageInvoice')) : 0;
 
 $.fn.pageMe = function(opts) {
     var $this = this,
@@ -31,7 +32,7 @@ $.fn.pageMe = function(opts) {
     var numItems = children.length;
     var numPages = Math.ceil(numItems / perPage);
 
-    pager.data("curr", 0);
+    pager.data("curr", settings.currentPage || 0);
 
     if (settings.showPrevNext) {
         $('<li><a href="#" class="prev_link">«</a></li>').appendTo(pager);
@@ -119,9 +120,16 @@ $.fn.pageMe = function(opts) {
         } else {
             pager.find('.next_link').show();
         }
+
+        // Save the current page in session storage
+        if ($this.attr('id') === 'smsHistory') {
+            sessionStorage.setItem('currentPageSms', page);
+        } else if ($this.attr('id') === 'invoiceHistory') {
+            sessionStorage.setItem('currentPageInvoice', page);
+        }
     }
 
-    goTo(0);  // Initialize pagination to the first page
+    goTo(settings.currentPage || 0);  // Initialize pagination to the first page or saved page
 };
 
 function isMobile() {
@@ -132,15 +140,13 @@ function initializePagination() {
     var smsPerPage = isMobile() ? 10 : 20;
     var invoicePerPage = isMobile() ? 6 : 12;
 
-    console.log('SMS Per Page:', smsPerPage); // Debugging: log perPage value for SMS
-    console.log('Invoice Per Page:', invoicePerPage); // Debugging: log perPage value for Invoice
-
     $('#smsHistory').pageMe({
         pagerSelector: '#smsPager',
         showPrevNext: true,
         hidePageNumbers: false,
         perPage: smsPerPage,
-        numbersPerPage: 3
+        numbersPerPage: 3,
+        currentPage: currentPageSms // Set current page from global variable
     });
 
     $('#invoiceHistory').pageMe({
@@ -148,20 +154,8 @@ function initializePagination() {
         showPrevNext: true,
         hidePageNumbers: false,
         perPage: invoicePerPage,
-        numbersPerPage: 3
-    });
-
-    // Go to the saved current page
-    $('#smsHistory').pageMe({
-        pagerSelector: '#smsPager',
-        perPage: smsPerPage,
-        currentPage: currentPageSms,
-    });
-
-    $('#invoiceHistory').pageMe({
-        pagerSelector: '#invoicePager',
-        perPage: invoicePerPage,
-        currentPage: currentPageInvoice,
+        numbersPerPage: 3,
+        currentPage: currentPageInvoice // Set current page from global variable
     });
 }
 
@@ -169,12 +163,12 @@ $(document).ready(function() {
     initializePagination();
 
     $(window).resize(function() {
-        console.log('Window resized'); // Debugging: log when window is resized
         currentPageSms = $('#smsPager').data('curr') || 0;
         currentPageInvoice = $('#invoicePager').data('curr') || 0;
         initializePagination(); // Reinitialize pagination on window resize
     });
 });
+
 
 
 
