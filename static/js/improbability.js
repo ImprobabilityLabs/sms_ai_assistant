@@ -114,7 +114,7 @@ $(document).ready(function() {
         pagerSelector: '#smsPager',
         showPrevNext: true,
         hidePageNumbers: false,
-        perPage: 10
+        perPage: 5
     });
 });
 
