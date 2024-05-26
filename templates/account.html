@@ -21,7 +21,8 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon/favicon-16x16.png') }}">
     <title>Improbability Labs Inc. - SMS AI Assistant</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <link href="<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/ie10-viewport-bug-workaround.css') }}">
     <script src="{{ url_for('static', filename='js/ie-emulation-modes-warning.js') }}"></script>
@@ -32,8 +33,8 @@
     <![endif]-->
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
     <link href="{{ url_for('static', filename='css/improbability.css') }}" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
   </head>
   <body>
 <div class="headbar">
@@ -118,95 +119,107 @@
   </section>
 </div>
 <!-- Close Account Details Box -->
-      <!-- Open Payment Details Box -->
-      <div class="box box-primary">
-        <h3 class="title black-title">Payment Details</h3><br>
-        <section style="display:block">
-          <div class="row">
-            <div class="col-xs-12">
-              <div class="form-group form-type-text">
-                <label for="card-name">Card Holder Name</label>
-                <input id="card-name" type="text" class="form-control" name="card-name" required="" placeholder="Card Holder Name">
-              </div>
-            </div>
-            <div class="col-xs-12">
-              <div class="form-group form-type-text">
-                <label for="card-cc">Card Number</label>
-                <input id="card-cc" type="text" class="form-control" name="card-cc" placeholder="Card Number" required="">
-              </div>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-              <div class="form-group form-type-text">
-                <label for="card-exp">Card Expiry Date</label>
-                <input id="card-exp" type="text" class="form-control" placeholder="MM/YY" data-label="" name="card-exp" required="">
-              </div>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-              <div class="form-group form-type-text">
-                <label for="card-cvc">Card CVC</label>
-                <input id="card-cvc" type="text" class="form-control" name="card-cvc" placeholder="CVC" required="">
-              </div>
-            </div>
-            <div class="col-xs-12">
-              <div class="form-group form-type-text">
-                <label for="billing-address">Billing Address</label>
-                <input id="billing-address" type="text" class="form-control" name="billing-address" placeholder="Billing Address" required="">
-              </div>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-              <div class="form-group form-type-select">
-                <label for="country">Billing Country</label>
-                <select id="country" class="form-control" required="" onchange="updateStates(this.value);">
-                  <option selected disabled>Please select a billing country</option>
-                  <option value="USA">United States of America</option>
-                  <option value="CAN">Canada</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-              <div class="form-group form-type-select">
-                <label for="state">Billing State/Province</label>
-                <select id="state" class="form-control" required="">
-                  <!-- Options will be dynamically updated based on selected country -->
-                </select>
-              </div>
-            </div>
-            <div class="col-xs-12">
-              <div class="form-group form-type-text">
-                <label for="billing-zip">Billing Postal Code/ZIP</label>
-                <input id="billing-zip" type="text" class="form-control" name="billing-zip" placeholder="Postal Code/ZIP" required="" autocomplete="postal-code">
-              </div>
+<!-- Open Payment Details Box -->
+<div class="box box-primary">
+  <h3 class="title black-title">Payment Details</h3>
+  <form id="payment-form">
+    <section style="display:block">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="card-name">Card Holder Name</label>
+            <input id="card-name" type="text" class="form-control" name="card-name" required="" placeholder="Card Holder Name" value="{{ form_data.get('card-name', '') }}">
+          </div>
+        </div>
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="card-number-element">Card Number</label>
+            <div id="card-number-element" class="form-control">
+              <!-- Stripe Elements will insert the card number input here -->
             </div>
           </div>
-          <div class="row" style="display:block">
-            <div id="cc-error" class="col-xs-12 col-xs-6" style="display:none">
-              <p class="alert alert-danger">Code is not valid</p>
+        </div>
+        <div class="col-xs-6">
+          <div class="form-group">
+            <label for="card-expiry-element">Expiration Date</label>
+            <div id="card-expiry-element" class="form-control">
+              <!-- Stripe Elements will insert the expiry input here -->
             </div>
           </div>
-          <div class="row">
-            <div class="col-xs-12">
-              <div class="row">
-                <div class="col-xs-6">
-                  <p class="cc-cards pull-right-xs">
-                    <i class="fa fa-cc-visa"></i>
-                    <i class="fa fa-cc-mastercard"></i>
-                    <i class="fa fa-cc-amex"></i>
-                  </p>
-                </div>
-                <div class="col-xs-6 col-xs-6-update right">
-                  <p class="pull-right-xs">
-                    <button id="card-update" type="submit" class="btn btn-custom-primary btn-lg btn-block">Update</button>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-xs-12">
-              <div id="warning" class="alert alert-danger" role="alert" style="display:none;margin:15px 0px"></div>
+        </div>
+        <div class="col-xs-6">
+          <div class="form-group">
+            <label for="card-cvc-element">CVC</label>
+            <div id="card-cvc-element" class="form-control">
+              <!-- Stripe Elements will insert the CVC input here -->
             </div>
           </div>
-        </section>
+        </div>
+        <div class="col-xs-12">
+          <div class="form-group form-type-text">
+            <label for="billing-address">Billing Address</label>
+            <input id="billing-address" type="text" class="form-control" name="billing-address" placeholder="Billing Address" required="" value="{{ form_data.get('billing-address', '') }}">
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="form-group form-type-select">
+            <label for="billing-country">Billing Country</label>
+            <select id="billing-country" class="form-control" required="" name="billing-country" title="Select the billing country." onchange="updateStates(this.value);">
+              <option {% if form_data.get('billing-country') == None %}selected {% endif %}disabled>Please select a billing country</option>
+              <option value="US" {% if form_data.get('billing-country') == 'USA' %}selected{% endif %}>United States of America</option>
+              <option value="CA" {% if form_data.get('billing-country') == 'CAN' %}selected{% endif %}>Canada</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="form-group form-type-select">
+            <label for="billing-state">Billing State/Province</label>
+            <select id="billing-state" class="form-control" required="" name="billing-state">
+              <!-- Options will be dynamically updated based on selected country -->
+            </select>
+          </div>
+        </div>
+        <div class="col-xs-12">
+          <div class="form-group form-type-text">
+            <label for="billing-zip">Billing Postal Code/ZIP</label>
+            <input id="billing-zip" type="text" class="form-control" name="billing-zip" placeholder="Postal Code/ZIP" required="" autocomplete="postal-code" value="{{ form_data.get('billing-zip', '') }}">
+          </div>
+        </div>
       </div>
-      <!-- Close Payment Details Box -->
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="row">
+            <div class="col-xs-6">
+              <p class="cc-cards pull-right-xs">
+                <i class="fa fa-cc-visa"></i>
+                <i class="fa fa-cc-mastercard"></i>
+                <i class="fa fa-cc-amex"></i>
+              </p>
+            </div>
+            <div class="col-xs-12 col-sm-3 col-xs-6-update right">
+              <p class="pull-right-xs">
+                <button id="card-update" type="submit" class="btn btn-custom-primary btn-lg btn-block">Update</button>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="display:block">
+        <div id="cc-error" class="col-xs-12" style="{% if error %}display:block{% else %}display:none{% endif %}">
+          {% if error %}
+            <div style="color: red; border: 1px solid red; padding: 10px;">
+              <p><strong>Please correct the following errors:</strong></p>
+              <ul>
+                <li>{{ error }}</li>
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+  </form>
+</div>
+<!-- Close Payment Details Box -->
 <!-- Open Cancel Subscription Box -->
 <div class="box box-primary">
   <h3 class="title black-title">Cancel Subscription</h3><br>
@@ -335,11 +348,36 @@
         </div>
       </div>
     </footer>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="{{ url_for('static', filename='js/ie10-viewport-bug-workaround.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.3/js/bootstrap-select.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js"></script>
+    <script src="{{ url_for('static', filename='js/stripe.js') }}"></script>
     <script src="{{ url_for('static', filename='js/improbability.js') }}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const countrySelect = document.getElementById('billing-country');
+            if (countrySelect) {
+                const selectedCountry = countrySelect.value;
+                if (selectedCountry) {
+                    updateStates(selectedCountry);
+                    
+                    // Set the state/province if it was previously selected
+                    const selectedState = "{{ form_data.get('billing-state', '') }}";
+                    if (selectedState) {
+                        const stateSelect = document.getElementById('billing-state');
+                        const options = stateSelect.options;
+                        for (let i = 0; i < options.length; i++) {
+                            if (options[i].value === selectedState) {
+                                options[i].selected = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
   </body>
 </html>
