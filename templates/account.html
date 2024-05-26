@@ -431,6 +431,24 @@ function toggleEdit(event) {
 
 // Attach the toggleEdit function to the button click event
 document.getElementById('card-update').addEventListener('click', toggleEdit);
+
+document.getElementById('cancel-subscription').addEventListener('click', function(event) {
+  var button = event.target;
+  var message = document.getElementById('cancel-message');
+  
+  if (button.name === 'cancel-subscription') {
+    // Change button state to confirm
+    button.name = 'confirm-cancel';
+    button.textContent = 'Confirm';
+    // Update message
+    message.textContent = 'Please confirm your subscription cancellation.';
+    message.style.color = 'red';
+  } else if (button.name === 'confirm-cancel') {
+    // Submit the form
+    document.getElementById('cancel-form').submit();
+  }
+});
+
     </script>
   </body>
 </html>
