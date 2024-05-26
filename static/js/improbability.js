@@ -569,36 +569,45 @@ function updateStates(country) {
           e.target.value = input;
       });
 
-      document.getElementById('billing-country').addEventListener('change', function() {
-          document.getElementById('billing-zip').value = ''; // Clear postal code field when country changes
-      });
 
-      document.getElementById('billing-zip').addEventListener('input', function(e) {
-          const country = document.getElementById('billing-country').value;
-          let input = e.target.value.toUpperCase(); // Convert to uppercase
-          let formattedInput = '';
 
-          if (country === 'US') {
-              // Remove all non-digit characters and limit to 5 digits for US ZIP code
-              formattedInput = input.replace(/[^0-9]/g, '').substring(0, 5);
-          } else if (country === 'CA') {
-              // Remove all non-alphanumeric characters
-              input = input.replace(/[^A-Z0-9]/g, '');
 
-              // Format as Canadian postal code (A1A 1A1)
-              if (/^[A-Z]\d[A-Z]\d[A-Z]\d$/.test(input)) {
-                  formattedInput = input.substring(0, 3) + ' ' + input.substring(3, 6);
-              } else {
-                  // Allow typing only valid characters for Canadian postal codes
-                  formattedInput = input.split('').filter((char, index) => {
-                      // Allow only first 6 characters and follow the pattern letter, digit, letter, etc.
-                      return index < 6 && ((index % 2 === 0 && /[A-Z]/.test(char)) || (index % 2 !== 0 && /\d/.test(char)));
-                  }).join('');
-              }
-          }
+document.addEventListener('DOMContentLoaded', function() {
+  const billingCountry = document.getElementById('billing-country');
+  const billingZip = document.getElementById('billing-zip');
 
-          e.target.value = formattedInput;
-      });
+  billingCountry.addEventListener('change', function() {
+    billingZip.value = ''; // Clear postal code field when country changes
+  });
+
+  billingZip.addEventListener('input', function(e) {
+    const country = billingCountry.value;
+    let input = e.target.value.toUpperCase(); // Convert to uppercase
+    let formattedInput = '';
+
+    if (country === 'US') {
+      // Remove all non-digit characters and limit to 5 digits for US ZIP code
+      formattedInput = input.replace(/[^0-9]/g, '').substring(0, 5);
+    } else if (country === 'CA') {
+      // Remove all non-alphanumeric characters
+      input = input.replace(/[^A-Z0-9]/g, '');
+
+      // Format as Canadian postal code (A1A 1A1)
+      if (/^[A-Z]\d[A-Z]\d[A-Z]\d$/.test(input)) {
+        formattedInput = input.substring(0, 3) + ' ' + input.substring(3, 6);
+      } else {
+        // Allow typing only valid characters for Canadian postal codes
+        formattedInput = input.split('').filter((char, index) => {
+          // Allow only first 6 characters and follow the pattern letter, digit, letter, etc.
+          return index < 6 && ((index % 2 === 0 && /[A-Z]/.test(char)) || (index % 2 !== 0 && /\d/.test(char)));
+        }).join('');
+      }
+    }
+
+    e.target.value = formattedInput;
+  });
+});
+
 
 document.addEventListener('DOMContentLoaded', function() {
     // Function to update subscription details
