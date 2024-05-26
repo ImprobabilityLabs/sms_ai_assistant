@@ -199,9 +199,9 @@ def configure_routes(app):
                 stripe_product = stripe.Product.retrieve(stripe_plan.product)
                 
                 # Format the dates
-                start_date = datetime.strptime(subscription.current_period_start, '%Y-%m-%d %H:%M:%S').strftime('%A, %B %d, %Y')
-                end_date = datetime.strptime(subscription.current_period_end, '%Y-%m-%d %H:%M:%S').strftime('%A, %B %d, %Y')
-            
+                start_date = subscription.current_period_start.strftime('%A, %B %d, %Y')
+                end_date = subscription.current_period_end.strftime('%A, %B %d, %Y')
+
                 # Determine the interval
                 interval = 'Monthly' if stripe_plan.recurring['interval'] == 'month' else 'Yearly'
 
