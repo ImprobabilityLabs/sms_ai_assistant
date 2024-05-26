@@ -240,7 +240,7 @@ def configure_routes(app):
                     invoice_data.append({
                         'number': invoice.number,
                         'type': 'Subscription',  # Assuming all invoices are for subscriptions
-                        'date': datetime.fromtimestamp(invoice.created).strftime('%Y-%m-%d %H:%M:%S'),
+                        'date': datetime.fromtimestamp(invoice.created),
                         'amount': invoice.amount_due / 100,  # Convert cents to dollars
                         'status': invoice.status,
                         'receipt_url': invoice.hosted_invoice_url  # URL for the printable receipt
