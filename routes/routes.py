@@ -203,11 +203,11 @@ def configure_routes(app):
 
                     # Extract billing information
                     form_data = {
-                        'card-name': customer['name'] if customer.get('name') else '',
-                        'billing-address': customer['address']['line1'] if customer.get('address') else '',
-                        'billing-country': customer['address']['country'] if customer.get('address') else '',
-                        'billing-state': customer['address']['state'] if customer.get('address') else '',
-                        'billing-zip': customer['address']['postal_code'] if customer.get('address') else ''
+                        'card-name': customer_info['name'] if customer_info.get('name') else '',
+                        'billing-address': customer_info['address']['line1'] if customer_info.get('address') else '',
+                        'billing-country': customer_info['address']['country'] if customer_info.get('address') else '',
+                        'billing-state': customer_info['address']['state'] if customer_info.get('address') else '',
+                        'billing-zip': customer_info['address']['postal_code'] if customer_info.get('address') else ''
                     }
                 else:
                     form_data = request.form
