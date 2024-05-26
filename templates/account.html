@@ -303,18 +303,28 @@ function toggleEdit() {
             <td class="text-center hidden-xs hidden-sm">{{ invoice.date.strftime('%B %d, %Y %I:%M%p') }}</td>
             <td class="text-center hidden-md hidden-lg">{{ invoice.date.strftime('%B %d, %Y %I:%M%p') }}</td>
             <td class="text-center text-success"><strong>${{ '%.2f'|format(invoice.amount) }}</strong></td>
-            <td class="text-center hidden-xs hidden-sm text-capitalize"><strong>{{ invoice.status }}</strong></td>
-            <td class="text-center hidden-md hidden-lg text-capitalize">
-<strong>
+            <td class="text-center hidden-xs hidden-sm text-capitalize">
+    <strong>
         {% if invoice.status.strip().lower() == 'paid' %}
-            <span class="glyphicon glyphicon-ok icon-paid"></span>
+            <span style="color: green;">{{ invoice.status }}</span>
         {% elif invoice.status.strip().lower() == 'not paid' %}
-            <span class="glyphicon glyphicon-remove icon-not-paid"></span>
+            <span style="color: red;">{{ invoice.status }}</span>
+        {% else %}
+            <span>{{ invoice.status }}</span>
+        {% endif %}
+    </strong>
+</td>
+<td class="text-center hidden-md hidden-lg text-capitalize">
+    <strong>
+        {% if invoice.status.strip().lower() == 'paid' %}
+            <span class="glyphicon glyphicon-ok icon-paid" style="color: green;"></span>
+        {% elif invoice.status.strip().lower() == 'not paid' %}
+            <span class="glyphicon glyphicon-remove icon-not-paid" style="color: red;"></span>
         {% else %}
             <span class="glyphicon glyphicon-cog icon-processing"></span>
         {% endif %}
     </strong>
-            </td>
+</td>
             <td class="hidden-xs hidden-sm">
                 <p data-placement="top" data-toggle="tooltip" title="Print">
                     <a href="{{ invoice.receipt_url }}" target="_blank" class="btn btn-custom-primary btn-xs">
