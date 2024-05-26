@@ -197,17 +197,20 @@ def configure_routes(app):
                 # Fetch User Customer ID
                 customer_id = stripe.Customer.retrieve(user.stripe_customer_id)
 
-                # Retrieve customer information from Stripe
-                customer_info = stripe.Customer.retrieve(customer_id)
+                if request.method != 'POST':
+                    # Retrieve customer information from Stripe
+                    customer_info = stripe.Customer.retrieve(customer_id)
 
-                # Extract billing information
-                form_data = {
-                    'card-name': customer['name'] if customer.get('name') else '',
-                    'billing-address': customer['address']['line1'] if customer.get('address') else '',
-                    'billing-country': customer['address']['country'] if customer.get('address') else '',
-                    'billing-state': customer['address']['state'] if customer.get('address') else '',
-                    'billing-zip': customer['address']['postal_code'] if customer.get('address') else ''
-                }
+                    # Extract billing information
+                    form_data = {
+                        'card-name': customer['name'] if customer.get('name') else '',
+                        'billing-address': customer['address']['line1'] if customer.get('address') else '',
+                        'billing-country': customer['address']['country'] if customer.get('address') else '',
+                        'billing-state': customer['address']['state'] if customer.get('address') else '',
+                        'billing-zip': customer['address']['postal_code'] if customer.get('address') else ''
+                    }
+                else:
+                    form_data = request.form
 
                 # Fetch the plan details from Stripe
                 stripe_plan = stripe.Price.retrieve(subscription.stripe_plan_id)
@@ -261,7 +264,7 @@ def configure_routes(app):
                         'receipt_url': invoice.hosted_invoice_url  # URL for the printable receipt
                     })
 
-                return render_template('account.html', menu=menu, invoices=invoice_data, form_data=request.form, subscription_details=subscription_details)
+                return render_template('account.html', menu=menu, invoices=invoice_data, form_data=form_data, subscription_details=subscription_details)
         
             except Exception as e:
                 return jsonify({'error': str(e)}), 500
