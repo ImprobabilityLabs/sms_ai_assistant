@@ -197,16 +197,22 @@ def configure_routes(app):
                 # Fetch the plan details from Stripe
                 stripe_plan = stripe.Price.retrieve(subscription.stripe_plan_id)
                 stripe_product = stripe.Product.retrieve(stripe_plan.product)
+                
+                # Format the dates
+                start_date = datetime.strptime(subscription.current_period_start, '%Y-%m-%d %H:%M:%S').strftime('%A, %B %d, %Y')
+                end_date = datetime.strptime(subscription.current_period_end, '%Y-%m-%d %H:%M:%S').strftime('%A, %B %d, %Y')
             
+                # Determine the interval
+                interval = 'Monthly' if stripe_plan.recurring['interval'] == 'month' else 'Yearly'
+
                 subscription_details = {
                     'name': stripe_product.name,
                     'price': f"${stripe_plan.unit_amount / 100:.2f} {stripe_plan.currency.upper()}",
-                    'interval': stripe_plan.recurring['interval'],
-                    'current_period_start': subscription.current_period_start,
-                    'current_period_end': subscription.current_period_end,
+                    'interval': interval,
+                    'current_period_start': start_date,
+                    'current_period_end': end_date,
                     'status': subscription.status.capitalize()
                 }
-
 
                 # Find the subscription with the specified price ID
                 subscription_id = None
