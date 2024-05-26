@@ -246,31 +246,38 @@
 </div>
 <!-- Close Cancel Subscription Box -->
 <script>
-function toggleEdit() {
+function toggleEdit(event) {
+  event.preventDefault(); // Prevent the default form submission
+
   const formElements = document.querySelectorAll('#payment-form .form-control');
   const editButton = document.getElementById('card-update');
 
-  formElements.forEach(element => {
-    if (element.id !== 'card-number-element' && element.id !== 'card-expiry-element' && element.id !== 'card-cvc-element') {
-      element.disabled = !element.disabled;
-    }
-  });
-
-  // Update Stripe elements
   if (editButton.textContent === 'Edit') {
+    // Enable form elements for editing
+    formElements.forEach(element => {
+      if (element.id !== 'card-number-element' && element.id !== 'card-expiry-element' && element.id !== 'card-cvc-element') {
+        element.disabled = false;
+      }
+    });
+
+    // Enable Stripe elements
     cardNumber.update({ disabled: false });
     cardExpiry.update({ disabled: false });
     cardCvc.update({ disabled: false });
+
+    // Change button to 'Save'
     editButton.textContent = 'Save';
-    editButton.type = 'submit';
   } else {
-    cardNumber.update({ disabled: true });
-    cardExpiry.update({ disabled: true });
-    cardCvc.update({ disabled: true });
-    editButton.textContent = 'Edit';
-    editButton.type = 'button';
+    // Validate payment details
+    if (validatePaymentDetails()) {
+      // Submit the form if valid
+      document.getElementById('payment-form').submit();
+    }
   }
 }
+
+// Attach the toggleEdit function to the button click event
+document.getElementById('card-update').addEventListener('click', toggleEdit);
 </script>
       <div class="box box-primary">
         <h3 class="title black-title">Invoices</h3><br>
