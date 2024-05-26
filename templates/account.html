@@ -282,11 +282,11 @@ function toggleEdit() {
 <table id="invoicetable" class="table text-center table-bordered table-striped">
     <thead>
         <tr>
-            <th class="text-center hidden-xs hidden-sm">Invoice Number</th>
-            <th class="text-center hidden-xs hidden-md hidden-lg">Number</th>
+            <th class="text-center hidden-xs hidden-sm hidden-md">Invoice Number</th>
+            <th class="text-center hidden-xs hidden-sm hidden-lg">Number</th>
             <th class="text-center hidden-xs hidden-sm hidden-md">Invoice Type</th>
             <th class="text-center hidden-xs hidden-sm">Invoice Date</th>
-            <th class="text-center hidden-xs hidden-md hidden-lg">Date</th>
+            <th class="text-center hidden-md hidden-lg">Date</th>
             <th class="text-center hidden-xs hidden-sm">Invoice Amount</th>
             <th class="text-center hidden-md hidden-lg">Amount</th>
             <th class="text-center hidden-xs hidden-sm">Invoice Status</th>
@@ -298,10 +298,10 @@ function toggleEdit() {
         {% for invoice in invoices %}
         <tr>
             <td class="text-center hidden-xs hidden-sm"><strong>{{ invoice.number }}</strong></td>
-            <td class="text-center hidden-md hidden-lg"><strong>{{ invoice.number }}</strong></td>
+            <td class="text-center hidden-xs hidden-sm hidden-lg"><strong>{{ invoice.number }}</strong></td>
             <td class="text-center hidden-xs hidden-sm hidden-md">{{ invoice.type }}</td>
-            <td class="text-center hidden-xs hidden-sm">{{ invoice.date }}</td>
-            <td class="text-center hidden-xs hidden-md hidden-lg">{{ invoice.date }}</td>
+            <td class="text-center hidden-xs hidden-sm">{{ invoice.date.strftime('%B %d, %Y %I:%M%p') }}</td>
+            <td class="text-center hidden-md hidden-lg">{{ invoice.date.strftime('%B %d, %Y %I:%M%p') }}</td>
             <td class="text-center text-success"><strong>${{ '%.2f'|format(invoice.amount) }}</strong></td>
             <td class="text-center hidden-xs hidden-sm text-capitalize"><strong>{{ invoice.status }}</strong></td>
             <td class="text-center hidden-md hidden-lg text-capitalize">
