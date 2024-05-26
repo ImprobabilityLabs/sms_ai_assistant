@@ -305,15 +305,15 @@ function toggleEdit() {
             <td class="text-center text-success"><strong>${{ '%.2f'|format(invoice.amount) }}</strong></td>
             <td class="text-center hidden-xs hidden-sm text-capitalize"><strong>{{ invoice.status }}</strong></td>
             <td class="text-center hidden-md hidden-lg text-capitalize">
-                <strong>
-                    {% if invoice.status == 'Paid' %}
-                        <span class="glyphicon glyphicon-ok icon-paid"></span>
-                    {% elif invoice.status == 'Not Paid' %}
-                        <span class="glyphicon glyphicon-remove icon-not-paid"></span>
-                    {% else %}
-                        <span class="glyphicon glyphicon-cog icon-processing"></span>
-                    {% endif %}
-                </strong>
+<strong>
+        {% if invoice.status.strip().lower() == 'paid' %}
+            <span class="glyphicon glyphicon-ok icon-paid"></span>
+        {% elif invoice.status.strip().lower() == 'not paid' %}
+            <span class="glyphicon glyphicon-remove icon-not-paid"></span>
+        {% else %}
+            <span class="glyphicon glyphicon-cog icon-processing"></span>
+        {% endif %}
+    </strong>
             </td>
             <td class="hidden-xs hidden-sm">
                 <p data-placement="top" data-toggle="tooltip" title="Print">
