@@ -193,13 +193,10 @@ def configure_routes(app):
             try:
                 # Fetch customer subscriptions
                 subscriptions = stripe.Subscription.list(customer=user.stripe_customer_id)
-                
-                # Fetch User Customer ID
-                customer_id = stripe.Customer.retrieve(user.stripe_customer_id)
 
                 if request.method != 'POST':
                     # Retrieve customer information from Stripe
-                    customer_info = stripe.Customer.retrieve(customer_id)
+                    customer_info = stripe.Customer.retrieve(user.stripe_customer_id)
 
                     # Extract billing information
                     form_data = {
