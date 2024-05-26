@@ -166,8 +166,8 @@
             <label for="billing-country">Billing Country</label>
             <select id="billing-country" class="form-control" required="" name="billing-country" title="Select the billing country." onchange="updateStates(this.value);" disabled>
               <option {% if form_data.get('billing-country') == None %}selected {% endif %}disabled>Please select a billing country</option>
-              <option value="US" {% if form_data.get('billing-country') == 'USA' %}selected{% endif %}>United States of America</option>
-              <option value="CA" {% if form_data.get('billing-country') == 'CAN' %}selected{% endif %}>Canada</option>
+              <option value="US" {% if form_data.get('billing-country') == 'US' %}selected{% endif %}>United States of America</option>
+              <option value="CA" {% if form_data.get('billing-country') == 'CA' %}selected{% endif %}>Canada</option>
             </select>
           </div>
         </div>
