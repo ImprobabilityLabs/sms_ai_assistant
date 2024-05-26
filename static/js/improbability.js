@@ -897,6 +897,7 @@ function validatePaymentDetails() {
     const country = document.getElementById('billing-country');
     const state = document.getElementById('billing-state');
     const billingZip = document.getElementById('billing-zip');
+
     if (country) {
         if (country.selectedIndex === 0) {
             errors.push("Billing Country is required.");
@@ -921,19 +922,20 @@ function validatePaymentDetails() {
 
     // Validate Postal Code based on selected Country
     let zipPattern;
-    if (country.selectedIndex > 0) {
+    if (country && country.selectedIndex > 0) {
         const countryCode = country.value;
-        if (countryCode === "USA") {
+        console.log('Country code:', countryCode);
+        if (countryCode === "US") {
             zipPattern = /^\d{5}$/;
-        } else if (countryCode === "CAN") {
+        } else if (countryCode === "CA") {
             zipPattern = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
         }
 
-        if (zipPattern && !zipPattern.test(billingZip.value.replace(/\s/g, ''))) {
+        if (zipPattern && billingZip && !zipPattern.test(billingZip.value.replace(/\s/g, ''))) {
             errors.push("Billing Postal Code/ZIP is invalid for the selected country.");
             billingZip.style.borderColor = 'red';
             isValid = false;
-        } else {
+        } else if (billingZip) {
             billingZip.style.borderColor = '';
         }
     }
