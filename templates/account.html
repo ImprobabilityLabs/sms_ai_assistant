@@ -297,7 +297,7 @@ function toggleEdit() {
     <tbody id="invoiceHistory">
         {% for invoice in invoices %}
         <tr>
-            <td class="text-center hidden-xs hidden-sm"><strong>{{ invoice.number }}</strong></td>
+            <td class="text-center hidden-xs hidden-sm hidden-md"><strong>{{ invoice.number }}</strong></td>
             <td class="text-center hidden-xs hidden-sm hidden-lg"><strong>{{ invoice.number }}</strong></td>
             <td class="text-center hidden-xs hidden-sm hidden-md">{{ invoice.type }}</td>
             <td class="text-center hidden-xs hidden-sm">{{ invoice.date.strftime('%B %d, %Y %I:%M%p') }}</td>
