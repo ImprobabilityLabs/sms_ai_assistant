@@ -246,7 +246,7 @@ def configure_routes(app):
                         'receipt_url': invoice.hosted_invoice_url  # URL for the printable receipt
                     })
 
-                return render_template('account.html', menu=menu, invoices=invoice_data, subscription_details=subscription_details)
+                return render_template('account.html', menu=menu, invoices=invoice_data, form_data=request.form, subscription_details=subscription_details)
         
             except Exception as e:
                 return jsonify({'error': str(e)}), 500
