@@ -576,12 +576,19 @@ document.addEventListener('DOMContentLoaded', function() {
   const billingCountry = document.getElementById('billing-country');
   const billingZip = document.getElementById('billing-zip');
 
+  console.log('Initial setup:');
+  console.log('billingCountry:', billingCountry);
+  console.log('billingZip:', billingZip);
+
   billingCountry.addEventListener('change', function() {
+    console.log('Country changed to:', billingCountry.value);
     billingZip.value = ''; // Clear postal code field when country changes
+    console.log('Cleared billing-zip value');
   });
 
   billingZip.addEventListener('input', function(e) {
     const country = billingCountry.value;
+    console.log('Input event triggered:', e.target.value);
     let input = e.target.value.toUpperCase(); // Convert to uppercase
     let formattedInput = '';
 
@@ -604,6 +611,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
 
+    console.log('Formatted input:', formattedInput);
     e.target.value = formattedInput;
   });
 });
