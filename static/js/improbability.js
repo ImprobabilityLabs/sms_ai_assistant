@@ -540,80 +540,86 @@ function updateStates(country) {
     }
 }
 
-
-
-      document.getElementById('user-mobile').addEventListener('input', function() {
-          const inputElement = this;
-          let phoneNumber = inputElement.value.replace(/\D/g, ''); // Remove all non-numeric characters
-
-          // Limit to 10 digits for US and Canadian numbers
-          if (phoneNumber.length > 10) {
-              phoneNumber = phoneNumber.slice(0, 10);
-          }
-
-          // Ensure the area code does not start with 0 or 1
-          if (phoneNumber.length >= 1 && (phoneNumber.slice(0, 1) === '0' || phoneNumber.slice(0, 1) === '1')) {
-              phoneNumber = phoneNumber.slice(1);
-          }
-
-          // Apply formatting only when all 10 digits are present
-          if (phoneNumber.length === 10) {
-              phoneNumber = '(' + phoneNumber.slice(0, 3) + ') ' + phoneNumber.slice(3, 6) + '-' + phoneNumber.slice(6);
-          }
-
-          inputElement.value = phoneNumber; // Update the input value with formatted or unformatted number
-      });
-
-      document.getElementById('card-name').addEventListener('input', function(e) {
-          var input = e.target.value.replace(/[^A-Za-z ]/g, ''); // Remove non-alphabetic characters
-          e.target.value = input;
-      });
-
-
-
-
 document.addEventListener('DOMContentLoaded', function() {
+  // For billing country and zip code validation
   const billingCountry = document.getElementById('billing-country');
   const billingZip = document.getElementById('billing-zip');
 
-  console.log('Initial setup:');
-  console.log('billingCountry:', billingCountry);
-  console.log('billingZip:', billingZip);
+  if (billingCountry && billingZip) {
+    console.log('Initial setup:');
+    console.log('billingCountry:', billingCountry);
+    console.log('billingZip:', billingZip);
 
-  billingCountry.addEventListener('change', function() {
-    console.log('Country changed to:', billingCountry.value);
-    billingZip.value = ''; // Clear postal code field when country changes
-    console.log('Cleared billing-zip value');
-  });
+    billingCountry.addEventListener('change', function() {
+      console.log('Country changed to:', billingCountry.value);
+      billingZip.value = ''; // Clear postal code field when country changes
+      console.log('Cleared billing-zip value');
+    });
 
-  billingZip.addEventListener('input', function(e) {
-    const country = billingCountry.value;
-    console.log('Input event triggered:', e.target.value);
-    let input = e.target.value.toUpperCase(); // Convert to uppercase
-    let formattedInput = '';
+    billingZip.addEventListener('input', function(e) {
+      const country = billingCountry.value;
+      console.log('Input event triggered:', e.target.value);
+      let input = e.target.value.toUpperCase(); // Convert to uppercase
+      let formattedInput = '';
 
-    if (country === 'US') {
-      // Remove all non-digit characters and limit to 5 digits for US ZIP code
-      formattedInput = input.replace(/[^0-9]/g, '').substring(0, 5);
-    } else if (country === 'CA') {
-      // Remove all non-alphanumeric characters
-      input = input.replace(/[^A-Z0-9]/g, '');
+      if (country === 'US') {
+        // Remove all non-digit characters and limit to 5 digits for US ZIP code
+        formattedInput = input.replace(/[^0-9]/g, '').substring(0, 5);
+      } else if (country === 'CA') {
+        // Remove all non-alphanumeric characters
+        input = input.replace(/[^A-Z0-9]/g, '');
 
-      // Format as Canadian postal code (A1A 1A1)
-      if (/^[A-Z]\d[A-Z]\d[A-Z]\d$/.test(input)) {
-        formattedInput = input.substring(0, 3) + ' ' + input.substring(3, 6);
-      } else {
-        // Allow typing only valid characters for Canadian postal codes
-        formattedInput = input.split('').filter((char, index) => {
-          // Allow only first 6 characters and follow the pattern letter, digit, letter, etc.
-          return index < 6 && ((index % 2 === 0 && /[A-Z]/.test(char)) || (index % 2 !== 0 && /\d/.test(char)));
-        }).join('');
+        // Format as Canadian postal code (A1A 1A1)
+        if (/^[A-Z]\d[A-Z]\d[A-Z]\d$/.test(input)) {
+          formattedInput = input.substring(0, 3) + ' ' + input.substring(3, 6);
+        } else {
+          // Allow typing only valid characters for Canadian postal codes
+          formattedInput = input.split('').filter((char, index) => {
+            // Allow only first 6 characters and follow the pattern letter, digit, letter, etc.
+            return index < 6 && ((index % 2 === 0 && /[A-Z]/.test(char)) || (index % 2 !== 0 && /\d/.test(char)));
+          }).join('');
+        }
       }
-    }
 
-    console.log('Formatted input:', formattedInput);
-    e.target.value = formattedInput;
-  });
+      console.log('Formatted input:', formattedInput);
+      e.target.value = formattedInput;
+    });
+  }
+
+  // For user mobile number validation
+  const userMobile = document.getElementById('user-mobile');
+  if (userMobile) {
+    userMobile.addEventListener('input', function() {
+      const inputElement = this;
+      let phoneNumber = inputElement.value.replace(/\D/g, ''); // Remove all non-numeric characters
+
+      // Limit to 10 digits for US and Canadian numbers
+      if (phoneNumber.length > 10) {
+        phoneNumber = phoneNumber.slice(0, 10);
+      }
+
+      // Ensure the area code does not start with 0 or 1
+      if (phoneNumber.length >= 1 && (phoneNumber.slice(0, 1) === '0' || phoneNumber.slice(0, 1) === '1')) {
+        phoneNumber = phoneNumber.slice(1);
+      }
+
+      // Apply formatting only when all 10 digits are present
+      if (phoneNumber.length === 10) {
+        phoneNumber = '(' + phoneNumber.slice(0, 3) + ') ' + phoneNumber.slice(3, 6) + '-' + phoneNumber.slice(6);
+      }
+
+      inputElement.value = phoneNumber; // Update the input value with formatted or unformatted number
+    });
+  }
+
+  // For card name validation
+  const cardName = document.getElementById('card-name');
+  if (cardName) {
+    cardName.addEventListener('input', function(e) {
+      var input = e.target.value.replace(/[^A-Za-z ]/g, ''); // Remove non-alphabetic characters
+      e.target.value = input;
+    });
+  }
 });
 
 
