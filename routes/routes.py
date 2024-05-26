@@ -206,6 +206,7 @@ def configure_routes(app):
                         'billing-state': customer_info['address']['state'] if customer_info.get('address') else '',
                         'billing-zip': customer_info['address']['postal_code'] if customer_info.get('address') else ''
                     }
+                    current_app.logger.info(f'{form_data}')
                 else:
                     form_data = request.form
 
