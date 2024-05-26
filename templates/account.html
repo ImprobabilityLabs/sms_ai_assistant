@@ -128,13 +128,13 @@
         <div class="col-xs-12">
           <div class="form-group">
             <label for="card-name">Card Holder Name</label>
-            <input id="card-name" type="text" class="form-control" name="card-name" required="" placeholder="Card Holder Name" value="{{ form_data.get('card-name', '') }}">
+            <input id="card-name" type="text" class="form-control" name="card-name" required="" placeholder="Card Holder Name" value="{{ form_data.get('card-name', '') }}" disabled>
           </div>
         </div>
         <div class="col-xs-12">
           <div class="form-group">
             <label for="card-number-element">Card Number</label>
-            <div id="card-number-element" class="form-control">
+            <div id="card-number-element" class="form-control" disabled>
               <!-- Stripe Elements will insert the card number input here -->
             </div>
           </div>
@@ -142,7 +142,7 @@
         <div class="col-xs-6">
           <div class="form-group">
             <label for="card-expiry-element">Expiration Date</label>
-            <div id="card-expiry-element" class="form-control">
+            <div id="card-expiry-element" class="form-control" disabled>
               <!-- Stripe Elements will insert the expiry input here -->
             </div>
           </div>
@@ -150,7 +150,7 @@
         <div class="col-xs-6">
           <div class="form-group">
             <label for="card-cvc-element">CVC</label>
-            <div id="card-cvc-element" class="form-control">
+            <div id="card-cvc-element" class="form-control" disabled>
               <!-- Stripe Elements will insert the CVC input here -->
             </div>
           </div>
@@ -158,13 +158,13 @@
         <div class="col-xs-12">
           <div class="form-group form-type-text">
             <label for="billing-address">Billing Address</label>
-            <input id="billing-address" type="text" class="form-control" name="billing-address" placeholder="Billing Address" required="" value="{{ form_data.get('billing-address', '') }}">
+            <input id="billing-address" type="text" class="form-control" name="billing-address" placeholder="Billing Address" required="" value="{{ form_data.get('billing-address', '') }}" disabled>
           </div>
         </div>
         <div class="col-xs-12 col-sm-6">
           <div class="form-group form-type-select">
             <label for="billing-country">Billing Country</label>
-            <select id="billing-country" class="form-control" required="" name="billing-country" title="Select the billing country." onchange="updateStates(this.value);">
+            <select id="billing-country" class="form-control" required="" name="billing-country" title="Select the billing country." onchange="updateStates(this.value);" disabled>
               <option {% if form_data.get('billing-country') == None %}selected {% endif %}disabled>Please select a billing country</option>
               <option value="US" {% if form_data.get('billing-country') == 'USA' %}selected{% endif %}>United States of America</option>
               <option value="CA" {% if form_data.get('billing-country') == 'CAN' %}selected{% endif %}>Canada</option>
@@ -174,7 +174,7 @@
         <div class="col-xs-12 col-sm-6">
           <div class="form-group form-type-select">
             <label for="billing-state">Billing State/Province</label>
-            <select id="billing-state" class="form-control" required="" name="billing-state">
+            <select id="billing-state" class="form-control" required="" name="billing-state" disabled>
               <!-- Options will be dynamically updated based on selected country -->
             </select>
           </div>
@@ -182,7 +182,7 @@
         <div class="col-xs-12">
           <div class="form-group form-type-text">
             <label for="billing-zip">Billing Postal Code/ZIP</label>
-            <input id="billing-zip" type="text" class="form-control" name="billing-zip" placeholder="Postal Code/ZIP" required="" autocomplete="postal-code" value="{{ form_data.get('billing-zip', '') }}">
+            <input id="billing-zip" type="text" class="form-control" name="billing-zip" placeholder="Postal Code/ZIP" required="" autocomplete="postal-code" value="{{ form_data.get('billing-zip', '') }}" disabled>
           </div>
         </div>
       </div>
@@ -198,7 +198,7 @@
             </div>
             <div class="col-xs-12 col-sm-3 col-xs-6-update right">
               <p class="pull-right-xs">
-                <button id="card-update" type="submit" class="btn btn-custom-primary btn-lg btn-block">Edit</button>
+                <button id="card-update" type="button" class="btn btn-custom-primary btn-lg btn-block" onclick="toggleEdit()">Edit</button>
               </p>
             </div>
           </div>
@@ -223,26 +223,48 @@
 <!-- Open Cancel Subscription Box -->
 <div class="box box-primary">
   <h3 class="title black-title">Cancel Subscription</h3><br>
-  <section style="display:block">
-    <div class="row">
-      <div class="col-xs-12">
-        <div class="row">
-          <div class="col-xs-12 col-sm-9">
-            <p>
-              Canceling your subscription will take effect at the beginning of the next billing cycle. You will continue to have access to your subscription until then.
-            </p>
-          </div>
-          <div class="col-xs-12 col-sm-3 col-xs-6-update right">
-            <p class="pull-right-xs">
-              <button id="cancel-subscription" name="cancel-subscription" type="submit" class="btn btn-custom-primary btn-lg btn-block">Cancel</button>
-            </p>
+  <form id="cancel-form">
+    <section style="display:block">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="row">
+            <div class="col-xs-12 col-sm-9">
+              <p>
+                Canceling your subscription will take effect at the beginning of the next billing cycle. You will continue to have access to your subscription until then.
+              </p>
+            </div>
+            <div class="col-xs-12 col-sm-3 col-xs-6-update right">
+              <p class="pull-right-xs">
+                <button id="cancel-subscription" name="cancel-subscription" type="submit" class="btn btn-custom-primary btn-lg btn-block">Cancel</button>
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </form>
 </div>
 <!-- Close Cancel Subscription Box -->
+
+<script>
+function toggleEdit() {
+  const formElements = document.querySelectorAll('#payment-form .form-control');
+  const editButton = document.getElementById('card-update');
+
+  formElements.forEach(element => {
+    element.disabled = !element.disabled;
+  });
+
+  if (editButton.textContent === 'Edit') {
+    editButton.textContent = 'Save';
+    editButton.type = 'submit';
+  } else {
+    editButton.textContent = 'Edit';
+    editButton.type = 'button';
+  }
+}
+</script>
+
       <div class="box box-primary">
         <h3 class="title black-title">Invoices</h3><br>
         <section style="display:block">
