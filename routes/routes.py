@@ -194,6 +194,20 @@ def configure_routes(app):
                 # Fetch customer subscriptions
                 subscriptions = stripe.Subscription.list(customer=user.stripe_customer_id)
         
+                # Fetch the plan details from Stripe
+                stripe_plan = stripe.Price.retrieve(subscription.stripe_plan_id)
+                stripe_product = stripe.Product.retrieve(stripe_plan.product)
+            
+                subscription_details = {
+                    'name': stripe_product.name,
+                    'price': f"${stripe_plan.unit_amount / 100:.2f} {stripe_plan.currency.upper()}",
+                    'interval': stripe_plan.recurring['interval'],
+                    'current_period_start': subscription.current_period_start,
+                    'current_period_end': subscription.current_period_end,
+                    'status': subscription.status.capitalize()
+                }
+
+
                 # Find the subscription with the specified price ID
                 subscription_id = None
                 for sub in subscriptions.auto_paging_iter():
@@ -226,7 +240,7 @@ def configure_routes(app):
                         'receipt_url': invoice.hosted_invoice_url  # URL for the printable receipt
                     })
 
-                return render_template('account.html', menu=menu, invoices=invoice_data)
+                return render_template('account.html', menu=menu, invoices=invoice_data, subscription_details=subscription_details)
         
             except Exception as e:
                 return jsonify({'error': str(e)}), 500
