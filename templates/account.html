@@ -281,44 +281,37 @@ function toggleEdit() {
             <div class="col-md-12 col-sm-12">
               <div class="table-responsive">
                 <table id="invoicetable" class="table text-center table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th class="text-center hidden-xs hidden-sm">Invoice Number</th>
-                    <th class="text-center hidden-xs hidden-md hidden-lg">Number</th>
-                    <th class="text-center hidden-xs">Invoice Type</th>
-                    <th class="text-center hidden-sm hidden-md hidden-lg">Type</th>
-                    <th class="text-center hidden-xs hidden-sm">Invoice Date</th>
-                    <th class="text-center hidden-xs hidden-md hidden-lg">Date</th>
-                    <th class="text-center hidden-xs hidden-sm">Invoice Amount</th>
-                    <th class="text-center hidden-md hidden-lg">Amount</th>
-                    <th class="text-center hidden-xs">Invoice Status</th>
-                    <th class="text-center hidden-sm hidden-md hidden-lg">Status</th>
-                    <th class="text-center hidden-xs hidden-sm">&nbsp;</th>
-                </tr>
-            </thead>
-            <tbody id="invoiceHistory">
-                {% for invoice in invoices %}
-                <tr>
-                    <td class="text-center hidden-xs hidden-lg hidden-md">{{ invoice.number }}</td>
-                    <td class="text-center hidden-xs hidden-sm">{{ invoice.number }}</td>
-                    <td class="text-center hidden-md hidden-lg">{{ invoice.type }}</td>
-                    <td class="text-center hidden-xs hidden-sm">{{ invoice.type }}</td>
-                    <td class="text-center hidden-xs hidden-md hidden-lg">{{ invoice.date }}</td>
-                    <td class="text-center hidden-xs hidden-sm">{{ invoice.date }}</td>
-                    <td class="text-center text-danger"><strong>${{ invoice.amount }}</strong></td>
-                    <td class="hidden-xs hidden-sm text-capitalize"><strong>{{ invoice.status }}</strong></td>
-                    <td class="hidden-md hidden-lg text-capitalize"><strong>{{ invoice.status }}</strong></td>
-                    <td class="hidden-xs hidden-sm">
-                        <p data-placement="top" data-toggle="tooltip" title="Print">
-                            <a href="{{ invoice.receipt_url }}" target="_blank" class="btn btn-primary btn-xs">
-                                <span class="glyphicon glyphicon-print"></span> Print
-                            </a>
-                        </p>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <thead>
+        <tr>
+            <th class="text-center hidden-xs hidden-sm">Invoice Number</th>
+            <th class="text-center hidden-xs hidden-md hidden-lg">Number</th>
+            <th class="text-center hidden-xs hidden-sm">Invoice Amount</th>
+            <th class="text-center hidden-xs hidden-md hidden-lg">Amount</th>
+            <th class="text-center hidden-xs">Invoice Status</th>
+            <th class="text-center hidden-sm hidden-md hidden-lg">Status</th>
+            <th class="text-center hidden-xs hidden-sm">&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody id="invoiceHistory">
+        {% for invoice in invoices %}
+        <tr>
+            <td class="text-center hidden-xs hidden-sm"><strong>{{ invoice.number }}</strong></td>
+            <td class="text-center hidden-md hidden-lg"><strong>{{ invoice.number }}</strong></td>
+            <td class="text-center text-danger hidden-xs hidden-sm"><strong>${{ invoice.amount }}</strong></td>
+            <td class="text-center text-primary-custom hidden-md hidden-lg"><strong>${{ invoice.amount }}</strong></td>
+            <td class="text-center hidden-xs hidden-sm text-capitalize"><strong>{{ invoice.status }}</strong></td>
+            <td class="text-center hidden-md hidden-lg text-capitalize"><strong>{{ invoice.status }}</strong></td>
+            <td class="hidden-xs hidden-sm">
+                <p data-placement="top" data-toggle="tooltip" title="Print">
+                    <a href="{{ invoice.receipt_url }}" target="_blank" class="btn btn-custom-primary btn-xs">
+                        <span class="glyphicon glyphicon-print"></span> Print
+                    </a>
+                </p>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
               </div>
             </div>
             <ul class="list-group-primary pagination pull-right" style="border-color:inherit" id="invoicePager"></ul>
