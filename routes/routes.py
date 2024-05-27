@@ -243,7 +243,23 @@ def configure_routes(app):
                 if not subscription_id:
                     return jsonify({'error': 'No subscription found for the specified price ID'}), 404
 
+
+
                 if subscription_id:
+                    
+                    if request.method == 'POST':
+                        cancel_state = request.form.get('cancel-state')
+                        if cancel_state == 'canceled':
+                            stripe.Subscription.modify(
+                                subscription_id,
+                                cancel_at_period_end=True
+                            )
+                        elif cancel_state == 'not-canceled':
+                            stripe.Subscription.modify(
+                                subscription_id,
+                                cancel_at_period_end=False
+                            )
+                            
                     cancel_details = stripe.Subscription.retrieve(subscription_id)
 
                     subscription_canceled = False
