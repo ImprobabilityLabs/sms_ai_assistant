@@ -244,8 +244,6 @@ def configure_routes(app):
                 if not subscription_id:
                     return jsonify({'error': 'No subscription found for the specified price ID'}), 404
 
-
-
                 if subscription_id:
                     
                     if request.method == 'POST':
@@ -255,11 +253,16 @@ def configure_routes(app):
                                 subscription_id,
                                 cancel_at_period_end=True
                             )
+                            subscription.status = "Canceling as of " + end_date
+                            current_app.logger.info('Account: Cancel Subscription')
+                            
                         elif cancel_state == 'not-canceled':
                             stripe.Subscription.modify(
                                 subscription_id,
                                 cancel_at_period_end=False
                             )
+                            subscription.status = 'Active'
+                            current_app.logger.info('Account: Re-Enable Subscription')
                             
                     cancel_details = stripe.Subscription.retrieve(subscription_id)
 
@@ -267,6 +270,13 @@ def configure_routes(app):
                     
                     if cancel_details['cancel_at_period_end']:
                         subscription_canceled = True
+            
+                    try:
+                        db.session.commit()
+                    except Exception as e:
+                        db.session.rollback()
+                        current_app.logger.error('Account: An error occurred while updating your subscription. Please try again.')
+                        
            
                 # Fetch invoices for the subscription
                 invoices = stripe.Invoice.list(
