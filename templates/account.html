@@ -223,7 +223,8 @@
 <!-- Open Cancel Subscription Box -->
 <div class="box box-primary">
   <h3 class="title black-title">Cancel Subscription</h3><br>
-  <form id="cancel-form">
+  <form id="cancel-form" action="/account" method="post">
+    <input type="hidden" id="cancel-state" name="cancel-state" value="{{ 'canceled' if subscription_canceled else 'not-canceled' }}">
     <section style="display:block">
       <div class="row">
         <div class="col-xs-12">
@@ -432,23 +433,45 @@ function toggleEdit(event) {
 // Attach the toggleEdit function to the button click event
 document.getElementById('card-update').addEventListener('click', toggleEdit);
 
-document.getElementById('cancel-subscription').addEventListener('click', function(event) {
-  var button = event.target;
+document.addEventListener('DOMContentLoaded', function() {
+  var cancelState = document.getElementById('cancel-state').value;
+  var button = document.getElementById('cancel-subscription');
   var message = document.getElementById('cancel-message');
-  
-  if (button.name === 'cancel-subscription') {
-    // Change button state to confirm
-    button.name = 'confirm-cancel';
-    button.textContent = 'Confirm';
-    // Update message
-    message.textContent = 'Please confirm your subscription cancellation.';
-    message.style.color = 'red';
-  } else if (button.name === 'confirm-cancel') {
-    // Submit the form
-    document.getElementById('cancel-form').submit();
-  }
-});
 
+  if (cancelState === 'canceled') {
+    button.name = 'stop-cancel';
+    button.textContent = 'Stop Cancellation';
+    message.textContent = 'Subscription cancellation is confirmed. Click "Stop Cancellation" to undo.';
+    message.style.color = 'green';
+  }
+
+  button.addEventListener('click', function(event) {
+    if (button.name === 'cancel-subscription') {
+      // Change button state to confirm
+      button.name = 'confirm-cancel';
+      button.textContent = 'Confirm';
+      // Update message
+      message.textContent = 'Please confirm your subscription cancellation.';
+      message.style.color = 'red';
+    } else if (button.name === 'confirm-cancel') {
+      // Change button state to stop cancellation
+      button.name = 'stop-cancel';
+      button.textContent = 'Stop Cancellation';
+      // Update message and hidden field
+      message.textContent = 'Subscription cancellation is confirmed. Click "Stop Cancellation" to undo.';
+      message.style.color = 'green';
+      document.getElementById('cancel-state').value = 'canceled';
+    } else if (button.name === 'stop-cancel') {
+      // Revert to initial state
+      button.name = 'cancel-subscription';
+      button.textContent = 'Cancel';
+      // Update message and hidden field
+      message.textContent = 'Your subscription cancellation will be processed at the beginning of the next billing cycle. You will continue to enjoy access to your subscription services until that time.';
+      message.style.color = 'black';
+      document.getElementById('cancel-state').value = 'not-canceled';
+    }
+  });
+});
     </script>
   </body>
 </html>
