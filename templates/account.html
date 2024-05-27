@@ -110,10 +110,18 @@
         </div>
       </div>
       <div class="col-xs-12">
-        <div class="form-group form-type-text">
-          <h5 style="font-weight: bold;">Status:</h5>
-          <h4 style="color: green;">{{ subscription_details.status }}</h5>
-        </div>
+<div class="form-group form-type-text">
+  <h5 style="font-weight: bold;">Status:</h5>
+  {% if subscription_details.status == "Active" %}
+    <h4 style="color: green;">{{ subscription_details.status }}</h4>
+  {% elif subscription_details.status == "Canceling" %}
+    <h4 style="color: orange;">{{ subscription_details.status }}</h4>
+  {% elif subscription_details.status == "Error" %}
+    <h4 style="color: red;">{{ subscription_details.status }}</h4>
+  {% else %}
+    <h4>{{ subscription_details.status }}</h4>
+  {% endif %}
+</div>
       </div>
     </div>
   </section>
