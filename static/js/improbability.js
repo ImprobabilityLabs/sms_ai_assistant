@@ -671,8 +671,8 @@ function validateAssistantDetails() {
     // Validate Assistant's Name
     const assistantName = document.getElementById('assistant-name');
     if (assistantName) {
-        if (assistantName.value.length < 3) {
-            errors.push("Assistant's Name must be at least 3 characters long.");
+        if (assistantName.value.length < 2) {
+            errors.push("Assistant's Name must be at least 2 characters long.");
             assistantName.style.borderColor = 'red';
             isValid = false;
         } else {
@@ -683,8 +683,8 @@ function validateAssistantDetails() {
     // Validate Assistant's Origin
     const assistantOrigin = document.getElementById('assistant-origin');
     if (assistantOrigin) {
-        if (assistantOrigin.value.length < 5) {
-            errors.push("Assistant's Origin must be at least 5 characters long.");
+        if (assistantOrigin.value.length < 2) {
+            errors.push("Assistant's Origin must be at least 2 characters long.");
             assistantOrigin.style.borderColor = 'red';
             isValid = false;
         } else {
@@ -693,7 +693,7 @@ function validateAssistantDetails() {
     }
 
     // Validate dropdowns using the long-label for error messages
-    const dropdowns = ['assistant-gender', 'assistant-personality', 'assistant-response-style', 'assistant-demeanor', 'assistant-attitude'];
+    const dropdowns = ['assistant-gender', 'assistant-personality', 'assistant-response-style'];
     dropdowns.forEach(id => {
         const dropdown = document.getElementById(id);
         if (dropdown) {
@@ -740,8 +740,8 @@ function validatePersonalPreferences() {
     // Validate Preferred Name
     const userName = document.getElementById('user-name');
     if (userName) {
-        if (userName.value.length < 3) {
-            errors.push("Your Preferred Name must be at least 3 characters long.");
+        if (userName.value.length < 2) {
+            errors.push("Your Preferred Name must be at least 2 characters long.");
             userName.style.borderColor = 'red';
             isValid = false;
         } else {
@@ -752,8 +752,8 @@ function validatePersonalPreferences() {
     // Validate User Location
     const userLocation = document.getElementById('user-location');
     if (userLocation) {
-        if (userLocation.value.length < 5) {
-            errors.push("Your Location must be at least 5 characters long.");
+        if (userLocation.value.length < 2) {
+            errors.push("Your Location must be at least 2 characters long.");
             userLocation.style.borderColor = 'red';
             isValid = false;
         } else {
@@ -802,8 +802,8 @@ function validatePersonalPreferences() {
     // Validate Description
     const userDescription = document.getElementById('user-description');
     if (userDescription) {
-        if (userDescription.value.length < 20) {
-            errors.push("Your Bio must be descriptive enough (at least 20 characters).");
+        if (userDescription.value.length < 15) {
+            errors.push("Your Bio must be descriptive enough (at least 15 characters).");
             userDescription.style.borderColor = 'red';
             isValid = false;
         } else {
@@ -875,8 +875,8 @@ function validatePaymentDetails() {
 
     // Validate Card Holder Name
     const cardName = document.getElementById('card-name');
-    if (cardName && cardName.value.length < 5) {
-        errors.push("Card Holder Name must be at least 5 characters long.");
+    if (cardName && cardName.value.length < 2) {
+        errors.push("Card Holder Name must be at least 2 characters long.");
         cardName.style.borderColor = 'red';
         isValid = false;
     } else if (cardName) {
@@ -885,8 +885,8 @@ function validatePaymentDetails() {
 
     // Validate Billing Address
     const billingAddress = document.getElementById('billing-address');
-    if (billingAddress && billingAddress.value.length < 10) {
-        errors.push("Billing Address must be at least 10 characters long.");
+    if (billingAddress && billingAddress.value.length < 5) {
+        errors.push("Billing Address must be at least 5 characters long.");
         billingAddress.style.borderColor = 'red';
         isValid = false;
     } else if (billingAddress) {
