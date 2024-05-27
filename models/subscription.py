@@ -8,6 +8,7 @@ class Subscription(BaseModel):
     stripe_customer_id = db.Column(db.String(255), nullable=True)
     stripe_plan_id = db.Column(db.String(255), nullable=False)
     stripe_product_id = db.Column(db.String(255), nullable=False)
+    stripe_subscription_id = db.Column(db.String(255), nullable=False)
     current_period_start = db.Column(db.DateTime, nullable=True)
     current_period_end = db.Column(db.DateTime, nullable=True)
     last_payment_amount = db.Column(db.Float, nullable=True)  
