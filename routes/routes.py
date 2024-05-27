@@ -103,10 +103,10 @@ def configure_routes(app):
                     # Validate form data
                     required_fields = [
                         'subscriptionOption', 'assistant-name', 'assistant-origin', 'assistant-gender',
-                        'assistant-personality', 'assistant-response-style', 'assistant-demeanor',
-                        'assistant-attitude', 'user-name', 'user-location', 'user-mobile', 'user-language',
-                        'user-title', 'user-measurement', 'user-description', 'card-name', 'billing-address',
-                        'billing-country', 'billing-state', 'billing-zip', 'stripeToken'
+                        'assistant-personality', 'assistant-response-style', 'user-name', 'user-location', 
+                        'user-mobile', 'user-language', 'user-title', 'user-measurement', 'user-description', 
+                        'card-name', 'billing-address', 'billing-country', 'billing-state', 'billing-zip', 
+                        'stripeToken'
                     ]
                     
                     error_message = 'Please complete all required fields.'
@@ -130,9 +130,7 @@ def configure_routes(app):
                                     assistant_origin=request.form['assistant-origin'],
                                     assistant_gender=request.form['assistant-gender'],
                                     assistant_personality=request.form['assistant-personality'],
-                                    assistant_response_style=request.form['assistant-response-style'],
-                                    assistant_demeanor=request.form['assistant-demeanor'],
-                                    assistant_attitude=request.form['assistant-attitude']
+                                    assistant_response_style=request.form['assistant-response-style']
                                 )
 
                                 db.session.add(new_assistant_preference)
