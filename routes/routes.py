@@ -219,15 +219,6 @@ def configure_routes(app):
                 # Determine the interval
                 interval = 'Monthly' if stripe_plan.recurring['interval'] == 'month' else 'Yearly'
 
-                subscription_details = {
-                    'name': stripe_product.name,
-                    'price': f"${stripe_plan.unit_amount / 100:.2f} {stripe_plan.currency.upper()}",
-                    'interval': interval,
-                    'current_period_start': start_date,
-                    'current_period_end': end_date,
-                    'status': subscription.status.capitalize()
-                }
-
                 # Find the subscription with the specified price ID
                 subscription_id = None
                 for sub in subscriptions.auto_paging_iter():
@@ -296,6 +287,15 @@ def configure_routes(app):
                         'status': invoice.status,
                         'receipt_url': invoice.hosted_invoice_url  # URL for the printable receipt
                     })
+
+                subscription_details = {
+                    'name': stripe_product.name,
+                    'price': f"${stripe_plan.unit_amount / 100:.2f} {stripe_plan.currency.upper()}",
+                    'interval': interval,
+                    'current_period_start': start_date,
+                    'current_period_end': end_date,
+                    'status': subscription.status
+                }
 
                 return render_template('account.html', menu=menu, invoices=invoice_data, form_data=form_data, subscription_details=subscription_details, subscription_canceled=subscription_canceled)
         
