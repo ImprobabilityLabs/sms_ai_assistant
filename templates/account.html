@@ -274,7 +274,7 @@
             <td class="text-center hidden-xs hidden-sm hidden-lg"><strong>{{ invoice.number }}</strong></td>
             <td class="text-center hidden-xs hidden-sm hidden-md">{{ invoice.type }}</td>
             <td class="text-center hidden-xs hidden-sm">{{ invoice.date.strftime('%B %d, %Y %I:%M%p') }}</td>
-            <td class="text-center hidden-md hidden-lg">{{ invoice.date.strftime('%B %d, %Y %I:%M%p') }}</td>
+            <td class="text-center hidden-md hidden-lg">{{ invoice.date.strftime('%B %d, %Y') }}</td>
             <td class="text-center text-success"><strong>${{ '%.2f'|format(invoice.amount) }}</strong></td>
             <td class="text-center hidden-xs hidden-sm text-capitalize">
     <strong>
