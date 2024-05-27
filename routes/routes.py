@@ -233,9 +233,12 @@ def configure_routes(app):
                 # Find the subscription with the specified price ID
                 subscription_id = None
                 for sub in subscriptions.auto_paging_iter():
+                    current_app.logger.info('Sub: ' + str(sub))
                     for item in sub['items']['data']:
+                        current_app.logger.info('Sub: Item' + str(item))
                         if item['price']['id'] == subscription.stripe_plan_id:
                             subscription_id = sub['id']
+                            current_app.logger.info('Sub ID: ' + str(subscription_id))
                             break
                     if subscription_id:
                         break
@@ -291,21 +294,6 @@ def configure_routes(app):
             except Exception as e:
                 return jsonify({'error': str(e)}), 500
 
-
-    @app.route('/cancel', methods=['GET', 'POST'])
-    def cancel_page():
-        if session.get('user_provider_id'):
-            member = check_user_subscription(session.get('user_provider_id'))
-        else:
-            member = check_user_subscription(None)
-        current_app.logger.info('Info: Cancel Page - Member Object: ' + str(member))
-        menu = generate_menu(member)
-        if not member['is_user']:
-            return redirect(url_for('index_page'))
-        elif not member['is_subscribed']:
-            return redirect(url_for('subscribe_page'))
-        elif member['is_subscribed']:
-            return render_template('cancel.html', menu=menu)
 
     @app.route('/dashboard', methods=['GET', 'POST'])
     def dashboard_page():
