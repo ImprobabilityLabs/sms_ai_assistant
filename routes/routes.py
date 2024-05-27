@@ -243,6 +243,14 @@ def configure_routes(app):
                 if not subscription_id:
                     return jsonify({'error': 'No subscription found for the specified price ID'}), 404
 
+                if subscription_id:
+                    cancel_details = stripe.Subscription.retrieve(subscription_id)
+
+                    subscription_canceled = False
+                    
+                    if cancel_details['cancel_at_period_end']:
+                        subscription_canceled = true
+           
                 # Fetch invoices for the subscription
                 invoices = stripe.Invoice.list(
                     customer=user.stripe_customer_id,
@@ -262,7 +270,7 @@ def configure_routes(app):
                         'receipt_url': invoice.hosted_invoice_url  # URL for the printable receipt
                     })
 
-                return render_template('account.html', menu=menu, invoices=invoice_data, form_data=form_data, subscription_details=subscription_details)
+                return render_template('account.html', menu=menu, invoices=invoice_data, form_data=form_data, subscription_details=subscription_details, subscription_canceled=subscription_canceled)
         
             except Exception as e:
                 return jsonify({'error': str(e)}), 500
