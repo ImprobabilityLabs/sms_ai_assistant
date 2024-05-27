@@ -265,7 +265,7 @@ def configure_routes(app):
                     subscription_canceled = False
                     
                     if cancel_details['cancel_at_period_end']:
-                        subscription_canceled = true
+                        subscription_canceled = True
            
                 # Fetch invoices for the subscription
                 invoices = stripe.Invoice.list(
