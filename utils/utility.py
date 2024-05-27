@@ -367,7 +367,7 @@ def handle_stripe_operations(user, form_data):
         subscription_id = subscription.id
         current_period_start = datetime.utcfromtimestamp(subscription.current_period_start).strftime('%Y-%m-%d %H:%M:%S')
         current_period_end = datetime.utcfromtimestamp(subscription.current_period_end).strftime('%Y-%m-%d %H:%M:%S')
-        status = subscription.status
+        status = subscription.status.capitalize()
 
         # Create a new Subscription record in the database
         new_subscription = Subscription(
