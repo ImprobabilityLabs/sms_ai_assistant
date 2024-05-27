@@ -399,6 +399,74 @@ def handle_stripe_operations(user, form_data):
 
 
 
+def update_billing_info(user, form_data):
+    try:
+        if not user.stripe_customer_id:
+            # Raise an exception if the Stripe customer ID does not exist
+            raise ValueError("Stripe customer ID not found for user.")
+
+        # Retrieve the existing customer and update the billing information
+        customer = stripe.Customer.retrieve(user.stripe_customer_id)
+        customer.name = form_data['card-name']
+        customer.email = user.email
+        customer.address = {
+            'line1': form_data['billing-address'],
+            'country': form_data['billing-country'],
+            'state': form_data['billing-state'],
+            'postal_code': form_data['billing-zip'],
+        }
+        customer.save()
+
+        # Convert token to PaymentMethod and attach it to the customer
+        payment_method = stripe.PaymentMethod.create(
+            type="card",
+            card={"token": form_data['stripeToken']},
+            billing_details={
+                'name': form_data['card-name'],
+                'email': user.email, 
+                'address': {
+                    'line1': form_data['billing-address'],
+                    'country': form_data['billing-country'],
+                    'state': form_data['billing-state'],
+                    'postal_code': form_data['billing-zip'],
+                }
+            }
+        )
+
+        stripe.PaymentMethod.attach(
+            payment_method.id,
+            customer=user.stripe_customer_id,
+        )
+
+        # Set the new payment method as the default
+        stripe.Customer.modify(
+            user.stripe_customer_id,
+            invoice_settings={
+                'default_payment_method': payment_method.id,
+            },
+        )
+ 
+        # Conditionally apply tax rates based on the billing country
+        tax_rate_ids = []
+        if form_data['billing-country'] == 'CA':  # Check if the billing country is Canada
+            # Retrieve the tax rate ID for Canada programmatically
+            tax_rates = stripe.TaxRate.list(active=True)
+            for tax_rate in tax_rates:
+                if tax_rate.country == 'CA':
+                    tax_rate_ids.append(tax_rate.id)
+                    break
+
+        current_app.logger.info('Billing Information Updated.')
+        return True, None
+
+    except stripe.error.StripeError as e:
+        current_app.logger.error(f'Stripe error: {e.user_message}')
+        return False, e.user_message
+    except Exception as e:
+        current_app.logger.error(f'Error: {str(e)}')
+        return False, str(e)
+
+
 async def process_questions_answers(text_message, location, location_country='US'):
     try:
         # Trim whitespace from the text message
