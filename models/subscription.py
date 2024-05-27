@@ -18,7 +18,6 @@ class Subscription(BaseModel):
     status = db.Column(db.String(64), nullable=False)
     enabled = db.Column(db.Boolean, default=True, nullable=False)
     billing_error = db.Column(db.Boolean, default=False, nullable=False)
-    cancel_date = db.Column(db.DateTime, nullable=True)
     referrer = db.Column(db.String(64), nullable=True)
 
     def __repr__(self):
