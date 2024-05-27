@@ -454,21 +454,13 @@ document.addEventListener('DOMContentLoaded', function() {
       message.textContent = 'Please confirm your subscription cancellation.';
       message.style.color = 'red';
     } else if (button.name === 'confirm-cancel') {
-      // Change button state to stop cancellation
-      button.name = 'stop-cancel';
-      button.textContent = 'Stop Cancellation';
-      // Update message and hidden field
-      message.textContent = 'Subscription cancellation is confirmed. Click "Stop Cancellation" to undo.';
-      message.style.color = 'green';
+      // Submit the form to confirm cancellation
       document.getElementById('cancel-state').value = 'canceled';
+      document.getElementById('cancel-form').submit();
     } else if (button.name === 'stop-cancel') {
-      // Revert to initial state
-      button.name = 'cancel-subscription';
-      button.textContent = 'Cancel';
-      // Update message and hidden field
-      message.textContent = 'Your subscription cancellation will be processed at the beginning of the next billing cycle. You will continue to enjoy access to your subscription services until that time.';
-      message.style.color = 'black';
+      // Submit the form to stop cancellation
       document.getElementById('cancel-state').value = 'not-canceled';
+      document.getElementById('cancel-form').submit();
     }
   });
 });
