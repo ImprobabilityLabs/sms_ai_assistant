@@ -375,6 +375,7 @@ def handle_stripe_operations(user, form_data):
             stripe_customer_id=user.stripe_customer_id,
             stripe_plan_id=subscription.plan.id,
             stripe_product_id=subscription.plan.product,
+            stripe_subscription_id = subscription.id,
             current_period_start=current_period_start,
             current_period_end=current_period_end,
             status=status
