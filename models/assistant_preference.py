@@ -10,8 +10,6 @@ class AssistantPreference(BaseModel):
     assistant_gender = db.Column(db.String(64), nullable=False)
     assistant_personality = db.Column(db.String(64), nullable=False)
     assistant_response_style = db.Column(db.String(64), nullable=False)
-    assistant_demeanor = db.Column(db.String(64), nullable=False)
-    assistant_attitude = db.Column(db.String(64), nullable=False)
 
     def __repr__(self):
         return f"<AssistantPreference {self.assistant_name} for User {self.user_id}>"
