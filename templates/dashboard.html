@@ -339,235 +339,47 @@
           </div>
       </section>
       </div>
-            <div class="box box-primary">
-        <h3 class="title black-title">Chat History</h3>
+            {% if history_records %}<div class="box box-primary">
+        <h3 class="title black-title">Chat History</h3><br>
         <section style="display:block">
           <div class="row">
             <div class="col-md-12 col-sm-12">
               <div class="table-responsive">
-                <table id="smstable" class="table text-center table-bordered table-striped">
-    <thead>
-        <tr>
-            <th class="text-center hidden-xs hidden-sm">Date & Time</th>
-            <th class="text-center hidden-md hidden-lg">Date</th>
-            <th class="text-center hidden-xs hidden-sm">To:</th>
-            <th class="text-center hidden-xs hidden-sm">From:</th>
-            <th class="text-center">Message</th>
-            <th class="text-center"></th>
-        </tr>
-    </thead>
-    <tbody id="smsHistory">
-                <tr>
-            <td class="text-center hidden-xs hidden-sm">01/14/2017 02:32 PM</td>
-            <td class="text-center hidden-md hidden-lg  wrap-text">01/14 02:32 PM</td>
-            <td class="text-center hidden-xs hidden-sm">(123) 456-7890</td>
-            <td class="text-center hidden-xs hidden-sm">(098) 765-4321</td>
-            <td class="text-center wrap-text">
-                This is a sample incoming message that should wrap correctly on smaller screens.
-            </td>
-            <td class="text-center">
-                <i class="fa fa-arrow-down arrow-down" aria-hidden="true"></i>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center hidden-xs hidden-sm">01/11/2017 09:15 AM</td>
-            <td class="text-center hidden-md hidden-lg  wrap-text">01/11 09:15 AM</td>
-            <td class="text-center hidden-xs hidden-sm">(123) 456-7890</td>
-            <td class="text-center hidden-xs hidden-sm">(098) 765-4321</td>
-            <td class="text-center wrap-text">
-                Another example of a message that will wrap within the table cell for smaller screens.
-            </td>
-            <td class="text-center">
-                <i class="fa fa-arrow-up arrow-up" aria-hidden="true"></i>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center hidden-xs hidden-sm">01/11/2017 09:15 AM</td>
-            <td class="text-center hidden-md hidden-lg  wrap-text">01/11 09:15 AM</td>
-            <td class="text-center hidden-xs hidden-sm">(123) 456-7890</td>
-            <td class="text-center hidden-xs hidden-sm">(098) 765-4321</td>
-            <td class="text-center wrap-text">
-                Another example of a message that will wrap within the table cell for smaller screens.
-            </td>
-            <td class="text-center">
-                <i class="fa fa-arrow-up arrow-up" aria-hidden="true"></i>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center hidden-xs hidden-sm">01/11/2017 09:15 AM</td>
-            <td class="text-center hidden-md hidden-lg  wrap-text">01/11 09:15 AM</td>
-            <td class="text-center hidden-xs hidden-sm">(123) 456-7890</td>
-            <td class="text-center hidden-xs hidden-sm">(098) 765-4321</td>
-            <td class="text-center wrap-text">
-                Another example of a message that will wrap within the table cell for smaller screens.
-            </td>
-            <td class="text-center">
-                <i class="fa fa-arrow-up arrow-up" aria-hidden="true"></i>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center hidden-xs hidden-sm">01/11/2017 09:15 AM</td>
-            <td class="text-center hidden-md hidden-lg  wrap-text">01/11 09:15 AM</td>
-            <td class="text-center hidden-xs hidden-sm">(123) 456-7890</td>
-            <td class="text-center hidden-xs hidden-sm">(098) 765-4321</td>
-            <td class="text-center wrap-text">
-                Another example of a message that will wrap within the table cell for smaller screens.
-            </td>
-            <td class="text-center">
-                <i class="fa fa-arrow-up arrow-up" aria-hidden="true"></i>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center hidden-xs hidden-sm">01/11/2017 09:15 AM</td>
-            <td class="text-center hidden-md hidden-lg  wrap-text">01/11 09:15 AM</td>
-            <td class="text-center hidden-xs hidden-sm">(123) 456-7890</td>
-            <td class="text-center hidden-xs hidden-sm">(098) 765-4321</td>
-            <td class="text-center wrap-text">
-                Another example of a message that will wrap within the table cell for smaller screens.
-            </td>
-            <td class="text-center">
-                <i class="fa fa-arrow-up arrow-up" aria-hidden="true"></i>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center hidden-xs hidden-sm">01/11/2017 09:15 AM</td>
-            <td class="text-center hidden-md hidden-lg  wrap-text">01/11 09:15 AM</td>
-            <td class="text-center hidden-xs hidden-sm">(123) 456-7890</td>
-            <td class="text-center hidden-xs hidden-sm">(098) 765-4321</td>
-            <td class="text-center wrap-text">
-                Another example of a message that will wrap within the table cell for smaller screens.
-            </td>
-            <td class="text-center">
-                <i class="fa fa-arrow-up arrow-up" aria-hidden="true"></i>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center hidden-xs hidden-sm">01/11/2017 09:15 AM</td>
-            <td class="text-center hidden-md hidden-lg  wrap-text">01/11 09:15 AM</td>
-            <td class="text-center hidden-xs hidden-sm">(123) 456-7890</td>
-            <td class="text-center hidden-xs hidden-sm">(098) 765-4321</td>
-            <td class="text-center wrap-text">
-                Another example of a message that will wrap within the table cell for smaller screens.
-            </td>
-            <td class="text-center">
-                <i class="fa fa-arrow-up arrow-up" aria-hidden="true"></i>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center hidden-xs hidden-sm">01/11/2017 09:15 AM</td>
-            <td class="text-center hidden-md hidden-lg  wrap-text">01/11 09:15 AM</td>
-            <td class="text-center hidden-xs hidden-sm">(123) 456-7890</td>
-            <td class="text-center hidden-xs hidden-sm">(098) 765-4321</td>
-            <td class="text-center wrap-text">
-                Another example of a message that will wrap within the table cell for smaller screens.
-            </td>
-            <td class="text-center">
-                <i class="fa fa-arrow-up arrow-up" aria-hidden="true"></i>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center hidden-xs hidden-sm">01/11/2017 09:15 AM</td>
-            <td class="text-center hidden-md hidden-lg  wrap-text">01/11 09:15 AM</td>
-            <td class="text-center hidden-xs hidden-sm">(123) 456-7890</td>
-            <td class="text-center hidden-xs hidden-sm">(098) 765-4321</td>
-            <td class="text-center wrap-text">
-                Another example of a message that will wrap within the table cell for smaller screens.
-            </td>
-            <td class="text-center">
-                <i class="fa fa-arrow-up arrow-up" aria-hidden="true"></i>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center hidden-xs hidden-sm">01/11/2017 09:15 AM</td>
-            <td class="text-center hidden-md hidden-lg  wrap-text">01/11 09:15 AM</td>
-            <td class="text-center hidden-xs hidden-sm">(123) 456-7890</td>
-            <td class="text-center hidden-xs hidden-sm">(098) 765-4321</td>
-            <td class="text-center wrap-text">
-                Another example of a message that will wrap within the table cell for smaller screens.
-            </td>
-            <td class="text-center">
-                <i class="fa fa-arrow-up arrow-up" aria-hidden="true"></i>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center hidden-xs hidden-sm">01/11/2017 09:15 AM</td>
-            <td class="text-center hidden-md hidden-lg  wrap-text">01/11 09:15 AM</td>
-            <td class="text-center hidden-xs hidden-sm">(123) 456-7890</td>
-            <td class="text-center hidden-xs hidden-sm">(098) 765-4321</td>
-            <td class="text-center wrap-text">
-                Another example of a message that will wrap within the table cell for smaller screens.
-            </td>
-            <td class="text-center">
-                <i class="fa fa-arrow-up arrow-up" aria-hidden="true"></i>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center hidden-xs hidden-sm">01/11/2017 09:15 AM</td>
-            <td class="text-center hidden-md hidden-lg  wrap-text">01/11 09:15 AM</td>
-            <td class="text-center hidden-xs hidden-sm">(123) 456-7890</td>
-            <td class="text-center hidden-xs hidden-sm">(098) 765-4321</td>
-            <td class="text-center wrap-text">
-                Another example of a message that will wrap within the table cell for smaller screens.
-            </td>
-            <td class="text-center">
-                <i class="fa fa-arrow-up arrow-up" aria-hidden="true"></i>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center hidden-xs hidden-sm">01/11/2017 09:15 AM</td>
-            <td class="text-center hidden-md hidden-lg  wrap-text">01/11 09:15 AM</td>
-            <td class="text-center hidden-xs hidden-sm">(123) 456-7890</td>
-            <td class="text-center hidden-xs hidden-sm">(098) 765-4321</td>
-            <td class="text-center wrap-text">
-                Another example of a message that will wrap within the table cell for smaller screens.
-            </td>
-            <td class="text-center">
-                <i class="fa fa-arrow-up arrow-up" aria-hidden="true"></i>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center hidden-xs hidden-sm">01/11/2017 09:15 AM</td>
-            <td class="text-center hidden-md hidden-lg  wrap-text">01/11 09:15 AM</td>
-            <td class="text-center hidden-xs hidden-sm">(123) 456-7890</td>
-            <td class="text-center hidden-xs hidden-sm">(098) 765-4321</td>
-            <td class="text-center wrap-text">
-                Another example of a message that will wrap within the table cell for smaller screens.
-            </td>
-            <td class="text-center">
-                <i class="fa fa-arrow-up arrow-up" aria-hidden="true"></i>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center hidden-xs hidden-sm">01/11/2017 09:15 AM</td>
-            <td class="text-center hidden-md hidden-lg  wrap-text">01/11 09:15 AM</td>
-            <td class="text-center hidden-xs hidden-sm">(123) 456-7890</td>
-            <td class="text-center hidden-xs hidden-sm">(098) 765-4321</td>
-            <td class="text-center wrap-text">
-                Another example of a message that will wrap within the table cell for smaller screens.
-            </td>
-            <td class="text-center">
-                <i class="fa fa-arrow-up arrow-up" aria-hidden="true"></i>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center hidden-xs hidden-sm">01/11/2017 09:15 AM</td>
-            <td class="text-center hidden-md hidden-lg  wrap-text">01/11 09:15 AM</td>
-            <td class="text-center hidden-xs hidden-sm">(123) 456-7890</td>
-            <td class="text-center hidden-xs hidden-sm">(098) 765-4321</td>
-            <td class="text-center wrap-text">
-                Another example of a message that will wrap within the table cell for smaller screens.
-            </td>
-            <td class="text-center">
-                <i class="fa fa-arrow-up arrow-up" aria-hidden="true"></i>
-            </td>
-        </tr>
-    </tbody>
-</table></div>
+    <table id="smstable" class="table text-center table-bordered table-striped">
+        <thead>
+            <tr>
+                <th class="text-center hidden-xs hidden-sm">Date & Time</th>
+                <th class="text-center hidden-md hidden-lg">Date</th>
+                <th class="text-center hidden-xs hidden-sm">To:</th>
+                <th class="text-center hidden-xs hidden-sm">From:</th>
+                <th class="text-center">Message</th>
+                <th class="text-center"></th>
+            </tr>
+        </thead>
+        <tbody id="smsHistory">
+            {% for record in history_records %}
+            <tr>
+                <td class="text-center hidden-xs hidden-sm">{{ format_datetime(record.created_at) }}</td>
+                <td class="text-center hidden-md hidden-lg wrap-text">{{ record.created_at.strftime('%m/%d %I:%M %p') }}</td>
+                <td class="text-center hidden-xs hidden-sm bold-phone">{{ format_phone_number(record.to_number) }}</td>
+                <td class="text-center hidden-xs hidden-sm bold-phone">{{ format_phone_number(record.from_number) }}</td>
+                <td class="text-center wrap-text">{{ record.body }}</td>
+                <td class="text-center">
+                    {% if record.direction == 'inbound' %}
+                    <i class="fa fa-arrow-down arrow-down" aria-hidden="true"></i>
+                    {% else %}
+                    <i class="fa fa-arrow-up arrow-up" aria-hidden="true"></i>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table></div>
             </div>
             <ul class="list-group-primary pagination pull-right" style="border-color:inherit" id="smsPager"></ul>
           </div>
         </section>
-      </div>
+      </div>{% endif %}
     </div>
     <!-- FOOTER -->
     <footer>
