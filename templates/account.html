@@ -423,7 +423,9 @@ function togglePaymentEdit(event) {
         element.disabled = false;
       }
     });
-
+    
+    formElements.disabled = false;
+    
     const enabledStyle = {
         'base': {
             'color': '#495057', // Default input text color
@@ -485,7 +487,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.addEventListener("DOMContentLoaded", function() {
     function disableStripeElements() {
-        if (typeof cardNumber !== 'undefined' && typeof cardExpiry !== 'undefined' && typeof cardCvc !== 'undefined') {
+        const formElement = document.querySelector('payment-form'); 
+        if (typeof cardNumber !== 'undefined' && typeof cardExpiry !== 'undefined' && typeof cardCvc !== 'undefined' && formElement) {
+            // Disable the form element
+            formElement.disabled = true;
+
             const disabledStyle = {
                 'base': {
                     'color': '#6c757d', // Grey color for disabled text
