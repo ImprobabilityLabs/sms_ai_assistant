@@ -214,8 +214,9 @@ def configure_routes(app):
                         form_data = page_data
                         payment_error, payment_error_msg = update_billing_info(user, form_data)
                         current_app.logger.info(f'{payment_error_msg}')
+                        
                 else:
-                     form_data = payment_data
+                    form_data = payment_data
                     
                 current_app.logger.info(f'{form_data}')                             
  
