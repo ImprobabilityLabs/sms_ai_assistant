@@ -424,10 +424,17 @@ function togglePaymentEdit(event) {
       }
     });
 
-    // Enable Stripe elements
-    cardNumber.update({ disabled: false });
-    cardExpiry.update({ disabled: false });
-    cardCvc.update({ disabled: false });
+    const enabledStyle = {
+        'base': {
+            'color': '#000000', // Black text color
+            'backgroundColor': '#ffffff', // White background
+            'cursor': 'auto'
+        }
+    };
+
+    cardNumber.update({ disabled: false, style: enabledStyle });
+    cardExpiry.update({ disabled: false, style: enabledStyle });
+    cardCvc.update({ disabled: false, style: enabledStyle });
 
     // Change button to 'Save'
     editButton.textContent = 'Save';
@@ -478,9 +485,17 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener("DOMContentLoaded", function() {
     function disableStripeElements() {
         if (typeof cardNumber !== 'undefined' && typeof cardExpiry !== 'undefined' && typeof cardCvc !== 'undefined') {
-            cardNumber.update({ disabled: true });
-            cardExpiry.update({ disabled: true });
-            cardCvc.update({ disabled: true });
+            const disabledStyle = {
+                'base': {
+                    'color': '#d3d3d3', // Light grey color
+                    'backgroundColor': '#f0f0f0', // Light grey background
+                    'cursor': 'not-allowed'
+                }
+            };
+
+            cardNumber.update({ disabled: true, style: disabledStyle });
+            cardExpiry.update({ disabled: true, style: disabledStyle });
+            cardCvc.update({ disabled: true, style: disabledStyle });
         } else {
             // Retry after a short delay if the elements are not defined yet
             setTimeout(disableStripeElements, 100);
