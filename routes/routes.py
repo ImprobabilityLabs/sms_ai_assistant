@@ -318,8 +318,35 @@ def configure_routes(app):
         elif member['is_subscribed'] and not member['has_billing_error']:
             user = User.query.filter_by(provider_id=session.get('user_provider_id')).first()
             subscription = Subscription.query.filter_by(user_id=user.id, enabled=True).first()
+            user_preferences = UserPreference.query.filter_by(user_id=user.id, subscription_id=subscription.id).first()
+            assistant_preferences = AssistantPreference.query.filter_by(user_id=user.id, subscription_id=subscription.id).first()
+            
+            assistant_details = {
+                'name': assistant_preferences.assistant_name,
+                'birthdate': assistant_preferences.created,
+                'mobile_number': subscription.twillio_number,
+                'status': subscription.status
+            }
+
+            assistant_preferences = {
+                'name': assistant_preferences.assistant_name,
+                'origin': assistant_preferences.assistant_origin,
+                'gender': assistant_preferences.assistant_gender,
+                'personality': assistant_preferences.assistant_personality,
+                'response_style': assistant_preferences.assistant_response_style
+            }            
+
+            user_preferences = {
+                'name': user_preferences.user_name,
+                'title': user_preferences.user_title,
+                'measurement': user_preferences.user_measurement,
+                'bio': user_preferences.user_bio,
+                'language': user_preferences.user_language,
+                'location_full': user_preferences.user_location_full
+            }  
+            
             history_records = History.query.filter_by(user_id=user.id, subscription_id=subscription.id).all()
-            return render_template('dashboard.html', menu=menu, form_data=request.form, history_records=history_records)
+            return render_template('dashboard.html', menu=menu, form_data=request.form, history_records=history_records, assistant_details=assistant_details, assistant_preferences=assistant_preferences, user_preferences=user_preferences)
         elif member['is_subscribed'] and member['has_billing_error']:
             return redirect(url_for('account_page'))
 
