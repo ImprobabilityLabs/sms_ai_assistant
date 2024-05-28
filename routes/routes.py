@@ -4,7 +4,7 @@ from twilio.request_validator import RequestValidator
 from twilio.rest import Client
 from oauthlib.oauth2 import WebApplicationClient
 from requests_oauthlib import OAuth2Session
-from utils.utility import fetch_data, check_user_subscription, generate_menu, get_products, handle_stripe_operations, get_location, get_country_code, clean_phone_number, validate_incomming_message, save_sms_history, load_sms_history, build_system_prompt, process_questions_answers, build_and_send_messages, send_reply, build_and_send_messages_openai
+from utils.utility import fetch_data, check_user_subscription, generate_menu, get_products, handle_stripe_operations, get_location, get_country_code, clean_phone_number, validate_incomming_message, save_sms_history, load_sms_history, build_system_prompt, process_questions_answers, build_and_send_messages, send_reply, build_and_send_messages_openai, update_billing_info
 import stripe
 import aiohttp
 import asyncio
@@ -232,20 +232,7 @@ def configure_routes(app):
                 interval = 'Monthly' if stripe_plan.recurring['interval'] == 'month' else 'Yearly'
 
                 # Find the subscription with the specified price ID
-                subscription_id = None
-                for sub in subscriptions.auto_paging_iter():
-                    current_app.logger.info('Sub: ' + str(sub))
-                    for item in sub['items']['data']:
-                        current_app.logger.info('Sub: Item' + str(item))
-                        if item['price']['id'] == subscription.stripe_plan_id:
-                            subscription_id = sub['id']
-                            current_app.logger.info('Sub ID: ' + str(subscription_id))
-                            break
-                    if subscription_id:
-                        break
-        
-                if not subscription_id:
-                    return jsonify({'error': 'No subscription found for the specified price ID'}), 404
+                subscription_id = subscription.stripe_subscription_id
 
                 if subscription_id:
                     
