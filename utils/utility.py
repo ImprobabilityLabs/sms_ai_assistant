@@ -875,3 +875,6 @@ def send_reply(user_id, subscription_id, reply, to_number, from_number, twilio_c
     # Save the SMS history
     save_sms_history(user_id, subscription_id, str(sent_sid), 'outgoing', from_number, to_number, reply, 'sent')
 
+def format_phone_number(phone_number):
+    # Assuming phone number is in the format +XXXXXXXXXX
+    return f"({phone_number[1:4]}) {phone_number[4:7]}-{phone_number[7:]}"
