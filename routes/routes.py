@@ -314,7 +314,10 @@ def configure_routes(app):
         elif not member['is_subscribed']:
             return redirect(url_for('subscribe_page'))
         elif member['is_subscribed'] and not member['has_billing_error']:
-            return render_template('dashboard.html', menu=menu, form_data=request.form)
+            user = User.query.filter_by(provider_id=session.get('user_provider_id')).first()
+            subscription = Subscription.query.filter_by(user_id=user.id, enabled=True).first()
+            history_records = History.query.filter_by(user_id=user.id, subscription_id=subscription.id).all()
+            return render_template('dashboard.html', menu=menu, form_data=request.form, history_records=history_records)
         elif member['is_subscribed'] and member['has_billing_error']:
             return redirect(url_for('account_page'))
 
