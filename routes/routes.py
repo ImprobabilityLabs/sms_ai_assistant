@@ -210,6 +210,7 @@ def configure_routes(app):
 
                 elif request.method == 'POST':
                     page_data = request.form
+                    current_app.logger.info(f'page_data: {page_data}')  
                     if 'payment' in page_data:
                         form_data = page_data
                         payment_error, payment_error_msg = update_billing_info(user, form_data)
@@ -217,8 +218,6 @@ def configure_routes(app):
                         
                     else:
                         form_data = payment_data
-                    
-                current_app.logger.info(f'Form Data 1 {form_data}')                             
  
                 # Fetch the plan details from Stripe
                 stripe_plan = stripe.Price.retrieve(subscription.stripe_plan_id)
