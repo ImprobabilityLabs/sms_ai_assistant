@@ -314,7 +314,7 @@ def configure_routes(app):
         elif not member['is_subscribed']:
             return redirect(url_for('subscribe_page'))
         elif member['is_subscribed'] and not member['has_billing_error']:
-            return render_template('dashboard.html', menu=menu)
+            return render_template('dashboard.html', menu=menu, form_data=request.form)
         elif member['is_subscribed'] and member['has_billing_error']:
             return redirect(url_for('account_page'))
 
