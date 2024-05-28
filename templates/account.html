@@ -474,6 +474,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
+  document.addEventListener("DOMContentLoaded", function() {
+    // Assuming these elements are created on another page and you have access to them
+    if (typeof cardNumber !== 'undefined' && typeof cardExpiry !== 'undefined' && typeof cardCvc !== 'undefined') {
+      cardNumber.update({ disabled: true });
+      cardExpiry.update({ disabled: true });
+      cardCvc.update({ disabled: true });
+    }
+  });
+
     </script>
   </body>
 </html>
