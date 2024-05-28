@@ -387,15 +387,6 @@
     <script src="{{ url_for('static', filename='js/stripe.js') }}"></script>
     <script src="{{ url_for('static', filename='js/improbability.js') }}"></script>
     <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    // Assuming these elements are created on another page and you have access to them
-    if (typeof cardNumber !== 'undefined' && typeof cardExpiry !== 'undefined' && typeof cardCvc !== 'undefined') {
-      cardNumber.update({ disabled: true });
-      cardExpiry.update({ disabled: true });
-      cardCvc.update({ disabled: true });
-    }
-  });
-      
         document.addEventListener("DOMContentLoaded", function() {
             const countrySelect = document.getElementById('billing-country');
             if (countrySelect) {
@@ -482,6 +473,20 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('cancel-form').submit();
     }
   });
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    function disableStripeElements() {
+        if (typeof cardNumber !== 'undefined' && typeof cardExpiry !== 'undefined' && typeof cardCvc !== 'undefined') {
+            cardNumber.update({ disabled: true });
+            cardExpiry.update({ disabled: true });
+            cardCvc.update({ disabled: true });
+        } else {
+            // Retry after a short delay if the elements are not defined yet
+            setTimeout(disableStripeElements, 100);
+        }
+    }
+    disableStripeElements();
 });
     </script>
   </body>
