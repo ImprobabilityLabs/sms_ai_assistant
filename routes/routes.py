@@ -192,22 +192,33 @@ def configure_routes(app):
                 # Fetch customer subscriptions
                 subscriptions = stripe.Subscription.list(customer=user.stripe_customer_id)
 
+                # Retrieve customer information from Stripe
+                customer_info = stripe.Customer.retrieve(user.stripe_customer_id)
+
+                # Extract billing information
+                payment_data = {
+                    'card-name': customer_info['name'] if customer_info.get('name') else '',
+                    'billing-address': customer_info['address']['line1'] if customer_info.get('address') else '',
+                    'billing-country': customer_info['address']['country'] if customer_info.get('address') else '',
+                    'billing-state': customer_info['address']['state'] if customer_info.get('address') else '',
+                    'billing-zip': customer_info['address']['postal_code'] if customer_info.get('address') else ''
+                }
+
                 if request.method != 'POST':
                     # Retrieve customer information from Stripe
-                    customer_info = stripe.Customer.retrieve(user.stripe_customer_id)
+                    form_data = payment_data
 
-                    # Extract billing information
-                    form_data = {
-                        'card-name': customer_info['name'] if customer_info.get('name') else '',
-                        'billing-address': customer_info['address']['line1'] if customer_info.get('address') else '',
-                        'billing-country': customer_info['address']['country'] if customer_info.get('address') else '',
-                        'billing-state': customer_info['address']['state'] if customer_info.get('address') else '',
-                        'billing-zip': customer_info['address']['postal_code'] if customer_info.get('address') else ''
-                    }
-                    current_app.logger.info(f'{form_data}')
+                elif request.method == 'POST':
+                    page_data = request.form
+                    if 'payment' in page_data:
+                        form_data = page_data
+                        payment_error, payment_error_msg = update_billing_info(user, form_data)
+                        current_app.logger.info(f'{payment_error_msg}')
                 else:
-                    form_data = request.form
-
+                     form_data = payment_data
+                    
+                current_app.logger.info(f'{form_data}')                             
+ 
                 # Fetch the plan details from Stripe
                 stripe_plan = stripe.Price.retrieve(subscription.stripe_plan_id)
                 stripe_product = stripe.Product.retrieve(stripe_plan.product)
