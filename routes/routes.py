@@ -320,6 +320,7 @@ def configure_routes(app):
             subscription = Subscription.query.filter_by(user_id=user.id, enabled=True).first()
             user_preferences = UserPreference.query.filter_by(user_id=user.id, subscription_id=subscription.id).first()
             assistant_preferences = AssistantPreference.query.filter_by(user_id=user.id, subscription_id=subscription.id).first()
+            history_records = History.query.filter_by(user_id=user.id, subscription_id=subscription.id).all()
             
             assistant_details = {
                 'name': assistant_preferences.assistant_name,
@@ -345,7 +346,6 @@ def configure_routes(app):
                 'location_full': user_preferences.user_location_full
             }  
             
-            history_records = History.query.filter_by(user_id=user.id, subscription_id=subscription.id).all()
             return render_template('dashboard.html', menu=menu, form_data=request.form, history_records=history_records, assistant_details=assistant_details, assistant_preferences=assistant_preferences, user_preferences=user_preferences)
         elif member['is_subscribed'] and member['has_billing_error']:
             return redirect(url_for('account_page'))
