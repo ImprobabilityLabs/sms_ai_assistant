@@ -218,7 +218,7 @@ def configure_routes(app):
                 else:
                     form_data = payment_data
                     
-                current_app.logger.info(f'{form_data}')                             
+                current_app.logger.info(f'Form Data 1 {form_data}')                             
  
                 # Fetch the plan details from Stripe
                 stripe_plan = stripe.Price.retrieve(subscription.stripe_plan_id)
@@ -308,7 +308,7 @@ def configure_routes(app):
                     'current_period_end': end_date,
                     'status': subscription.status
                 }
-                current_app.logger.error(f"Account: form_data: {form_data}")
+                current_app.logger.info(f"Account: form_data: {form_data}")
                 return render_template('account.html', menu=menu, invoices=invoice_data, form_data=form_data, subscription_details=subscription_details, subscription_canceled=subscription_canceled)
         
             except Exception as e:
