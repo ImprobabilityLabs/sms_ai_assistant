@@ -111,7 +111,7 @@
       </div>
       <div class="col-xs-12">
 <div class="form-group form-type-text">
-  <h5 style="font-weight: bold;">Status:</h5>
+  <h5 style="font-weight: bold;">Subscription Status:</h5>
   {% set status_first_word = subscription_details.status.split(' ')[0] %}
   {% if status_first_word == "Active" %}
     <h4 style="color: green;">{{ subscription_details.status }}</h4>
