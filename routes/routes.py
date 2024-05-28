@@ -296,7 +296,7 @@ def configure_routes(app):
                     'current_period_end': end_date,
                     'status': subscription.status
                 }
-
+                current_app.logger.error(f"Account: form_data: {form_data}")
                 return render_template('account.html', menu=menu, invoices=invoice_data, form_data=form_data, subscription_details=subscription_details, subscription_canceled=subscription_canceled)
         
             except Exception as e:
