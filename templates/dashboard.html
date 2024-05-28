@@ -99,16 +99,7 @@
       <div class="col-xs-12">
 <div class="form-group form-type-text">
   <h5 style="font-weight: bold;">Status:</h5>
-  {% set status_first_word = subscription_details.status.split(' ')[0] %}
-  {% if status_first_word == "Active" %}
-    <h4 style="color: green;">{{ subscription_details.status }}</h4>
-  {% elif status_first_word == "Canceling" %}
-    <h4 style="color: orange;">{{ subscription_details.status }}</h4>
-  {% elif status_first_word == "Error" %}
-    <h4 style="color: red;">{{ subscription_details.status }}</h4>
-  {% else %}
-    <h4>{{ subscription_details.status }}</h4>
-  {% endif %}
+    <h4>Assistant Status</h4>
 </div>
       </div>
     </div>
