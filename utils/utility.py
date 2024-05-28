@@ -398,7 +398,6 @@ def handle_stripe_operations(user, form_data):
         return False, str(e), -1
 
 
-
 def update_billing_info(user, form_data):
     try:
         if not user.stripe_customer_id:
@@ -417,13 +416,16 @@ def update_billing_info(user, form_data):
         }
         customer.save()
 
+        # Save the current default payment method
+        old_payment_method = customer.invoice_settings.default_payment_method
+
         # Convert token to PaymentMethod and attach it to the customer
         payment_method = stripe.PaymentMethod.create(
             type="card",
             card={"token": form_data['stripeToken']},
             billing_details={
                 'name': form_data['card-name'],
-                'email': user.email, 
+                'email': user.email,
                 'address': {
                     'line1': form_data['billing-address'],
                     'country': form_data['billing-country'],
@@ -445,7 +447,7 @@ def update_billing_info(user, form_data):
                 'default_payment_method': payment_method.id,
             },
         )
- 
+
         # Conditionally apply tax rates based on the billing country
         tax_rate_ids = []
         if form_data['billing-country'] == 'CA':  # Check if the billing country is Canada
@@ -461,6 +463,19 @@ def update_billing_info(user, form_data):
 
     except stripe.error.StripeError as e:
         current_app.logger.error(f'Stripe error: {e.user_message}')
+        
+        # Reattach the old payment method if the new one fails
+        if old_payment_method:
+            stripe.PaymentMethod.attach(
+                old_payment_method,
+                customer=user.stripe_customer_id,
+            )
+            stripe.Customer.modify(
+                user.stripe_customer_id,
+                invoice_settings={
+                    'default_payment_method': old_payment_method,
+                },
+            )
         return False, e.user_message
     except Exception as e:
         current_app.logger.error(f'Error: {str(e)}')
