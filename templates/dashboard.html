@@ -359,16 +359,16 @@
         <tbody id="smsHistory">
             {% for record in history_records %}
             <tr>
-                <td class="text-center hidden-xs hidden-sm">
+                <td class="text-center hidden-xs hidden-sm" style="font-weight: bold; white-space: nowrap;">
                     {{ record.created.strftime('%b %d, %Y %I:%M%p') }}
                 </td>
-                <td class="text-center hidden-md hidden-lg wrap-text">
+                <td class="text-center hidden-md hidden-lg">
                     {{ record.created.strftime('%m/%d %I:%M %p') }}
                 </td>
-                <td class="text-center hidden-xs hidden-sm">
+                <td class="text-center hidden-xs hidden-sm" style="font-weight: bold; white-space: nowrap;">
                     {{ record.to_number | format_phone_number }}
                 </td>
-                <td class="text-center hidden-xs hidden-sm">
+                <td class="text-center hidden-xs hidden-sm" style="font-weight: bold; white-space: nowrap;">
                     {{ record.from_number | format_phone_number }}
                 </td>
                 <td class="text-center wrap-text">{{ record.body }}</td>
