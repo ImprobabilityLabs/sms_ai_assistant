@@ -35,7 +35,7 @@ h4 {
 
     @media (max-width: 576px) { /* xs screens */
         #smstable .wrap-text {
-            max-width: 100px; /* Adjust this value as needed */
+            max-width: 50px; /* Adjust this value as needed */
         }
     }
 
