@@ -413,6 +413,10 @@
 function togglePaymentEdit(event) {
   event.preventDefault(); // Prevent the default form submission
 
+  const cardNumberElement = document.getElementById('card-number-element');
+  const cardExpiryElement = document.getElementById('card-expiry-element');
+  const cardCvcElement = document.getElementById('card-cvc-element');
+
   const formElements = document.querySelectorAll('#payment-form .form-control');
   const editButton = document.getElementById('card-update');
 
@@ -436,6 +440,11 @@ function togglePaymentEdit(event) {
     cardNumber.update({ disabled: false, style: enabledStyle });
     cardExpiry.update({ disabled: false, style: enabledStyle });
     cardCvc.update({ disabled: false, style: enabledStyle });
+
+    // Enable the parent divs
+    cardNumberElement.removeAttribute('disabled');
+    cardExpiryElement.removeAttribute('disabled');
+    cardCvcElement.removeAttribute('disabled');
 
     // Change button to 'Save'
     editButton.textContent = 'Save';
