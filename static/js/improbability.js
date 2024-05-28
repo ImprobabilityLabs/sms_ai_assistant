@@ -136,7 +136,7 @@ function isMobile() {
 }
 
 function initializePagination() {
-    var smsPerPage = isMobile() ? 10 : 20;
+    var smsPerPage = isMobile() ? 6 : 10;
     var invoicePerPage = isMobile() ? 6 : 12;
 
     $('#smsHistory').pageMe({
