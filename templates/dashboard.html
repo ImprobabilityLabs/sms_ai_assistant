@@ -73,7 +73,7 @@
       <h1 class="black-title">Dashboard</h1>
       <div class="action-area"></div>
     </div>
-    <!-- Open Assistant Details Box -->
+<!-- Open Assistant Details Box -->
 <div class="box box-primary">
   <h3 class="title black-title">Account Details</h3>
   <section style="display:block">
@@ -81,26 +81,35 @@
       <div class="col-xs-12">
         <div class="form-group form-type-text">
           <h5 style="font-weight: bold;">Assistant Name:</h5>
-          <h4>Some Name</h4>
+          <h4>{{ assistant_details.name }}</h4>
         </div>
       </div>
       <div class="col-xs-12 col-sm-6">
         <div class="form-group form-type-text">
           <h5 style="font-weight: bold;">Assistant Birthday:</h5>
-          <h4>Some Date</h4>
+          <h4>{{ assistant_details.birthdate }}</h4>
         </div>
       </div>
       <div class="col-xs-12 col-sm-6">
         <div class="form-group form-type-text">
           <h5 style="font-weight: bold;">Assistant Number:</h5>
-          <h4>Some Phone Number</h4>
+          <h4>{{ assistant_details.mobile_number  | format_phone_number }}</h4>
         </div>
       </div>
       <div class="col-xs-12">
-<div class="form-group form-type-text">
-  <h5 style="font-weight: bold;">Status:</h5>
-    <h4>Assistant Status</h4>
-</div>
+        <div class="form-group form-type-text">
+          <h5 style="font-weight: bold;">Subscription Status:</h5>
+          {% set status_first_word = assistant_details.status.split(' ')[0] %}
+          {% if status_first_word == "Active" %}
+            <h4 style="color: green;">{{ assistant_details.status }}</h4>
+          {% elif status_first_word == "Canceling" %}
+            <h4 style="color: orange;">{{ assistant_details.status }}</h4>
+          {% elif status_first_word == "Error" %}
+            <h4 style="color: red;">{{ assistant_details.status }}</h4>
+          {% else %}
+            <h4>{{ assistant_details.status }}</h4>
+          {% endif %}
+        </div>
       </div>
     </div>
   </section>
