@@ -144,7 +144,7 @@
         <div class="col-xs-12">
           <div class="form-group">
             <label for="card-number-element">Card Number</label>
-            <div id="card-number-element" class="form-control">
+            <div id="card-number-element" class="form-control" disabled>
               <!-- Stripe Elements will insert the card number input here -->
             </div>
           </div>
@@ -152,7 +152,7 @@
         <div class="col-xs-6">
           <div class="form-group">
             <label for="card-expiry-element">Expiration Date</label>
-            <div id="card-expiry-element" class="form-control">
+            <div id="card-expiry-element" class="form-control" disabled>
               <!-- Stripe Elements will insert the expiry input here -->
             </div>
           </div>
@@ -160,7 +160,7 @@
         <div class="col-xs-6">
           <div class="form-group">
             <label for="card-cvc-element">CVC</label>
-            <div id="card-cvc-element" class="form-control">
+            <div id="card-cvc-element" class="form-control" disabled>
               <!-- Stripe Elements will insert the CVC input here -->
             </div>
           </div>
@@ -423,9 +423,7 @@ function togglePaymentEdit(event) {
         element.disabled = false;
       }
     });
-    
-    formElements.disabled = false;
-    
+        
     const enabledStyle = {
         'base': {
             'color': '#495057', // Default input text color
@@ -487,10 +485,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.addEventListener("DOMContentLoaded", function() {
     function disableStripeElements() {
-        const formElements = document.querySelectorAll('#payment-form .form-control');
         if (typeof cardNumber !== 'undefined' && typeof cardExpiry !== 'undefined' && typeof cardCvc !== 'undefined') {
-            // Disable the form element
-            formElements.disabled = true;
 
             const disabledStyle = {
                 'base': {
