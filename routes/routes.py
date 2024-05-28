@@ -324,7 +324,7 @@ def configure_routes(app):
             
             assistant_details = {
                 'name': assistant_preferences.assistant_name,
-                'birthdate': datetime.fromtimestamp(assistant_preferences.created),
+                'birthdate': datetime.strftime(assistant_preferences.created, "%A, %B %d, %Y"),
                 'mobile_number': subscription.twillio_number,
                 'status': subscription.status
             }
