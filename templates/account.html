@@ -426,9 +426,10 @@ function togglePaymentEdit(event) {
 
     const enabledStyle = {
         'base': {
-            'color': '#000000', // Black text color
+            'color': '#495057', // Default input text color
             'backgroundColor': '#ffffff', // White background
-            'cursor': 'auto'
+            'cursor': 'auto',
+            'opacity': '1'
         }
     };
 
@@ -487,9 +488,10 @@ document.addEventListener("DOMContentLoaded", function() {
         if (typeof cardNumber !== 'undefined' && typeof cardExpiry !== 'undefined' && typeof cardCvc !== 'undefined') {
             const disabledStyle = {
                 'base': {
-                    'color': '#d3d3d3', // Light grey color
-                    'backgroundColor': '#f0f0f0', // Light grey background
-                    'cursor': 'not-allowed'
+                    'color': '#6c757d', // Grey color for disabled text
+                    'backgroundColor': '#e9ecef', // Light grey background
+                    'cursor': 'not-allowed',
+                    'opacity': '1' 
                 }
             };
 
