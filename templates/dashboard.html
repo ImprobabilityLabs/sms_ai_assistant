@@ -371,7 +371,7 @@
                 <td class="text-center hidden-xs hidden-sm" style="font-weight: bold; white-space: nowrap;">
                     {{ record.from_number | format_phone_number }}
                 </td>
-                <td class="text-center wrap-text">{{ record.body }}</td>
+                <td class="text-center wrap-text" style="word-wrap: break-word;">{{ record.body }}</td>
                 <td class="text-center">
                     {% if record.direction == 'incoming' %}
                     <i class="fa fa-arrow-down arrow-down" aria-hidden="true"></i>
