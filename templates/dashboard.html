@@ -365,8 +365,12 @@
                 <td class="text-center hidden-md hidden-lg wrap-text">
                     {{ record.created.strftime('%m/%d %I:%M %p') }}
                 </td>
-                <td class="text-center hidden-xs hidden-sm bold-phone">{{ format_phone_number(record.to_number) }}</td>
-                <td class="text-center hidden-xs hidden-sm bold-phone">{{ format_phone_number(record.from_number) }}</td>
+                <td class="text-center hidden-xs hidden-sm bold-phone">
+                    {{ record.to_number | format_phone_number }}
+                </td>
+                <td class="text-center hidden-xs hidden-sm bold-phone">
+                    {{ record.from_number | format_phone_number }}
+                </td>
                 <td class="text-center wrap-text">{{ record.body }}</td>
                 <td class="text-center">
                     {% if record.direction == 'inbound' %}
