@@ -1060,4 +1060,54 @@ function processStripeDetails(callback) {
     }
 }
 
+function togglePaymentEdit(event) {
+  event.preventDefault(); // Prevent the default form submission
 
+  const cardNumberElement = document.getElementById('card-number-element');
+  const cardExpiryElement = document.getElementById('card-expiry-element');
+  const cardCvcElement = document.getElementById('card-cvc-element');
+
+  const formElements = document.querySelectorAll('#payment-form .form-control');
+  const editButton = document.getElementById('card-update');
+
+  if (editButton.textContent === 'Edit') {
+    // Enable form elements for editing
+    formElements.forEach(element => {
+      if (element.id !== 'card-number-element' && element.id !== 'card-expiry-element' && element.id !== 'card-cvc-element') {
+        element.disabled = false;
+      }
+    });
+        
+    const enabledStyle = {
+        'base': {
+            'color': '#495057', // Default input text color
+            'backgroundColor': '#ffffff', // White background
+            'cursor': 'auto',
+            'opacity': '1'
+        }
+    };
+
+    cardNumber.update({ disabled: false, style: enabledStyle });
+    cardExpiry.update({ disabled: false, style: enabledStyle });
+    cardCvc.update({ disabled: false, style: enabledStyle });
+
+    // Enable the parent divs
+    cardNumberElement.removeAttribute('disabled');
+    cardExpiryElement.removeAttribute('disabled');
+    cardCvcElement.removeAttribute('disabled');
+
+    // Change button to 'Save'
+    editButton.textContent = 'Save';
+  } else {
+    // Validate payment details
+    if (validatePaymentDetails()) {
+        // Process Stripe details
+        processStripeDetails(function(success) {
+            if (success) {
+                // Submit the form if Stripe details are valid
+                document.getElementById('payment-form').submit();
+            }
+        });
+    }
+  }
+}
