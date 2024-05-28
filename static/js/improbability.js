@@ -1034,10 +1034,41 @@ function processStripeDetails(callback) {
 
     if (cardNumberElement._complete && cardExpiryElement._complete && cardCvcElement._complete) {
         stripe.createToken(cardNumberElement).then(function(result) {
+            const errorContainer = document.getElementById('cc-error');
             if (result.error) {
                 // Handle the error, display it to the user
-                const errorContainer = document.getElementById('cc-error');
-                errorContainer.textContent = result.error.message;
+                switch(result.error.code) {
+                    case 'invalid_number':
+                        errorContainer.textContent = 'The card number is not a valid credit card number.';
+                        break;
+                    case 'incorrect_number':
+                        errorContainer.textContent = 'The card number is incorrect.';
+                        break;
+                    case 'invalid_expiry_month':
+                        errorContainer.textContent = 'The card\'s expiration month is invalid.';
+                        break;
+                    case 'invalid_expiry_year':
+                        errorContainer.textContent = 'The card\'s expiration year is invalid.';
+                        break;
+                    case 'invalid_cvc':
+                        errorContainer.textContent = 'The card\'s security code is invalid.';
+                        break;
+                    case 'expired_card':
+                        errorContainer.textContent = 'The card has expired.';
+                        break;
+                    case 'incorrect_cvc':
+                        errorContainer.textContent = 'The card\'s security code is incorrect.';
+                        break;
+                    case 'card_declined':
+                        errorContainer.textContent = 'The card was declined.';
+                        break;
+                    case 'processing_error':
+                        errorContainer.textContent = 'An error occurred while processing the card.';
+                        break;
+                    default:
+                        errorContainer.textContent = result.error.message;
+                        break;
+                }
                 errorContainer.style.display = 'block';
                 callback(false);
             } else {
