@@ -13,6 +13,8 @@ from datetime import datetime
 
 def configure_routes(app):
 
+    app.jinja_env.filters['format_phone_number'] = format_phone_number
+
     @app.after_request
     def add_header(response):
         # Ensure the endpoint is not None before checking its value
