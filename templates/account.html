@@ -487,10 +487,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.addEventListener("DOMContentLoaded", function() {
     function disableStripeElements() {
-        const formElement = document.querySelector('payment-form'); 
-        if (typeof cardNumber !== 'undefined' && typeof cardExpiry !== 'undefined' && typeof cardCvc !== 'undefined' && formElement) {
+        const formElements = document.querySelectorAll('#payment-form .form-control');
+        if (typeof cardNumber !== 'undefined' && typeof cardExpiry !== 'undefined' && typeof cardCvc !== 'undefined') {
             // Disable the form element
-            formElement.disabled = true;
+            formElements.disabled = true;
 
             const disabledStyle = {
                 'base': {
