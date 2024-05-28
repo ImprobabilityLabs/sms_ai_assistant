@@ -877,4 +877,4 @@ def send_reply(user_id, subscription_id, reply, to_number, from_number, twilio_c
 
 def format_phone_number(phone_number):
     # Assuming phone number is in the format +XXXXXXXXXX
-    return f"({phone_number[1:4]}) {phone_number[4:7]}-{phone_number[7:]}"
+    return f"+1 ({phone_number[2:5]}) {phone_number[6:8]}-{phone_number[9:]}"
