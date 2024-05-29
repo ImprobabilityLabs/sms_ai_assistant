@@ -18,6 +18,14 @@ def configure_routes(app):
 
     app.jinja_env.filters['format_phone_number'] = format_phone_number
 
+    @app.context_processor
+    def inject_analytics():
+        return dict(
+            google_analytics_id=app.config['GOOGLE_ANALYTICS_ID'],
+            google_site_verification=app.config['GOOGLE_SITE_VERIFICATION'],
+            bing_site_verification=app.config['BING_SITE_VERIFICATION']
+        )
+
     @app.after_request
     def add_header(response):
         # Ensure the endpoint is not None before checking its value
