@@ -119,6 +119,7 @@
     <div class="box box-primary">
     <h3 class="title black-title">Assistant Preferences</h3><br>
       <form id="assistant-preferences-form" action="/dashboard" method="post">
+        <input type="hidden" id="process-form" name="process-form" value="assistant">
     <section style="display: block;">
       <div class="row">
         <!-- Assistant's Name and Origin -->
@@ -128,7 +129,7 @@
             <label for="assistant-name" class="long-label">Assistant's Name</label>
             <!-- Label for mobile devices -->
             <label for="assistant-name" class="short-label">Name</label>
-            <input id="assistant-name" type="text" class="form-control" name="assistant-name" required="" placeholder="Assistant's Name" title="Enter a name for your assistant." value="{{ form_data.get('assistant-name', '') }}">
+            <input id="assistant-name" type="text" class="form-control" name="assistant-name" required="" placeholder="Assistant's Name" title="Enter a name for your assistant." value="{{ form_data.get('assistant_preferences.name', '') }}" disabled>
           </div>
         </div>
         <div class="col-xs-6">
@@ -137,7 +138,7 @@
             <label for="assistant-origin" class="long-label">Assistant's Origin</label>
             <!-- Label for mobile devices -->
             <label for="assistant-origin" class="short-label">Origin</label>
-            <input id="assistant-origin" type="text" class="form-control" name="assistant-origin" required="" placeholder="Assistant's Origin" title="Specify the origin (Place of Birth) of your assistant." value="{{ form_data.get('assistant-origin', '') }}">
+            <input id="assistant-origin" type="text" class="form-control" name="assistant-origin" required="" placeholder="Assistant's Origin" title="Specify the origin (Place of Birth) of your assistant." value="{{ form_data.get('assistant_preferences.origin', '') }}" disabled>
           </div>
         </div>
         <!-- Assistant's Gender and Personality Type -->
@@ -147,18 +148,18 @@
             <label for="assistant-gender" class="long-label">Assistant's Gender</label>
             <!-- Label for mobile devices -->
             <label for="assistant-gender" class="short-label">Gender</label>
-            <select id="assistant-gender" class="form-control" required="" name="assistant-gender" title="Choose the gender identity for your assistant.">
-              <option {% if form_data.get('assistant-gender') == None %}selected {% endif %}disabled>Please select a gender</option>
-              <option value="Male" {% if form_data.get('assistant-gender') == 'Male' %}selected{% endif %}>Male</option>
-              <option value="Female" {% if form_data.get('assistant-gender') == 'Female' %}selected{% endif %}>Female</option>
-              <option value="Non-binary" {% if form_data.get('assistant-gender') == 'Non-binary' %}selected{% endif %}>Non-binary</option>
-              <option value="Genderqueer" {% if form_data.get('assistant-gender') == 'Genderqueer' %}selected{% endif %}>Genderqueer</option>
-              <option value="Genderfluid" {% if form_data.get('assistant-gender') == 'Genderfluid' %}selected{% endif %}>Genderfluid</option>
-              <option value="Agender" {% if form_data.get('assistant-gender') == 'Agender' %}selected{% endif %}>Agender</option>
-              <option value="Bigender" {% if form_data.get('assistant-gender') == 'Bigender' %}selected{% endif %}>Bigender</option>
-              <option value="Two-Spirit" {% if form_data.get('assistant-gender') == 'Two-Spirit' %}selected{% endif %}>Two-Spirit</option>
-              <option value="Gender nonconforming" {% if form_data.get('assistant-gender') == 'Gender nonconforming' %}selected{% endif %}>Gender nonconforming</option>
-              <option value="Transgender" {% if form_data.get('assistant-gender') == 'Transgender' %}selected{% endif %}>Transgender</option>
+            <select id="assistant-gender" class="form-control" required="" name="assistant-gender" title="Choose the gender identity for your assistant." disabled>
+              <option {% if form_data.get('assistant_preferences.gender') == None %}selected {% endif %}disabled>Please select a gender</option>
+              <option value="Male" {% if form_data.get('assistant_preferences.gender') == 'Male' %}selected{% endif %}>Male</option>
+              <option value="Female" {% if form_data.get('assistant_preferences.gender') == 'Female' %}selected{% endif %}>Female</option>
+              <option value="Non-binary" {% if form_data.get('assistant_preferences.gender') == 'Non-binary' %}selected{% endif %}>Non-binary</option>
+              <option value="Genderqueer" {% if form_data.get('assistant_preferences.gender') == 'Genderqueer' %}selected{% endif %}>Genderqueer</option>
+              <option value="Genderfluid" {% if form_data.get('assistant_preferences.gender') == 'Genderfluid' %}selected{% endif %}>Genderfluid</option>
+              <option value="Agender" {% if form_data.get('assistant_preferences.gender') == 'Agender' %}selected{% endif %}>Agender</option>
+              <option value="Bigender" {% if form_data.get('assistant_preferences.gender') == 'Bigender' %}selected{% endif %}>Bigender</option>
+              <option value="Two-Spirit" {% if form_data.get('assistant_preferences.gender') == 'Two-Spirit' %}selected{% endif %}>Two-Spirit</option>
+              <option value="Gender nonconforming" {% if form_data.get('assistant_preferences.gender') == 'Gender nonconforming' %}selected{% endif %}>Gender nonconforming</option>
+              <option value="Transgender" {% if form_data.get('assistant_preferences.gender') == 'Transgender' %}selected{% endif %}>Transgender</option>
             </select>
           </div>
         </div>
@@ -168,7 +169,7 @@
     <label for="assistant-personality" class="long-label">Assistant's Personality Type</label>
     <!-- Label for mobile devices -->
     <label for="assistant-personality" class="short-label">Personality</label>
-    <select id="assistant-personality" class="form-control" required="" name="assistant-personality" title="Select the personality type you prefer for your assistant.">
+    <select id="assistant-personality" class="form-control" required="" name="assistant-personality" title="Select the personality type you prefer for your assistant." disabled>
       <option {% if form_data.get('assistant-personality') == None %}selected {% endif %}disabled>Please select a personality</option>
       <option value="Logical" {% if form_data.get('assistant-personality') == 'Logical' %}selected{% endif %}>Logical</option>
       <option value="Creative" {% if form_data.get('assistant-personality') == 'Creative' %}selected{% endif %}>Creative</option>
@@ -193,7 +194,7 @@
     <label for="assistant-response-style" class="long-label">Assistant's Response Style</label>
     <!-- Label for mobile devices -->
     <label for="assistant-response-style" class="short-label">Response Style</label>
-    <select id="assistant-response-style" class="form-control" required="" name="assistant-response-style" title="Choose how you want your assistant to communicate with you.">
+    <select id="assistant-response-style" class="form-control" required="" name="assistant-response-style" title="Choose how you want your assistant to communicate with you." disabled>
       <option {% if form_data.get('assistant-response-style') == None %}selected {% endif %}disabled>Please select a response style</option>
       <option value="Formal" {% if form_data.get('assistant-response-style') == 'Formal' %}selected{% endif %}>Formal</option>
       <option value="Casual" {% if form_data.get('assistant-response-style') == 'Casual' %}selected{% endif %}>Casual</option>
@@ -223,7 +224,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
   <p class="pull-right-sm">
-    <button id="card-update" type="submit" name="card-update" class="btn btn-custom-primary btn-lg btn-block" onclick="toggleAssistantPreferencesEdit()">Edit</button>
+    <button id="assistant-update" type="submit" name="assistant-update" class="btn btn-custom-primary btn-lg btn-block" onclick="toggleAssistantPreferencesEdit()">Edit</button>
   </p>
 </div>
           </div>
@@ -240,6 +241,7 @@
     <div class="box box-primary">
       <h3 class="title black-title">Personal Preferences</h3>
       <form id="personal-form" action="/dashboard" method="post">
+        <input type="hidden" id="process-form" name="process-form" value="user">
       <section style="display: block;">
         <div class="row">
           <!-- Preferred Name -->
@@ -247,7 +249,7 @@
             <div class="form-group form-type-text">
               <label for="user-name" class="long-label">Preferred Name</label>
               <label for="user-name" class="short-label">Preferred Name</label>
-              <input id="user-name" type="text" class="form-control" required="" name="user-name" placeholder="How should your assistant address you?" title="Enter your preferred name for personalized communication with your assistant." value="{{ form_data.get('user-name', '') }}">
+              <input id="user-name" type="text" class="form-control" required="" name="user-name" placeholder="How should your assistant address you?" title="Enter your preferred name for personalized communication with your assistant." value="{{ form_data.get('user-name', '') }}" disabled>
             </div>
           </div>
           <!-- Location -->
@@ -255,7 +257,7 @@
             <div class="form-group form-type-text">
               <label for="user-location" class="long-label">Your Location</label>
               <label for="user-location" class="short-label">Location</label>
-              <input id="user-location" type="text" class="form-control" required="" name="user-location" placeholder="What city are you located in?" title="Specify your current location (City, State, Country)." value="{{ form_data.get('user-location', '') }}">
+              <input id="user-location" type="text" class="form-control" required="" name="user-location" placeholder="What city are you located in?" title="Specify your current location (City, State, Country)." value="{{ form_data.get('user-location', '') }}" disabled>
             </div>
           </div>
           <!-- Time Zone -->
@@ -263,7 +265,7 @@
             <div class="form-group form-type-text">
               <label for="user-mobile" class="long-label">Mobile Number</label>
               <label for="user-mobile" class="short-label">Mobile</label>
-              <input id="user-mobile" type="text" class="form-control" required="" name="user-mobile" placeholder="The mobile number your assistant can reach you on." title="Enter a mobile number for your assistant to contact you on." value="{{ form_data.get('user-mobile', '') }}">
+              <input id="user-mobile" type="text" class="form-control" required="" name="user-mobile" placeholder="The mobile number your assistant can reach you on." title="Enter a mobile number for your assistant to contact you on." value="{{ form_data.get('user-mobile', '') }}" disabled>
             </div>
           </div>
           <!-- Communication Language -->
@@ -271,7 +273,7 @@
             <div class="form-group form-type-select">
               <label for="user-language" class="long-label">Preferred Communication Language</label>
               <label for="user-language" class="short-label">Language</label>
-              <select id="user-language" class="form-control" required="" name="user-language" title="Select the language you prefer for communication with your assistant.">
+              <select id="user-language" class="form-control" required="" name="user-language" title="Select the language you prefer for communication with your assistant." disabled>
                 <option {% if form_data.get('user-language') == None %}selected {% endif %}disabled>Please select a language</option>
                 <option value="English" {% if form_data.get('user-language') == 'English' %}selected{% endif %}>English</option>
                 <option value="Spanish" {% if form_data.get('user-language') == 'Spanish' %}selected{% endif %}>Spanish</option>
@@ -291,7 +293,7 @@
             <div class="form-group form-type-select">
               <label for="user-title" class="long-label">Preferred Title</label>
               <label for="user-title" class="short-label">Preferred Title</label>
-              <select id="user-title" class="form-control" required="" name="user-title" title="Choose your preferred formal or social title.">
+              <select id="user-title" class="form-control" required="" name="user-title" title="Choose your preferred formal or social title." disabled>
                 <option {% if form_data.get('user-title') == None %}selected {% endif %}disabled>Please select a title</option>
                 <option value="Mr." {% if form_data.get('user-title') == 'Mr.' %}selected{% endif %}>Mr.</option>
                 <option value="Ms." {% if form_data.get('user-title') == 'Ms.' %}selected{% endif %}>Ms.</option>
@@ -312,7 +314,7 @@
             <div class="form-group form-type-select">
               <label for="user-measurement" class="long-label">Measurement System</label>
               <label for="user-measurement" class="short-label">Measurements</label>
-              <select id="user-measurement" class="form-control" required="" name="user-measurement" title="Choose your preferred system of measurement, either Imperial or Metric.">
+              <select id="user-measurement" class="form-control" required="" name="user-measurement" title="Choose your preferred system of measurement, either Imperial or Metric." disabled>
                 <option {% if form_data.get('user-measurement') == None %}selected {% endif %}disabled>Please select a measurement system</option>
                 <option value="Imperial" {% if form_data.get('user-measurement') == 'Imperial' %}selected{% endif %}>Imperial</option>
                 <option value="Metric" {% if form_data.get('user-measurement') == 'Metric' %}selected{% endif %}>Metric</option>
@@ -324,7 +326,7 @@
             <div class="form-group form-type-textarea">
               <label for="user-description" class="long-label">About You</label>
               <label for="user-description" class="short-label">About</label>
-              <textarea id="user-description" class="form-control" rows="4" required="" name="user-description" placeholder="Tell your assistant a bit more about yourself." title="Provide some background information about yourself for assistant interactions.">{{ form_data.get('user-description', '') }}</textarea>
+              <textarea id="user-description" class="form-control" rows="4" required="" name="user-description" placeholder="Tell your assistant a bit more about yourself." title="Provide some background information about yourself for assistant interactions." disabled>{{ form_data.get('user-description', '') }}</textarea>
             </div>
           </div>
         </div>
@@ -335,7 +337,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
   <p class="pull-right-sm">
-    <button id="card-update" type="submit" name="card-update" class="btn btn-custom-primary btn-lg btn-block" onclick="toggleAssistantPreferencesEdit()">Edit</button>
+    <button id="user-update" type="submit" name="user-update" class="btn btn-custom-primary btn-lg btn-block" onclick="toggleUserPreferencesEdit()">Edit</button>
   </p>
 </div>
           </div>
@@ -459,5 +461,9 @@
     <script src="{{ url_for('static', filename='js/ie10-viewport-bug-workaround.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.3/js/bootstrap-select.min.js"></script>
     <script src="{{ url_for('static', filename='js/improbability.js') }}"></script>
+    <script>
+      // Attach the toggleEdit function to the button click event
+document.getElementById('user-update').addEventListener('click', toggleUserPreferencesEdit);
+    </script>
   </body>
 </html>
