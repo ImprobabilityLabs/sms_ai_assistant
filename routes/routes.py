@@ -608,7 +608,7 @@ def configure_routes(app):
 
     @sitemap.register_generator
     def terms():
-        yield 'termns_page', {}    
+        yield 'terms_page', {}    
 
     @sitemap.register_generator
     def privacy():
