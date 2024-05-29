@@ -1153,7 +1153,6 @@ function toggleUserPreferencesEdit(event) {
     // Enable form elements for editing
     formElements.forEach(element => {
       element.disabled = false;
-      }
     });
         
     // Change button to 'Save'
@@ -1165,3 +1164,4 @@ function toggleUserPreferencesEdit(event) {
     }
   }
 }
+
