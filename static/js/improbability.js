@@ -1142,3 +1142,26 @@ function togglePaymentEdit(event) {
     }
   }
 }
+
+function toggleUserPreferencesEdit(event) {
+  event.preventDefault(); // Prevent the default form submission
+
+  const formElements = document.querySelectorAll('#personal-form .form-control');
+  const editButton = document.getElementById('user-update');
+
+  if (editButton.textContent === 'Edit') {
+    // Enable form elements for editing
+    formElements.forEach(element => {
+      element.disabled = false;
+      }
+    });
+        
+    // Change button to 'Save'
+    editButton.textContent = 'Save';
+  } else {
+    // Validate payment details
+    if (validatePersonalPreferences()) {
+        document.getElementById('personal-form').submit();
+    }
+  }
+}
