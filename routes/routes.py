@@ -130,7 +130,8 @@ def configure_routes(app):
                     if all(field in request.form for field in required_fields):
                         user = User.query.filter_by(provider_id=session.get('user_provider_id')).first()
                         if user:
-                            success, error_message, subscription_id = handle_stripe_operations(user, request.form)
+                            referrer = session.get('referrer', '')
+                            success, error_message, subscription_id = handle_stripe_operations(user, request.form, referrer)
                             if success:
                                 location_dict = get_location(request.form['user-location'])
                                 if location_dict['location_text'] != 'null':
