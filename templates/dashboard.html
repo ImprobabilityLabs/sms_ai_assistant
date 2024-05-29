@@ -115,11 +115,11 @@
   </section>
 </div>
 <!-- Close Assistant Details Box -->
-    <!-- Assistant Preferences Box -->
-    <div class="box box-primary">
-    <h3 class="title black-title">Assistant Preferences</h3><br>
-      <form id="assistant-preferences-form" action="/dashboard" method="post">
-        <input type="hidden" id="process-form" name="process-form" value="assistant">
+<!-- Assistant Preferences Box -->
+<div class="box box-primary">
+  <h3 class="title black-title">Assistant Preferences</h3><br>
+  <form id="assistant-preferences-form" action="/dashboard" method="post">
+    <input type="hidden" id="process-form" name="process-form" value="assistant">
     <section style="display: block;">
       <div class="row">
         <!-- Assistant's Name and Origin -->
@@ -129,7 +129,7 @@
             <label for="assistant-name" class="long-label">Assistant's Name</label>
             <!-- Label for mobile devices -->
             <label for="assistant-name" class="short-label">Name</label>
-            <input id="assistant-name" type="text" class="form-control" name="assistant-name" required="" placeholder="Assistant's Name" title="Enter a name for your assistant." value="{{ form_data.get('assistant_preferences.name', '') }}" disabled>
+            <input id="assistant-name" type="text" class="form-control" name="assistant-name" required="" placeholder="Assistant's Name" title="Enter a name for your assistant." value="{{ assistant_preferences.get('name', '') }}" disabled>
           </div>
         </div>
         <div class="col-xs-6">
@@ -138,7 +138,7 @@
             <label for="assistant-origin" class="long-label">Assistant's Origin</label>
             <!-- Label for mobile devices -->
             <label for="assistant-origin" class="short-label">Origin</label>
-            <input id="assistant-origin" type="text" class="form-control" name="assistant-origin" required="" placeholder="Assistant's Origin" title="Specify the origin (Place of Birth) of your assistant." value="{{ form_data.get('assistant_preferences.origin', '') }}" disabled>
+            <input id="assistant-origin" type="text" class="form-control" name="assistant-origin" required="" placeholder="Assistant's Origin" title="Specify the origin (Place of Birth) of your assistant." value="{{ assistant_preferences.get('origin', '') }}" disabled>
           </div>
         </div>
         <!-- Assistant's Gender and Personality Type -->
@@ -149,84 +149,84 @@
             <!-- Label for mobile devices -->
             <label for="assistant-gender" class="short-label">Gender</label>
             <select id="assistant-gender" class="form-control" required="" name="assistant-gender" title="Choose the gender identity for your assistant." disabled>
-              <option {% if form_data.get('assistant_preferences.gender') == None %}selected {% endif %}disabled>Please select a gender</option>
-              <option value="Male" {% if form_data.get('assistant_preferences.gender') == 'Male' %}selected{% endif %}>Male</option>
-              <option value="Female" {% if form_data.get('assistant_preferences.gender') == 'Female' %}selected{% endif %}>Female</option>
-              <option value="Non-binary" {% if form_data.get('assistant_preferences.gender') == 'Non-binary' %}selected{% endif %}>Non-binary</option>
-              <option value="Genderqueer" {% if form_data.get('assistant_preferences.gender') == 'Genderqueer' %}selected{% endif %}>Genderqueer</option>
-              <option value="Genderfluid" {% if form_data.get('assistant_preferences.gender') == 'Genderfluid' %}selected{% endif %}>Genderfluid</option>
-              <option value="Agender" {% if form_data.get('assistant_preferences.gender') == 'Agender' %}selected{% endif %}>Agender</option>
-              <option value="Bigender" {% if form_data.get('assistant_preferences.gender') == 'Bigender' %}selected{% endif %}>Bigender</option>
-              <option value="Two-Spirit" {% if form_data.get('assistant_preferences.gender') == 'Two-Spirit' %}selected{% endif %}>Two-Spirit</option>
-              <option value="Gender nonconforming" {% if form_data.get('assistant_preferences.gender') == 'Gender nonconforming' %}selected{% endif %}>Gender nonconforming</option>
-              <option value="Transgender" {% if form_data.get('assistant_preferences.gender') == 'Transgender' %}selected{% endif %}>Transgender</option>
+              <option {% if assistant_preferences.get('gender') == None %}selected {% endif %}disabled>Please select a gender</option>
+              <option value="Male" {% if assistant_preferences.get('gender') == 'Male' %}selected{% endif %}>Male</option>
+              <option value="Female" {% if assistant_preferences.get('gender') == 'Female' %}selected{% endif %}>Female</option>
+              <option value="Non-binary" {% if assistant_preferences.get('gender') == 'Non-binary' %}selected{% endif %}>Non-binary</option>
+              <option value="Genderqueer" {% if assistant_preferences.get('gender') == 'Genderqueer' %}selected{% endif %}>Genderqueer</option>
+              <option value="Genderfluid" {% if assistant_preferences.get('gender') == 'Genderfluid' %}selected{% endif %}>Genderfluid</option>
+              <option value="Agender" {% if assistant_preferences.get('gender') == 'Agender' %}selected{% endif %}>Agender</option>
+              <option value="Bigender" {% if assistant_preferences.get('gender') == 'Bigender' %}selected{% endif %}>Bigender</option>
+              <option value="Two-Spirit" {% if assistant_preferences.get('gender') == 'Two-Spirit' %}selected{% endif %}>Two-Spirit</option>
+              <option value="Gender nonconforming" {% if assistant_preferences.get('gender') == 'Gender nonconforming' %}selected{% endif %}>Gender nonconforming</option>
+              <option value="Transgender" {% if assistant_preferences.get('gender') == 'Transgender' %}selected{% endif %}>Transgender</option>
             </select>
           </div>
         </div>
-<div class="col-xs-6">
-  <div class="form-group form-type-select">
-    <!-- Label for desktop and larger devices -->
-    <label for="assistant-personality" class="long-label">Assistant's Personality Type</label>
-    <!-- Label for mobile devices -->
-    <label for="assistant-personality" class="short-label">Personality</label>
-    <select id="assistant-personality" class="form-control" required="" name="assistant-personality" title="Select the personality type you prefer for your assistant." disabled>
-      <option {% if form_data.get('assistant-personality') == None %}selected {% endif %}disabled>Please select a personality</option>
-      <option value="Logical" {% if form_data.get('assistant-personality') == 'Logical' %}selected{% endif %}>Logical</option>
-      <option value="Creative" {% if form_data.get('assistant-personality') == 'Creative' %}selected{% endif %}>Creative</option>
-      <option value="Adventurous" {% if form_data.get('assistant-personality') == 'Adventurous' %}selected{% endif %}>Adventurous</option>
-      <option value="Empathetic" {% if form_data.get('assistant-personality') == 'Empathetic' %}selected{% endif %}>Empathetic</option>
-      <option value="Optimistic" {% if form_data.get('assistant-personality') == 'Optimistic' %}selected{% endif %}>Optimistic</option>
-      <option value="Introverted" {% if form_data.get('assistant-personality') == 'Introverted' %}selected{% endif %}>Introverted</option>
-      <option value="Extroverted" {% if form_data.get('assistant-personality') == 'Extroverted' %}selected{% endif %}>Extroverted</option>
-      <option value="Ambitious" {% if form_data.get('assistant-personality') == 'Ambitious' %}selected{% endif %}>Ambitious</option>
-      <option value="Humble" {% if form_data.get('assistant-personality') == 'Humble' %}selected{% endif %}>Humble</option>
-      <option value="Humorous" {% if form_data.get('assistant-personality') == 'Humorous' %}selected{% endif %}>Humorous</option>
-      <option value="Angry" {% if form_data.get('assistant-personality') == 'Angry' %}selected{% endif %}>Angry</option>
-      <option value="Curious" {% if form_data.get('assistant-personality') == 'Curious' %}selected{% endif %}>Curious</option>
-      <option value="Thoughtful" {% if form_data.get('assistant-personality') == 'Thoughtful' %}selected{% endif %}>Thoughtful</option>
-    </select>
-  </div>
-</div>
-<!-- Assistant's Response Style and Demeanor -->
-<div class="col-xs-6">
-  <div class="form-group form-type-select">
-    <!-- Label for desktop and larger devices -->
-    <label for="assistant-response-style" class="long-label">Assistant's Response Style</label>
-    <!-- Label for mobile devices -->
-    <label for="assistant-response-style" class="short-label">Response Style</label>
-    <select id="assistant-response-style" class="form-control" required="" name="assistant-response-style" title="Choose how you want your assistant to communicate with you." disabled>
-      <option {% if form_data.get('assistant-response-style') == None %}selected {% endif %}disabled>Please select a response style</option>
-      <option value="Formal" {% if form_data.get('assistant-response-style') == 'Formal' %}selected{% endif %}>Formal</option>
-      <option value="Casual" {% if form_data.get('assistant-response-style') == 'Casual' %}selected{% endif %}>Casual</option>
-      <option value="Professional" {% if form_data.get('assistant-response-style') == 'Professional' %}selected{% endif %}>Professional</option>
-      <option value="Friendly" {% if form_data.get('assistant-response-style') == 'Friendly' %}selected{% endif %}>Friendly</option>
-      <option value="Authoritative" {% if form_data.get('assistant-response-style') == 'Authoritative' %}selected{% endif %}>Authoritative</option>
-      <option value="Conversational" {% if form_data.get('assistant-response-style') == 'Conversational' %}selected{% endif %}>Conversational</option>
-      <option value="Educational" {% if form_data.get('assistant-response-style') == 'Educational' %}selected{% endif %}>Educational</option>
-      <option value="Relaxed" {% if form_data.get('assistant-response-style') == 'Relaxed' %}selected{% endif %}>Relaxed</option>
-      <option value="Engaging" {% if form_data.get('assistant-response-style') == 'Engaging' %}selected{% endif %}>Engaging</option>
-      <option value="Optimistic" {% if form_data.get('assistant-response-style') == 'Optimistic' %}selected{% endif %}>Optimistic</option>
-      <option value="Pessimistic" {% if form_data.get('assistant-response-style') == 'Pessimistic' %}selected{% endif %}>Pessimistic</option>
-      <option value="Realistic" {% if form_data.get('assistant-response-style') == 'Realistic' %}selected{% endif %}>Realistic</option>
-      <option value="Sarcastic" {% if form_data.get('assistant-response-style') == 'Sarcastic' %}selected{% endif %}>Sarcastic</option>
-      <option value="Detail-oriented" {% if form_data.get('assistant-response-style') == 'Detail-oriented' %}selected{% endif %}>Detail-oriented</option>
-      <option value="Concise" {% if form_data.get('assistant-response-style') == 'Concise' %}selected{% endif %}>Concise</option>
-      <option value="Direct" {% if form_data.get('assistant-response-style') == 'Direct' %}selected{% endif %}>Direct</option>
-      <option value="Humorous" {% if form_data.get('assistant-response-style') == 'Humorous' %}selected{% endif %}>Humorous</option>
-    </select>
-  </div>
-</div>
-</div>
-<div class="row">
+        <div class="col-xs-6">
+          <div class="form-group form-type-select">
+            <!-- Label for desktop and larger devices -->
+            <label for="assistant-personality" class="long-label">Assistant's Personality Type</label>
+            <!-- Label for mobile devices -->
+            <label for="assistant-personality" class="short-label">Personality</label>
+            <select id="assistant-personality" class="form-control" required="" name="assistant-personality" title="Select the personality type you prefer for your assistant." disabled>
+              <option {% if assistant_preferences.get('personality') == None %}selected {% endif %}disabled>Please select a personality</option>
+              <option value="Logical" {% if assistant_preferences.get('personality') == 'Logical' %}selected{% endif %}>Logical</option>
+              <option value="Creative" {% if assistant_preferences.get('personality') == 'Creative' %}selected{% endif %}>Creative</option>
+              <option value="Adventurous" {% if assistant_preferences.get('personality') == 'Adventurous' %}selected{% endif %}>Adventurous</option>
+              <option value="Empathetic" {% if assistant_preferences.get('personality') == 'Empathetic' %}selected{% endif %}>Empathetic</option>
+              <option value="Optimistic" {% if assistant_preferences.get('personality') == 'Optimistic' %}selected{% endif %}>Optimistic</option>
+              <option value="Introverted" {% if assistant_preferences.get('personality') == 'Introverted' %}selected{% endif %}>Introverted</option>
+              <option value="Extroverted" {% if assistant_preferences.get('personality') == 'Extroverted' %}selected{% endif %}>Extroverted</option>
+              <option value="Ambitious" {% if assistant_preferences.get('personality') == 'Ambitious' %}selected{% endif %}>Ambitious</option>
+              <option value="Humble" {% if assistant_preferences.get('personality') == 'Humble' %}selected{% endif %}>Humble</option>
+              <option value="Humorous" {% if assistant_preferences.get('personality') == 'Humorous' %}selected{% endif %}>Humorous</option>
+              <option value="Angry" {% if assistant_preferences.get('personality') == 'Angry' %}selected{% endif %}>Angry</option>
+              <option value="Curious" {% if assistant_preferences.get('personality') == 'Curious' %}selected{% endif %}>Curious</option>
+              <option value="Thoughtful" {% if assistant_preferences.get('personality') == 'Thoughtful' %}selected{% endif %}>Thoughtful</option>
+            </select>
+          </div>
+        </div>
+        <!-- Assistant's Response Style and Demeanor -->
+        <div class="col-xs-6">
+          <div class="form-group form-type-select">
+            <!-- Label for desktop and larger devices -->
+            <label for="assistant-response-style" class="long-label">Assistant's Response Style</label>
+            <!-- Label for mobile devices -->
+            <label for="assistant-response-style" class="short-label">Response Style</label>
+            <select id="assistant-response-style" class="form-control" required="" name="assistant-response-style" title="Choose how you want your assistant to communicate with you." disabled>
+              <option {% if assistant_preferences.get('response_style') == None %}selected {% endif %}disabled>Please select a response style</option>
+              <option value="Formal" {% if assistant_preferences.get('response_style') == 'Formal' %}selected{% endif %}>Formal</option>
+              <option value="Casual" {% if assistant_preferences.get('response_style') == 'Casual' %}selected{% endif %}>Casual</option>
+              <option value="Professional" {% if assistant_preferences.get('response_style') == 'Professional' %}selected{% endif %}>Professional</option>
+              <option value="Friendly" {% if assistant_preferences.get('response_style') == 'Friendly' %}selected{% endif %}>Friendly</option>
+              <option value="Authoritative" {% if assistant_preferences.get('response_style') == 'Authoritative' %}selected{% endif %}>Authoritative</option>
+              <option value="Conversational" {% if assistant_preferences.get('response_style') == 'Conversational' %}selected{% endif %}>Conversational</option>
+              <option value="Educational" {% if assistant_preferences.get('response_style') == 'Educational' %}selected{% endif %}>Educational</option>
+              <option value="Relaxed" {% if assistant_preferences.get('response_style') == 'Relaxed' %}selected{% endif %}>Relaxed</option>
+              <option value="Engaging" {% if assistant_preferences.get('response_style') == 'Engaging' %}selected{% endif %}>Engaging</option>
+              <option value="Optimistic" {% if assistant_preferences.get('response_style') == 'Optimistic' %}selected{% endif %}>Optimistic</option>
+              <option value="Pessimistic" {% if assistant_preferences.get('response_style') == 'Pessimistic' %}selected{% endif %}>Pessimistic</option>
+              <option value="Realistic" {% if assistant_preferences.get('response_style') == 'Realistic' %}selected{% endif %}>Realistic</option>
+              <option value="Sarcastic" {% if assistant_preferences.get('response_style') == 'Sarcastic' %}selected{% endif %}>Sarcastic</option>
+              <option value="Detail-oriented" {% if assistant_preferences.get('response_style') == 'Detail-oriented' %}selected{% endif %}>Detail-oriented</option>
+              <option value="Concise" {% if assistant_preferences.get('response_style') == 'Concise' %}selected{% endif %}>Concise</option>
+              <option value="Direct" {% if assistant_preferences.get('response_style') == 'Direct' %}selected{% endif %}>Direct</option>
+              <option value="Humorous" {% if assistant_preferences.get('response_style') == 'Humorous' %}selected{% endif %}>Humorous</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
         <div class="col-xs-12">
           <div class="row">
             <div class="col-xs-12 col-sm-9">
             </div>
             <div class="col-xs-12 col-sm-3">
-  <p class="pull-right-sm">
-    <button id="assistant-update" type="submit" name="assistant-update" class="btn btn-custom-primary btn-lg btn-block" onclick="toggleAssistantPreferencesEdit()">Edit</button>
-  </p>
-</div>
+              <p class="pull-right-sm">
+                <button id="assistant-update" type="submit" name="assistant-update" class="btn btn-custom-primary btn-lg btn-block" onclick="toggleAssistantPreferencesEdit()">Edit</button>
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -237,7 +237,7 @@
     </section>
   </form>
 </div>
-    <!-- Close Assistant Details Box -->
+<!-- Close Assistant Preferences Box -->
     <div class="box box-primary">
       <h3 class="title black-title">Personal Preferences</h3>
       <form id="personal-form" action="/dashboard" method="post">
