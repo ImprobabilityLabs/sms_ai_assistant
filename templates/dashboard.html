@@ -337,7 +337,10 @@
         </div>
       </div>
       <div class="row" style="display:block; margin-top: 10px;">
-        <div id="personal-error" class="col-xs-12" style="display:none">
+        <div id="personal-error" class="col-xs-12" style="{% if user_success %}display:block; color:green; border: 1px solid green; padding: 10px;{% else %}display:none;{% endif %}">
+        {% if user_success %}
+        <p>User Preferences updated Successfully.</p>
+        {% endif %}
         </div>
       </div>
     </section>
