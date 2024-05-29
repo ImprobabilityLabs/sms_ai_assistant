@@ -321,7 +321,7 @@ def configure_routes(app):
             user_preferences = UserPreference.query.filter_by(user_id=user.id, subscription_id=subscription.id).first()
             assistant_preferences = AssistantPreference.query.filter_by(user_id=user.id, subscription_id=subscription.id).first()
             history_records = History.query.filter_by(user_id=user.id, subscription_id=subscription.id)\
-                               .order_by(History.created.asc())\
+                               .order_by(History.created.desc())\
                                .limit(120)\
                                .all()
             
