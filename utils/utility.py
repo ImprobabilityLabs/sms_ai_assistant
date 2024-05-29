@@ -291,7 +291,7 @@ def get_products():
     return product_data
 
 
-def handle_stripe_operations(user, form_data):
+def handle_stripe_operations(user, form_data, referrer):
     try:
         if not user.stripe_customer_id:
             # Raise an exception if the Stripe customer ID does not exist
@@ -378,7 +378,8 @@ def handle_stripe_operations(user, form_data):
             stripe_subscription_id = subscription.id,
             current_period_start=current_period_start,
             current_period_end=current_period_end,
-            status=status
+            status=status,
+            referrer=referrer
         )
 
         # Add the new subscription to the database
