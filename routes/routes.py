@@ -324,6 +324,9 @@ def configure_routes(app):
                                .order_by(History.created.desc())\
                                .limit(120)\
                                .all()
+            
+            assistant_success = None
+            user_success = None
 
             if request.method == 'POST':
                 process_form = request.form.get('process-form')
@@ -341,6 +344,7 @@ def configure_routes(app):
                     assistant_preferences.assistant_response_style = assistant_response_style
                     db.session.commit()
                     current_app.logger.info('Dashboard Page - Assistant Prefrences DB Updated')
+                    assistant_success = True
                  
                 elif process_form == 'user':
                     user_name = request.form.get('user-name', '').strip()[:64]  
@@ -365,6 +369,7 @@ def configure_routes(app):
                     user_preferences.user_location_country=location_country
                     db.session.commit()
                     current_app.logger.info('Dashboard Page - User Prefrences DB Updated')
+                    user_success = True
             
             assistant_details = {
                 'name': assistant_preferences.assistant_name,
@@ -390,7 +395,7 @@ def configure_routes(app):
                 'location_full': user_preferences.user_location_full
             }  
             
-            return render_template('dashboard.html', menu=menu, form_data=request.form, history_records=history_records, assistant_details=assistant_details, assistant_preferences=assistant_preferences, user_preferences=user_preferences)
+            return render_template('dashboard.html', menu=menu, history_records=history_records, assistant_details=assistant_details, assistant_preferences=assistant_preferences, user_preferences=user_preferences, user_success=user_success, assistant_success=assistant_success)
         elif member['is_subscribed'] and member['has_billing_error']:
             return redirect(url_for('account_page'))
 
