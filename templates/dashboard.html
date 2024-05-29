@@ -337,7 +337,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
   <p class="pull-right-sm">
-    <button id="user-update" type="submit" name="user-update" class="btn btn-custom-primary btn-lg btn-block" onclick="toggleUserPreferencesEdit()">Edit</button>
+    <button id="user-update" type="button" name="user-update" class="btn btn-custom-primary btn-lg btn-block" onclick="toggleUserPreferencesEdit()">Edit</button>
   </p>
 </div>
           </div>
@@ -462,8 +462,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.3/js/bootstrap-select.min.js"></script>
     <script src="{{ url_for('static', filename='js/improbability.js') }}"></script>
     <script>
-      // Attach the toggleEdit function to the button click event
+      // Attach the toggleUserPreferencesEdit function to the button click event
 document.getElementById('user-update').addEventListener('click', toggleUserPreferencesEdit);
+
     </script>
   </body>
 </html>
