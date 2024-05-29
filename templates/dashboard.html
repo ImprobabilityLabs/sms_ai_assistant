@@ -238,100 +238,101 @@
   </form>
 </div>
 <!-- Close Assistant Preferences Box -->
-    <div class="box box-primary">
-      <h3 class="title black-title">Personal Preferences</h3>
-      <form id="personal-form" action="/dashboard" method="post">
-        <input type="hidden" id="process-form" name="process-form" value="user">
-      <section style="display: block;">
-        <div class="row">
-          <!-- Preferred Name -->
-          <div class="col-xs-6">
-            <div class="form-group form-type-text">
-              <label for="user-name" class="long-label">Preferred Name</label>
-              <label for="user-name" class="short-label">Preferred Name</label>
-              <input id="user-name" type="text" class="form-control" required="" name="user-name" placeholder="How should your assistant address you?" title="Enter your preferred name for personalized communication with your assistant." value="{{ user_preferences.get('user-name', '') }}" disabled>
-            </div>
-          </div>
-          <!-- Location -->
-          <div class="col-xs-6">
-            <div class="form-group form-type-text">
-              <label for="user-location" class="long-label">Your Location</label>
-              <label for="user-location" class="short-label">Location</label>
-              <input id="user-location" type="text" class="form-control" required="" name="user-location" placeholder="What city are you located in?" title="Specify your current location (City, State, Country)." value="{{ user_preferences.get('user-location', '') }}" disabled>
-            </div>
-          </div>
-          <!-- Communication Language -->
-          <div class="col-xs-6">
-            <div class="form-group form-type-select">
-              <label for="user-language" class="long-label">Preferred Communication Language</label>
-              <label for="user-language" class="short-label">Language</label>
-              <select id="user-language" class="form-control" required="" name="user-language" title="Select the language you prefer for communication with your assistant." disabled>
-                <option {% if form_data.get('user-language') == None %}selected {% endif %}disabled>Please select a language</option>
-                <option value="English" {% if form_data.get('user-language') == 'English' %}selected{% endif %}>English</option>
-                <option value="Spanish" {% if form_data.get('user-language') == 'Spanish' %}selected{% endif %}>Spanish</option>
-                <option value="Chinese" {% if form_data.get('user-language') == 'Chinese' %}selected{% endif %}>Chinese</option>
-                <option value="French" {% if form_data.get('user-language') == 'French' %}selected{% endif %}>French</option>
-                <option value="German" {% if form_data.get('user-language') == 'German' %}selected{% endif %}>German</option>
-                <option value="Japanese" {% if form_data.get('user-language') == 'Japanese' %}selected{% endif %}>Japanese</option>
-                <option value="Korean" {% if form_data.get('user-language') == 'Korean' %}selected{% endif %}>Korean</option>
-                <option value="Arabic" {% if form_data.get('user-language') == 'Arabic' %}selected{% endif %}>Arabic</option>
-                <option value="Russian" {% if form_data.get('user-language') == 'Russian' %}selected{% endif %}>Russian</option>
-                <option value="Portuguese" {% if form_data.get('user-language') == 'Portuguese' %}selected{% endif %}>Portuguese</option>
-              </select>
-            </div>
-          </div>
-          <!-- Preferred Title -->
-          <div class="col-xs-6">
-            <div class="form-group form-type-select">
-              <label for="user-title" class="long-label">Preferred Title</label>
-              <label for="user-title" class="short-label">Preferred Title</label>
-              <select id="user-title" class="form-control" required="" name="user-title" title="Choose your preferred formal or social title." disabled>
-                <option {% if form_data.get('user-title') == None %}selected {% endif %}disabled>Please select a title</option>
-                <option value="Mr." {% if form_data.get('user-title') == 'Mr.' %}selected{% endif %}>Mr.</option>
-                <option value="Ms." {% if form_data.get('user-title') == 'Ms.' %}selected{% endif %}>Ms.</option>
-                <option value="Mrs." {% if form_data.get('user-title') == 'Mrs.' %}selected{% endif %}>Mrs.</option>
-                <option value="Dr." {% if form_data.get('user-title') == 'Dr.' %}selected{% endif %}>Dr.</option>
-                <option value="Prof." {% if form_data.get('user-title') == 'Prof.' %}selected{% endif %}>Prof.</option>
-                <option value="Mx." {% if form_data.get('user-title') == 'Mx.' %}selected{% endif %}>Mx.</option>
-                <option value="Miss" {% if form_data.get('user-title') == 'Miss' %}selected{% endif %}>Miss</option>
-                <option value="Sir" {% if form_data.get('user-title') == 'Sir' %}selected{% endif %}>Sir</option>
-                <option value="Lady" {% if form_data.get('user-title') == 'Lady' %}selected{% endif %}>Lady</option>
-                <option value="Capt." {% if form_data.get('user-title') == 'Capt.' %}selected{% endif %}>Capt.</option>
-                <option value="Rev." {% if form_data.get('user-title') == 'Rev.' %}selected{% endif %}>Rev.</option>
-              </select>
-            </div>
-          </div>
-          <!-- Measurement System -->
-          <div class="col-xs-6">
-            <div class="form-group form-type-select">
-              <label for="user-measurement" class="long-label">Measurement System</label>
-              <label for="user-measurement" class="short-label">Measurements</label>
-              <select id="user-measurement" class="form-control" required="" name="user-measurement" title="Choose your preferred system of measurement, either Imperial or Metric." disabled>
-                <option {% if user_preferences.get('user-measurement') == None %}selected {% endif %}disabled>Please select a measurement system</option>
-                <option value="Imperial" {% if user_preferences.get('user-measurement') == 'Imperial' %}selected{% endif %}>Imperial</option>
-                <option value="Metric" {% if user_preferences.get('user-measurement') == 'Metric' %}selected{% endif %}>Metric</option>
-              </select>
-            </div>
-          </div>
-          <!-- About You (TextArea) -->
-          <div class="col-xs-12">
-            <div class="form-group form-type-textarea">
-              <label for="user-description" class="long-label">About You</label>
-              <label for="user-description" class="short-label">About</label>
-              <textarea id="user-description" class="form-control" rows="4" required="" name="user-description" placeholder="Tell your assistant a bit more about yourself." title="Provide some background information about yourself for assistant interactions." disabled>{{ form_data.get('user-description', '') }}</textarea>
-            </div>
+<!-- Open User Preferences Box -->
+<div class="box box-primary">
+  <h3 class="title black-title">Personal Preferences</h3>
+  <form id="personal-form" action="/dashboard" method="post">
+    <input type="hidden" id="process-form" name="process-form" value="user">
+    <section style="display: block;">
+      <div class="row">
+        <!-- Preferred Name -->
+        <div class="col-xs-6">
+          <div class="form-group form-type-text">
+            <label for="user-name" class="long-label">Preferred Name</label>
+            <label for="user-name" class="short-label">Preferred Name</label>
+            <input id="user-name" type="text" class="form-control" required="" name="user-name" placeholder="How should your assistant address you?" title="Enter your preferred name for personalized communication with your assistant." value="{{ user_preferences.get('name', '') }}" disabled>
           </div>
         </div>
-<div class="row">
+        <!-- Location -->
+        <div class="col-xs-6">
+          <div class="form-group form-type-text">
+            <label for="user-location" class="long-label">Your Location</label>
+            <label for="user-location" class="short-label">Location</label>
+            <input id="user-location" type="text" class="form-control" required="" name="user-location" placeholder="What city are you located in?" title="Specify your current location (City, State, Country)." value="{{ user_preferences.get('location_full', '') }}" disabled>
+          </div>
+        </div>
+        <!-- Communication Language -->
+        <div class="col-xs-6">
+          <div class="form-group form-type-select">
+            <label for="user-language" class="long-label">Preferred Communication Language</label>
+            <label for="user-language" class="short-label">Language</label>
+            <select id="user-language" class="form-control" required="" name="user-language" title="Select the language you prefer for communication with your assistant." disabled>
+              <option {% if user_preferences.get('language') == None %}selected {% endif %}disabled>Please select a language</option>
+              <option value="English" {% if user_preferences.get('language') == 'English' %}selected{% endif %}>English</option>
+              <option value="Spanish" {% if user_preferences.get('language') == 'Spanish' %}selected{% endif %}>Spanish</option>
+              <option value="Chinese" {% if user_preferences.get('language') == 'Chinese' %}selected{% endif %}>Chinese</option>
+              <option value="French" {% if user_preferences.get('language') == 'French' %}selected{% endif %}>French</option>
+              <option value="German" {% if user_preferences.get('language') == 'German' %}selected{% endif %}>German</option>
+              <option value="Japanese" {% if user_preferences.get('language') == 'Japanese' %}selected{% endif %}>Japanese</option>
+              <option value="Korean" {% if user_preferences.get('language') == 'Korean' %}selected{% endif %}>Korean</option>
+              <option value="Arabic" {% if user_preferences.get('language') == 'Arabic' %}selected{% endif %}>Arabic</option>
+              <option value="Russian" {% if user_preferences.get('language') == 'Russian' %}selected{% endif %}>Russian</option>
+              <option value="Portuguese" {% if user_preferences.get('language') == 'Portuguese' %}selected{% endif %}>Portuguese</option>
+            </select>
+          </div>
+        </div>
+        <!-- Preferred Title -->
+        <div class="col-xs-6">
+          <div class="form-group form-type-select">
+            <label for="user-title" class="long-label">Preferred Title</label>
+            <label for="user-title" class="short-label">Preferred Title</label>
+            <select id="user-title" class="form-control" required="" name="user-title" title="Choose your preferred formal or social title." disabled>
+              <option {% if user_preferences.get('title') == None %}selected {% endif %}disabled>Please select a title</option>
+              <option value="Mr." {% if user_preferences.get('title') == 'Mr.' %}selected{% endif %}>Mr.</option>
+              <option value="Ms." {% if user_preferences.get('title') == 'Ms.' %}selected{% endif %}>Ms.</option>
+              <option value="Mrs." {% if user_preferences.get('title') == 'Mrs.' %}selected{% endif %}>Mrs.</option>
+              <option value="Dr." {% if user_preferences.get('title') == 'Dr.' %}selected{% endif %}>Dr.</option>
+              <option value="Prof." {% if user_preferences.get('title') == 'Prof.' %}selected{% endif %}>Prof.</option>
+              <option value="Mx." {% if user_preferences.get('title') == 'Mx.' %}selected{% endif %}>Mx.</option>
+              <option value="Miss" {% if user_preferences.get('title') == 'Miss' %}selected{% endif %}>Miss</option>
+              <option value="Sir" {% if user_preferences.get('title') == 'Sir' %}selected{% endif %}>Sir</option>
+              <option value="Lady" {% if user_preferences.get('title') == 'Lady' %}selected{% endif %}>Lady</option>
+              <option value="Capt." {% if user_preferences.get('title') == 'Capt.' %}selected{% endif %}>Capt.</option>
+              <option value="Rev." {% if user_preferences.get('title') == 'Rev.' %}selected{% endif %}>Rev.</option>
+            </select>
+          </div>
+        </div>
+        <!-- Measurement System -->
+        <div class="col-xs-6">
+          <div class="form-group form-type-select">
+            <label for="user-measurement" class="long-label">Measurement System</label>
+            <label for="user-measurement" class="short-label">Measurements</label>
+            <select id="user-measurement" class="form-control" required="" name="user-measurement" title="Choose your preferred system of measurement, either Imperial or Metric." disabled>
+              <option {% if user_preferences.get('measurement') == None %}selected {% endif %}disabled>Please select a measurement system</option>
+              <option value="Imperial" {% if user_preferences.get('measurement') == 'Imperial' %}selected{% endif %}>Imperial</option>
+              <option value="Metric" {% if user_preferences.get('measurement') == 'Metric' %}selected{% endif %}>Metric</option>
+            </select>
+          </div>
+        </div>
+        <!-- About You (TextArea) -->
+        <div class="col-xs-12">
+          <div class="form-group form-type-textarea">
+            <label for="user-description" class="long-label">About You</label>
+            <label for="user-description" class="short-label">About</label>
+            <textarea id="user-description" class="form-control" rows="4" required="" name="user-description" placeholder="Tell your assistant a bit more about yourself." title="Provide some background information about yourself for assistant interactions." disabled>{{ user_preferences.get('bio', '') }}</textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row">
         <div class="col-xs-12">
           <div class="row">
             <div class="col-xs-12 col-sm-9">
             </div>
             <div class="col-xs-12 col-sm-3">
-  <p class="pull-right-sm">
-    <button id="user-update" type="button" name="user-update" class="btn btn-custom-primary btn-lg btn-block" onclick="toggleUserPreferencesEdit()">Edit</button>
-  </p>
-</div>
+              <p class="pull-right-sm">
+                <button id="user-update" type="button" name="user-update" class="btn btn-custom-primary btn-lg btn-block" onclick="toggleUserPreferencesEdit()">Edit</button>
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -342,8 +343,8 @@
     </section>
   </form>
 </div>
+<!-- Close User Preferences Box -->
 
-      
             {% if history_records %}<div class="box box-primary">
         <h3 class="title black-title">Chat History</h3><br>
         <section style="display:block">
