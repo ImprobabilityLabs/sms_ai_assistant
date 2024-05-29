@@ -37,6 +37,10 @@ def configure_routes(app):
     
     @app.route('/', methods=['GET', 'POST'])
     def index_page():
+        referrer = request.args.get('referrer')
+        if referrer:
+            session['referrer'] = referrer
+            current_app.logger.info(f'Referrer set to: {referrer}')
         if session.get('user_provider_id'):
             member = check_user_subscription(session.get('user_provider_id'))
             is_user = member['is_user']
@@ -412,6 +416,9 @@ def configure_routes(app):
 
     @app.route('/logout')
     def logout():
+        # Save the referrer session variable locally
+        referrer = session.get('referrer')
+
         # Clear all data from the session
         session.clear()
      
@@ -421,6 +428,11 @@ def configure_routes(app):
         # Delete cookies
         for key in request.cookies:
             response.delete_cookie(key)
+    
+        # Recreate the referrer session variable
+        if referrer:
+            session['referrer'] = referrer
+            current_app.logger.info(f'Referrer retained after logout: {referrer}')
 
         # Redirect to the homepage
         return response
