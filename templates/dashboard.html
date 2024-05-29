@@ -231,9 +231,11 @@
         </div>
       </div>
       <div class="row" style="display:block; margin-top: 10px;">
-        <div id="assistant-error" class="col-xs-12" style="{% if assistant_success %}display:block; color:green; border: 1px solid green; padding: 10px;{% else %}display:none;{% endif %}">
+        <div id="assistant-error" class="col-xs-12" style="{% if assistant_success %}display:block;{% else %}display:none;{% endif %}">
         {% if assistant_success %}
-        <p>Assistant Preferences updated Successfully.</p>
+            <div style="color: green; border: 1px solid green; padding: 10px;">
+                <p><strong>Assistant Preferences updated Successfully!</strong></p>
+            </div>
         {% endif %}
         </div>
       </div>
@@ -340,9 +342,11 @@
         </div>
       </div>
       <div class="row" style="display:block; margin-top: 10px;">
-        <div id="personal-error" class="col-xs-12" style="{% if user_success %}display:block; color:green; border: 1px solid green; padding: 10px;{% else %}display:none;{% endif %}">
+        <div id="personal-error" class="col-xs-12" style="{% if user_success %}display:block;{% else %}display:none;{% endif %}">
         {% if user_success %}
-        <p>Personal Preferences updated Successfully.</p>
+            <div style="color: green; border: 1px solid green; padding: 10px;">
+                <p><strong>Personal Preferences updated Successfully!</strong></p>
+            </div>
         {% endif %}
         </div>
       </div>
