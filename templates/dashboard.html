@@ -249,7 +249,7 @@
             <div class="form-group form-type-text">
               <label for="user-name" class="long-label">Preferred Name</label>
               <label for="user-name" class="short-label">Preferred Name</label>
-              <input id="user-name" type="text" class="form-control" required="" name="user-name" placeholder="How should your assistant address you?" title="Enter your preferred name for personalized communication with your assistant." value="{{ form_data.get('user-name', '') }}" disabled>
+              <input id="user-name" type="text" class="form-control" required="" name="user-name" placeholder="How should your assistant address you?" title="Enter your preferred name for personalized communication with your assistant." value="{{ user_preferences.get('user-name', '') }}" disabled>
             </div>
           </div>
           <!-- Location -->
@@ -257,15 +257,7 @@
             <div class="form-group form-type-text">
               <label for="user-location" class="long-label">Your Location</label>
               <label for="user-location" class="short-label">Location</label>
-              <input id="user-location" type="text" class="form-control" required="" name="user-location" placeholder="What city are you located in?" title="Specify your current location (City, State, Country)." value="{{ form_data.get('user-location', '') }}" disabled>
-            </div>
-          </div>
-          <!-- Time Zone -->
-          <div class="col-xs-6">
-            <div class="form-group form-type-text">
-              <label for="user-mobile" class="long-label">Mobile Number</label>
-              <label for="user-mobile" class="short-label">Mobile</label>
-              <input id="user-mobile" type="text" class="form-control" required="" name="user-mobile" placeholder="The mobile number your assistant can reach you on." title="Enter a mobile number for your assistant to contact you on." value="{{ form_data.get('user-mobile', '') }}" disabled>
+              <input id="user-location" type="text" class="form-control" required="" name="user-location" placeholder="What city are you located in?" title="Specify your current location (City, State, Country)." value="{{ user_preferences.get('user-location', '') }}" disabled>
             </div>
           </div>
           <!-- Communication Language -->
@@ -315,9 +307,9 @@
               <label for="user-measurement" class="long-label">Measurement System</label>
               <label for="user-measurement" class="short-label">Measurements</label>
               <select id="user-measurement" class="form-control" required="" name="user-measurement" title="Choose your preferred system of measurement, either Imperial or Metric." disabled>
-                <option {% if form_data.get('user-measurement') == None %}selected {% endif %}disabled>Please select a measurement system</option>
-                <option value="Imperial" {% if form_data.get('user-measurement') == 'Imperial' %}selected{% endif %}>Imperial</option>
-                <option value="Metric" {% if form_data.get('user-measurement') == 'Metric' %}selected{% endif %}>Metric</option>
+                <option {% if user_preferences.get('user-measurement') == None %}selected {% endif %}disabled>Please select a measurement system</option>
+                <option value="Imperial" {% if user_preferences.get('user-measurement') == 'Imperial' %}selected{% endif %}>Imperial</option>
+                <option value="Metric" {% if user_preferences.get('user-measurement') == 'Metric' %}selected{% endif %}>Metric</option>
               </select>
             </div>
           </div>
