@@ -324,6 +324,47 @@ def configure_routes(app):
                                .order_by(History.created.desc())\
                                .limit(120)\
                                .all()
+
+            if request.method == 'POST':
+                process_form = request.form.get('process-form')
+                if process_form == 'assistant':
+                    assistant_name = request.form.get('assistant-name', '').strip()[:64]  
+                    assistant_origin = request.form.get('assistant-origin', '').strip()[:64]
+                    assistant_gender = request.form.get('assistant-gender', '').strip()[:64] 
+                    assistant_personality = request.form.get('assistant-personality', '').strip()[:64] 
+                    assistant_response_style = request.form.get('assistant-response-style', '').strip()[:64]
+                    
+                    assistant_preferences.assistant_name = assistant_name
+                    assistant_preferences.assistant_origin = assistant_origin
+                    assistant_preferences.assistant_gender = assistant_gender
+                    assistant_preferences.assistant_personality = assistant_personality
+                    assistant_preferences.assistant_response_style = assistant_response_style
+                    db.session.commit()
+                    current_app.logger.info('Dashboard Page - Assistant Prefrences DB Updated')
+                 
+                elif process_form == 'user':
+                    user_name = request.form.get('user-name', '').strip()[:64]  
+                    user_title = request.form.get('user-title', '').strip()[:64]
+                    user_measurement = request.form.get('user-measurement', '').strip()[:64]
+                    user_bio = request.form.get('user-description', '').strip()[:512]  
+                    user_language = request.form.get('user-language', '').strip()[:64] 
+                    location_dict = get_location(request.form['user-location'])
+                    if location_dict['location_text'] != 'null':
+                        location_user = location_dict['location_text'].strip()[:64]  
+                        location_country = location_dict['country_code'].strip()[:2]  
+                    else:
+                        location_user = request.form['user-location'].strip()[:64]  
+                        location_country = user_preferences.user_location_country.strip()[:2]  
+            
+                    user_preferences.user_name = user_name
+                    user_preferences.user_title = user_title
+                    user_preferences.user_measurement = user_measurement
+                    user_preferences.user_bio = user_bio
+                    user_preferences.user_language = user_language
+                    user_preferences.user_location_full=location_user 
+                    user_preferences.user_location_country=location_country
+                    db.session.commit()
+                    current_app.logger.info('Dashboard Page - User Prefrences DB Updated')
             
             assistant_details = {
                 'name': assistant_preferences.assistant_name,
