@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, abort, current_app
+from flask_sitemap import Sitemap
 from models import db, User, Subscription, MobileNumber, History, UserPreference, AssistantPreference 
 from twilio.request_validator import RequestValidator
 from twilio.rest import Client
@@ -12,6 +13,8 @@ import openai
 from datetime import datetime
 
 def configure_routes(app):
+
+    sitemap = Sitemap(app=app)
 
     app.jinja_env.filters['format_phone_number'] = format_phone_number
 
@@ -589,3 +592,28 @@ def configure_routes(app):
         except Exception as e:
             current_app.logger.error(f"Error: {e}")
             return 'Internal Server Error', 500
+
+
+    @sitemap.register_generator
+    def index():
+        yield 'index_page', {}
+
+    @sitemap.register_generator
+    def about():
+        yield 'about_page', {}      
+
+    @sitemap.register_generator
+    def contact():
+        yield 'contact_page', {}     
+
+    @sitemap.register_generator
+    def terms():
+        yield 'termns_page', {}    
+
+    @sitemap.register_generator
+    def privacy():
+        yield 'privacy_page', {}    
+
+    @sitemap.register_generator
+    def faq():
+        yield 'faq_page', {}    
