@@ -5,7 +5,7 @@ from twilio.request_validator import RequestValidator
 from twilio.rest import Client
 from oauthlib.oauth2 import WebApplicationClient
 from requests_oauthlib import OAuth2Session
-from utils.utility import fetch_data, check_user_subscription, generate_menu, get_products, handle_stripe_operations, get_location, get_country_code, clean_phone_number, validate_incomming_message, save_sms_history, load_sms_history, build_system_prompt, process_questions_answers, build_and_send_messages, send_reply, build_and_send_messages_openai, update_billing_info, format_phone_number
+from utils.utility import fetch_data, check_user_subscription, generate_menu, get_products, handle_stripe_operations, get_location, get_country_code, clean_phone_number, validate_incomming_message, save_sms_history, load_sms_history, build_system_prompt, process_questions_answers, build_and_send_messages, send_reply, build_and_send_messages_openai, update_billing_info, format_phone_number, handle_payment_success, handle_billing_issue, handle_subscription_cancellation
 import stripe
 import aiohttp
 import asyncio
@@ -635,7 +635,7 @@ def configure_routes(app):
             return 'Internal Server Error', 500
 
     
-    @app.route('/api/sripe/callback', methods=['POST'])
+    @app.route('/api/stripe/callback', methods=['POST'])
     def stripe_callback():
         payload = request.get_data(as_text=True)
         sig_header = request.headers.get('Stripe-Signature')
