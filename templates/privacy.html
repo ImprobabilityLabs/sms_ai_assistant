@@ -5,23 +5,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="author" content="Improbability Labs Inc. ( Rahim Khoja )">
-    <meta name="description" content="SMS AI Assistant by Improbability Labs Inc. An AI powered assistant that can lookup information available over SMS.">
-    <meta name="keywords" content="AI, ChatBot, SMS, Assistant, innovation">
+    <meta name="description" content="Improbability Labs Inc. - SMS AI Assistant is a cutting-edge web application designed to enhance your SMS experience. Our AI assistant can perform real-time Google lookups, allowing you to stay updated with the latest information at your fingertips. Connect multiple phone numbers for seamless communication and enjoy the personalized interaction with an AI that learns and adapts to your preferences. With paid subscription plans, you get access to advanced features powered by OpenAI and Groq, making it not just a tool, but a companion for those seeking a friendly and helpful assistant. Ideal for older adults and anyone looking for a reliable friend in their pocket.">
+    <meta name="keywords" content="SMS AI Assistant, AI, ChatBot, SMS, Assistant, Real-time Google Lookups, Paid Subscriptions, OpenAI, Groq, Personalized AI, Personal Assistant, Elderly Friendly AI, Companion AI, Loneliness Solutions, AI Friend, Improbability Labs Inc.">
     <meta name="robots" content="index, follow">
     <meta property="og:title" content="Improbability Labs Inc. - SMS AI Assistant">
-    <meta property="og:description" content="SMS AI Assistant by Improbability Labs Inc. An AI powered assistant that can lookup information available over SMS.">
+    <meta property="og:description" content="Improbability Labs Inc. - SMS AI Assistant is a cutting-edge web application designed to enhance your SMS experience. Our AI assistant can perform real-time Google lookups, allowing you to stay updated with the latest information at your fingertips. Connect multiple phone numbers for seamless communication and enjoy the personalized interaction with an AI that learns and adapts to your preferences. With paid subscription plans, you get access to advanced features powered by OpenAI and Groq, making it not just a tool, but a companion for those seeking a friendly and helpful assistant. Ideal for older adults and anyone looking for a reliable friend in their pocket.">
     <meta property="og:image" content="{{ url_for('static', filename='images/improbability-labs.png') }}">
     <meta property="og:url" content="https://sms.improbability.io/">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Improbability Labs Inc. - SMS AI Assistant">
-    <meta name="twitter:description" content="SMS AI Assistant by Improbability Labs Inc. An AI powered assistant that can lookup information available over SMS.">
+    <meta name="twitter:description" content="Improbability Labs Inc. - SMS AI Assistant is a cutting-edge web application designed to enhance your SMS experience. Our AI assistant can perform real-time Google lookups, allowing you to stay updated with the latest information at your fingertips. Connect multiple phone numbers for seamless communication and enjoy the personalized interaction with an AI that learns and adapts to your preferences. With paid subscription plans, you get access to advanced features powered by OpenAI and Groq, making it not just a tool, but a companion for those seeking a friendly and helpful assistant. Ideal for older adults and anyone looking for a reliable friend in their pocket.">
     <meta name="twitter:image" content="{{ url_for('static', filename='images/improbability-labs.png') }}">
     <link rel="canonical" href="https://sms.improbability.io/">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon/favicon-16x16.png') }}">
-    <title>Improbability Labs Inc. - SMS AI Assistant - Privacy</title>
-    {% if google_analytics_id %}
+    <title>Improbability Labs Inc. - SMS AI Assistant - Privacy</title>{% if google_analytics_id %}
     <script async src="https://www.googletagmanager.com/gtag/js?id={{ google_analytics_id }}"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -29,16 +28,21 @@
         gtag('js', new Date());
 
         gtag('config', '{{ google_analytics_id }}');
+    </script>{% endif %}{% if google_site_verification %}
+    <meta name="google-site-verification" content="{{ google_site_verification }}">{% endif %}{% if bing_site_verification %}
+    <meta name="msvalidate.01" content="{{ bing_site_verification }}">{% endif %}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Improbability Labs Inc. - SMS AI Assistant",
+      "url": "{{ request.url_root[:-1] }}",
+      "sameAs": [
+        "https://twitter.com/ImprobLabs",
+        "https://www.linkedin.com/company/improbability-labs/"
+      ]
+    }
     </script>
-    {% endif %}
-
-    {% if google_site_verification %}
-    <meta name="google-site-verification" content="{{ google_site_verification }}">
-    {% endif %}
-
-    {% if bing_site_verification %}
-    <meta name="msvalidate.01" content="{{ bing_site_verification }}">
-    {% endif %}    
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <link href="<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/ie10-viewport-bug-workaround.css') }}">
