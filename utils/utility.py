@@ -888,10 +888,64 @@ def handle_payment_success(invoice):
     current_period_start = datetime.fromtimestamp(subscription['current_period_start'])
     current_period_end = datetime.fromtimestamp(subscription['current_period_end'])
 
+    subscription_record = Subscription.query.filter_by(stripe_subscription_id=subscription_id, enabled=True).first()
+    if subscription_record:
+        subscription_record.enabled = True
+        subscription_record.billing_error = False
+        subscription_record.status = 'Active'
+        subscription_record.current_period_start = current_period_start
+        subscription_record.current_period_end = current_period_end
+        subscription_record.last_payment_amount = last_payment_amount
+        subscription_record.last_payment_date = payment_date
+        db.session.commit()
+        
+        current_app.logger.info(
+            f"handle_payment_success: Updated subscription {subscription_id} "
+            f"with payment details. Current Period Start: {current_period_start}, "
+            f"Current Period End: {current_period_end}, Last Payment Amount: {last_payment_amount}, "
+            f"Last Payment Date: {payment_date}"
+        )
+    else:
+        current_app.logger.info(
+            f"handle_payment_success: Subscription with ID {subscription_id} not found"
+        )
+
 def handle_billing_issue(invoice):
     subscription_id = invoice['subscription']
-    # Handle the billing issue
+    subscription_record = Subscription.query.filter_by(stripe_subscription_id=subscription_id, enabled=True).first()
+
+    if subscription_record:
+        subscription_record.billing_error = True
+        subscription_record.status = 'Billing Issue'
+        db.session.commit()
+        
+        current_app.logger.info(
+            f"handle_billing_issue: Updated subscription {subscription_id} "
+            f"with billing issue status. Subscription ID: {subscription_id}"
+        )
+    else:
+        current_app.logger.info(
+            f"handle_billing_issue: Subscription with ID {subscription_id} not found"
+        )
 
 def handle_subscription_cancellation(subscription):
     subscription_id = subscription['id']
-    # Handle the subscription cancellation
+    subscription_record = Subscription.query.filter_by(stripe_subscription_id=subscription_id, enabled=True).first()
+
+    # Delete Twillio Number
+
+    if subscription_record:
+        subscription_record.enabled = False
+        subscription_record.status = 'Cancelled'
+        subscription_record.twillio_number = ''
+        subscription_record.twillio_number_sid = ''
+        db.session.commit()
+        
+        current_app.logger.info(
+            f"handle_subscription_cancellation: Updated subscription {subscription_id} "
+            f"with cancellation status. Subscription ID: {subscription_id}"
+        )
+    else:
+        current_app.logger.info(
+            f"handle_subscription_cancellation: Subscription with ID {subscription_id} not found"
+        )
