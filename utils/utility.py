@@ -879,3 +879,19 @@ def send_reply(user_id, subscription_id, reply, to_number, from_number, twilio_c
 def format_phone_number(phone_number):
     # Assuming phone number is in the format +XXXXXXXXXX
     return f"+1 ({phone_number[2:5]}) {phone_number[5:8]}-{phone_number[8:]}"
+
+def handle_payment_success(invoice):
+    subscription_id = invoice['subscription']
+    payment_date = datetime.fromtimestamp(invoice['created'])
+    last_payment_amount = invoice['amount_paid'] / 100  # Stripe amount is in cents
+    subscription = stripe.Subscription.retrieve(subscription_id)
+    current_period_start = datetime.fromtimestamp(subscription['current_period_start'])
+    current_period_end = datetime.fromtimestamp(subscription['current_period_end'])
+
+def handle_billing_issue(invoice):
+    subscription_id = invoice['subscription']
+    # Handle the billing issue
+
+def handle_subscription_cancellation(subscription):
+    subscription_id = subscription['id']
+    # Handle the subscription cancellation
