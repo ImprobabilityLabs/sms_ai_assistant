@@ -637,9 +637,10 @@ def configure_routes(app):
     
     @app.route('/api/stripe/callback', methods=['POST'])
     def stripe_callback():
+        endpoint_secret = app.config['STRIPE_ENDPOINT_SECRET']
         payload = request.get_data(as_text=True)
         sig_header = request.headers.get('Stripe-Signature')
-
+        
         try:
             event = stripe.Webhook.construct_event(
                 payload, sig_header, endpoint_secret
