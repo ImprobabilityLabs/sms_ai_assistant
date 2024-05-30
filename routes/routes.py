@@ -634,7 +634,34 @@ def configure_routes(app):
             current_app.logger.error(f"Error: {e}")
             return 'Internal Server Error', 500
 
+    
+    @app.route('/api/sripe/callback', methods=['POST'])
+    def stripe_callback():
+        payload = request.get_data(as_text=True)
+        sig_header = request.headers.get('Stripe-Signature')
 
+        try:
+            event = stripe.Webhook.construct_event(
+                payload, sig_header, endpoint_secret
+            )
+        except ValueError as e:
+            return jsonify({'status': 'error', 'message': 'Invalid payload'}), 400
+        except stripe.error.SignatureVerificationError as e:
+            return jsonify({'status': 'error', 'message': 'Invalid signature'}), 400
+
+        event_type = event['type']
+        data_object = event['data']['object']
+
+        if event_type == 'invoice.payment_succeeded':
+            handle_payment_success(data_object)
+        elif event_type == 'invoice.payment_failed':
+            handle_billing_issue(data_object)
+        elif event_type == 'customer.subscription.deleted':
+            handle_subscription_cancellation(data_object)
+
+        return jsonify({'status': 'success'}), 200
+
+    
     @sitemap.register_generator
     def index():
         yield 'index_page', {}
