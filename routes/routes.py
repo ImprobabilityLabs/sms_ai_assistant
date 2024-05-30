@@ -35,6 +35,26 @@ def configure_routes(app):
             response.headers['Expires'] = '0'
         return response
     
+    @app.route('/robots.txt')
+    def robots_txt():
+        base_url = request.url_root[:-1]  # Remove the trailing slash
+        lines = [
+            "User-Agent: *",
+            "Disallow: /dashboard",
+            "Disallow: /subscribe",
+            "Disallow: /account",
+            "Disallow: /logout",
+            "Disallow: /api",
+            "Allow: /",
+            "Allow: /about",
+            "Allow: /contact",
+            "Allow: /terms",
+            "Allow: /privacy",
+            "Allow: /faq",
+            f"Sitemap: {base_url}/sitemap.xml"
+        ]
+        return Response("\n".join(lines), mimetype="text/plain")
+
     @app.route('/', methods=['GET', 'POST'])
     def index_page():
         referrer = request.args.get('referrer')
