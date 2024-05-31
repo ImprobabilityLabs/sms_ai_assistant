@@ -837,7 +837,7 @@ def clean_string(s):
     return "".join(c for c in s if c.isascii() and c != '\u2013' and c != '\u2014')
 
 
-def send_reply(user_id, subscription_id, reply, to_number, from_number, twilio_client):
+def send_reply(user_id, subscription_id, reply, to_number, from_number, twilio_client, save_message=True):
     """Sends a reply to the user, handling multipart messages if necessary.
 
     Args:
@@ -889,7 +889,9 @@ def send_reply(user_id, subscription_id, reply, to_number, from_number, twilio_c
         sent_sid = None
 
     # Save the SMS history
-    save_sms_history(user_id, subscription_id, str(sent_sid), 'outgoing', from_number, to_number, reply, 'sent')
+    if save_message:
+        save_sms_history(user_id, subscription_id, str(sent_sid), 'outgoing', from_number, to_number, reply, 'sent')
+	    
 
 def format_phone_number(phone_number):
     # Assuming phone number is in the format +XXXXXXXXXX
