@@ -937,8 +937,8 @@ def handle_subscription_cancellation(subscription):
     if subscription_record:
         subscription_record.enabled = False
         subscription_record.status = 'Cancelled'
-        subscription_record.twillio_number = ''
-        subscription_record.twillio_number_sid = ''
+        subscription_record.twillio_number = None
+        subscription_record.twillio_number_sid = None
         db.session.commit()
         
         current_app.logger.info(
