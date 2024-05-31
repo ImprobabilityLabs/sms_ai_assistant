@@ -719,7 +719,7 @@ def build_system_prompt(user_preferences, assistant_preferences, extra_info=None
     return json.dumps(system_prompt)
 
 
-def build_and_send_messages_openai(system_prompt, history_records):
+def build_and_send_messages_openai(system_prompt, history_records=None):
     """
     Builds a list of messages for the conversation and sends them using the OpenAI client.
 
@@ -730,26 +730,25 @@ def build_and_send_messages_openai(system_prompt, history_records):
     Returns:
         The assistant's response.
     """
-    # Order history records by created date in descending order to get the newest messages first
-    sorted_history = sorted(history_records, key=lambda x: x.created, reverse=True)
     
-    # Take the 6 most recent messages
-    recent_history = history_records[:6]
-
     # Build the messages list
     messages = [{"role": "system", "content": [ {"type": "text", "text": system_prompt} ] }]
-    
-    # Process history records to build the conversation
 
-    reversed_history = list(reversed(recent_history))  # Reverse to maintain chronological order
-    for idx, record in enumerate(reversed_history):
-        role = "user" if record.direction == 'incoming' else "assistant"
-        cleaned_record_body = clean_string(record.body)
+	if history_records:
+	
+        # Take the 6 most recent messages
+        recent_history = history_records[:6]
     
-        if idx == len(reversed_history) - 1:  # Check if this is the last iteration
-            cleaned_record_body += f"\n Limit responses to less than 3200 characters.\nRemove all markup from your responses.\n"
+        # Process history records to build the conversation
+        reversed_history = list(reversed(recent_history))  # Reverse to maintain chronological order
+        for idx, record in enumerate(reversed_history):
+            role = "user" if record.direction == 'incoming' else "assistant"
+            cleaned_record_body = clean_string(record.body)
     
-        messages.append({"role": role, "content": [{"type": "text", "text": cleaned_record_body}]})
+            if idx == len(reversed_history) - 1:  # Check if this is the last iteration
+                cleaned_record_body += f"\n Limit responses to less than 3200 characters.\nRemove all markup from your responses.\n"
+    
+            messages.append({"role": role, "content": [{"type": "text", "text": cleaned_record_body}]})
     
     cleaned_messages = json.loads(json.dumps(messages))
 
@@ -767,10 +766,6 @@ def build_and_send_messages_openai(system_prompt, history_records):
         presence_penalty=0
     )
 
-    current_app.logger.debug(f"build_and_send_messages: 5")
-
-    current_app.logger.debug(f"{completion.choices[0].message}")
-    
     output = clean_string(completion.choices[0].message.content)
 
     current_app.logger.debug(f"{output}")
