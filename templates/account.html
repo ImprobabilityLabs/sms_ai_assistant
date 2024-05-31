@@ -237,17 +237,18 @@
         </div>
       </div>
       <div class="row" style="display:block; margin-top: 10px;">
-        <div id="cc-error" class="col-xs-12" style="{% if error %}display:block{% else %}display:none{% endif %}">
-          {% if error %}
+        <div id="cc-error" class="col-xs-12" style="{% if show_response %}display:block;{% else %}display:none;{% endif %}">
+        {% if payment_error_msg %}
             <div style="color: red; border: 1px solid red; padding: 10px;">
-              <p><strong>Please correct the following errors:</strong></p>
-              <ul>
-                <li>{{ error }}</li>
-              </ul>
+                <p><strong>{{ payment_error_msg }}</strong></p>
             </div>
-          {% endif %}
-        </div>
-      </div>
+        {% else %}
+            <div style="color: green; border: 1px solid green; padding: 10px;">
+                <p><strong>Payment Information updated successfully!</strong></p>
+            </div>
+        {% endif %}
+    </div>
+</div>
     </section>
   </form>
 </div>
