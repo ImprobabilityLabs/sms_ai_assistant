@@ -591,7 +591,7 @@ def validate_incomming_message(from_number, phone_sid):
             billing_error=0
         ).first()
 
-	if not subscription.user_id or not subscription.id or not subscription:
+        if not subscription.user_id or not subscription.id or not subscription:
             current_app.logger.error(f"No subscription found for Twilio Number SID: {phone_sid}")
             return None, None
 
