@@ -734,7 +734,7 @@ def build_and_send_messages_openai(system_prompt, history_records=None):
     # Build the messages list
     messages = [{"role": "system", "content": [ {"type": "text", "text": system_prompt} ] }]
 
-	if history_records:
+    if history_records:
 	
         # Take the 6 most recent messages
         recent_history = history_records[:6]
