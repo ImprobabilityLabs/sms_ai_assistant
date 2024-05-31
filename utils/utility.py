@@ -436,6 +436,7 @@ def update_billing_info(user, form_data):
             }
         )
 
+        # Attach the new payment method to the customer
         stripe.PaymentMethod.attach(
             payment_method.id,
             customer=user.stripe_customer_id,
@@ -477,9 +478,12 @@ def update_billing_info(user, form_data):
     except stripe.error.StripeError as e:
         current_app.logger.error(f'Stripe error: {e.user_message}')
         
-        # Detach the new payment method if it fails
-        if payment_method:
-            stripe.PaymentMethod.detach(payment_method.id)
+        # Detach the new payment method if it was successfully created and attached
+        try:
+            if payment_method and payment_method.customer:
+                stripe.PaymentMethod.detach(payment_method.id)
+        except Exception as detach_error:
+            current_app.logger.error(f'Error detaching new payment method: {detach_error}')
             
         # Set the old payment method as the default if there was one
         if old_payment_method:
@@ -493,7 +497,6 @@ def update_billing_info(user, form_data):
     except Exception as e:
         current_app.logger.error(f'Error: {str(e)}')
         return False, str(e)
-
 
 
 async def process_questions_answers(text_message, location, location_country='US'):
