@@ -598,6 +598,9 @@ def configure_routes(app):
             # Validate the user and get the corresponding assistant
             user_id, subscription_id = validate_incomming_message(from_number, twilio_phone_number_sid)
 
+            if not user_id or not subscription_id:
+                return 'Unauthorized', 403 
+
             # Log the user validation details
             current_app.logger.info(f'Validated User: User ID={user_id}, Subscription ID={subscription_id}, From Number={from_number}')
 
@@ -630,9 +633,6 @@ def configure_routes(app):
             send_reply(user_id, subscription_id, outgoing_message, from_number, to_number, client)
 
             current_app.logger.debug(f"twilio_callback() Position 2")
-        
-            if not user_id or not subscription_id:
-                return 'Unauthorized', 403
 
             return 'OK', 200
         except Exception as e:
