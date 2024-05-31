@@ -227,6 +227,10 @@ def configure_routes(app):
             user = User.query.filter_by(provider_id=session.get('user_provider_id')).first()
             subscription = Subscription.query.filter_by(user_id=user.id, enabled=True).first()
             try:
+                # show response area & error
+                payment_error_msg = None
+                show_response = None
+
                 # Fetch customer subscriptions
                 subscriptions = stripe.Subscription.list(customer=user.stripe_customer_id)
 
@@ -252,6 +256,7 @@ def configure_routes(app):
                     if 'payment' in page_data:
                         form_data = page_data
                         payment_error, payment_error_msg = update_billing_info(user, form_data)
+                        show_response = True
                         current_app.logger.info(f'{payment_error_msg}')
                         
                     else:
@@ -333,7 +338,7 @@ def configure_routes(app):
                     'status': subscription.status
                 }
                 current_app.logger.info(f"Account: form_data: {form_data}")
-                return render_template('account.html', menu=menu, invoices=invoice_data, form_data=form_data, subscription_details=subscription_details, subscription_canceled=subscription_canceled)
+                return render_template('account.html', menu=menu, invoices=invoice_data, form_data=form_data, subscription_details=subscription_details, subscription_canceled=subscription_canceled, show_response=show_response, payment_error_msg=payment_error_msg)
         
             except Exception as e:
                 return jsonify({'error': str(e)}), 500
