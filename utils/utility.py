@@ -673,7 +673,7 @@ def load_sms_history(user_id, subscription_id, order='asc'):
     # Execute the query and return results
     return query.all()
 
-def build_system_prompt(user_preferences, assistant_preferences, extra_info=None):
+def build_system_prompt(user_preferences, assistant_preferences, extra_info=None, system_message = None):
     """Builds a system prompt.
 
     Args:
@@ -711,6 +711,10 @@ def build_system_prompt(user_preferences, assistant_preferences, extra_info=None
         else:
             extra_info_str = str(extra_info)
         system_prompt += f"\n\nAdditional Information:\n{extra_info_str}"
+
+    if system_message and not extra_info:
+        
+        system_prompt += f"\n\nResponse Message Type:\n{system_message}"
 
     return json.dumps(system_prompt)
 
