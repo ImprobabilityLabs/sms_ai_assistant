@@ -459,18 +459,30 @@ def update_billing_info(user, form_data):
                     tax_rate_ids.append(tax_rate.id)
                     break
 
-        current_app.logger.info('Billing Information Updated.')
+        # Pay any outstanding invoices immediately
+        invoices = stripe.Invoice.list(customer=user.stripe_customer_id, status='open')
+        for invoice in invoices:
+            try:
+                stripe.Invoice.pay(invoice.id)
+            except stripe.error.StripeError as pay_error:
+                current_app.logger.error(f'Error paying invoice {invoice.id}: {pay_error.user_message}')
+
+        # Delete the old payment method if the new one works without issues
+        if old_payment_method:
+            stripe.PaymentMethod.detach(old_payment_method)
+
+        current_app.logger.info('Billing Information Updated and outstanding invoices paid.')
         return True, None
 
     except stripe.error.StripeError as e:
         current_app.logger.error(f'Stripe error: {e.user_message}')
         
-        # Reattach the old payment method if the new one fails
+        # Detach the new payment method if it fails
+        if payment_method:
+            stripe.PaymentMethod.detach(payment_method.id)
+            
+        # Set the old payment method as the default if there was one
         if old_payment_method:
-            stripe.PaymentMethod.attach(
-                old_payment_method,
-                customer=user.stripe_customer_id,
-            )
             stripe.Customer.modify(
                 user.stripe_customer_id,
                 invoice_settings={
@@ -481,6 +493,7 @@ def update_billing_info(user, form_data):
     except Exception as e:
         current_app.logger.error(f'Error: {str(e)}')
         return False, str(e)
+
 
 
 async def process_questions_answers(text_message, location, location_country='US'):
