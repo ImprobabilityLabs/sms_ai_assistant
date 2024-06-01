@@ -201,6 +201,11 @@ def configure_routes(app):
     
                                 db.session.add(new_mobile_number)
                                 db.session.commit()
+                                
+                                # Welcome Message Testing
+                                sys_prompt build_system_prompt(new_user_preference, new_assistant_preference, extra_info=None, system_message = 'Create an initial introduction and welcome message for your user.')
+                                welcome_message = build_and_send_messages_openai(sys_prompt, history_records=None)
+                                send_reply(user.id, subscription_id, welcome_message, new_mobile_number.mobile_number, '+17782007510', Client(app.config['TWILIO_ACCOUNT_SID'], app.config['TWILIO_AUTH_TOKEN']), save_message=False)
 
                                 return redirect(url_for('dashboard_page'))
                     else:
