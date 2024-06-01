@@ -767,17 +767,33 @@ function validatePersonalPreferences() {
         // Remove non-numeric characters from input
         const cleanMobileNumber = userMobile.value.replace(/[^\d]/g, '');
 
+        // Get the selected subscription option's country
+        const selectedOption = document.querySelector('input[name="subscriptionOption"]:checked');
+        const selectedPlanCountry = selectedOption ? selectedOption.getAttribute('data-country') : null;
+
+        // Parse the phone number with the appropriate country code if a subscription option is selected
+        let isValidCountryNumber = true;
+        if (selectedPlanCountry) {
+            const parsePhoneNumberFromString = window.libphonenumber.parsePhoneNumberFromString;
+            const parsedNumber = parsePhoneNumberFromString(userMobile.value, selectedPlanCountry);
+            isValidCountryNumber = parsedNumber ? parsedNumber.isValid() && parsedNumber.country === selectedPlanCountry : false;
+        }
+
         // North American number format excluding country code
         const mobilePattern = /^[2-9]\d{2}[2-9](?!11)\d{2}\d{4}$/;
         if (!mobilePattern.test(cleanMobileNumber)) {
             errors.push("Your Mobile Number must be a valid North American number.");
             userMobile.style.borderColor = 'red';
             isValid = false;
+        } else if (!isValidCountryNumber && selectedPlanCountry) {
+            errors.push("Your Mobile Number must be from the same country as the selected subscription Country.");
+            userMobile.style.borderColor = 'red';
+            isValid = false;
         } else {
             userMobile.style.borderColor = '';
         }
     }
-
+        
     // Validate Preferred Communication Language, Title, and Measurement using the long-label for error messages
     const userLanguage = document.getElementById('user-language');
     const userTitle = document.getElementById('user-title');
