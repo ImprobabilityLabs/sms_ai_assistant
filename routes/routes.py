@@ -207,7 +207,7 @@ def configure_routes(app):
                                 # Welcome Message 
                                 sys_prompt = build_system_prompt(new_user_preference, new_assistant_preference, extra_info=None, system_message = 'Create an initial introduction and welcome message for your user.')
                                 welcome_message = build_and_send_messages_openai(sys_prompt, history_records=None)
-                                send_reply(user.id, subscription_id, welcome_message, new_mobile_number.mobile_number, subscription_rec.twillio_number, Client(app.config['TWILIO_ACCOUNT_SID'], app.config['TWILIO_AUTH_TOKEN']), save_message=True)
+                                send_reply(user.id, subscription_id, welcome_message, new_mobile_number.mobile_number, subscription_rec.twillio_number, Client(current_app.config['TWILIO_ACCOUNT_SID'], current_app.config['TWILIO_AUTH_TOKEN']), save_message=True)
 
                                 return redirect(url_for('dashboard_page'))
                     else:
@@ -565,7 +565,7 @@ def configure_routes(app):
             validator = RequestValidator(app.config['TWILIO_AUTH_TOKEN'])
      
             # Create an instance of Client
-            client = Client(app.config['TWILIO_ACCOUNT_SID'], app.config['TWILIO_AUTH_TOKEN'])
+            client = Client(current_app.config['TWILIO_ACCOUNT_SID'], current_app.config['TWILIO_AUTH_TOKEN'])
 
             # Retrieve the full URL of the incoming request
             url = request.url
@@ -649,7 +649,7 @@ def configure_routes(app):
     
     @app.route('/api/stripe/callback', methods=['POST'])
     def stripe_callback():
-        endpoint_secret = app.config['STRIPE_ENDPOINT_SECRET']
+        endpoint_secret = current_app.config['STRIPE_ENDPOINT_SECRET']
         payload = request.get_data(as_text=True)
         sig_header = request.headers.get('Stripe-Signature')
         
