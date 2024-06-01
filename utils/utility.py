@@ -913,6 +913,7 @@ def handle_payment_success(invoice):
     current_period_end = datetime.fromtimestamp(subscription['current_period_end'])
 
     subscription_record = Subscription.query.filter_by(stripe_subscription_id=subscription_id, enabled=True).first()
+    had_billing_issue = subscription_record.billing_error
     if subscription_record:
         subscription_record.enabled = True
         subscription_record.billing_error = False
@@ -922,7 +923,16 @@ def handle_payment_success(invoice):
         subscription_record.last_payment_amount = last_payment_amount
         subscription_record.last_payment_date = payment_date
         db.session.commit()
-        
+
+        if had_billing_issue:
+            user_preferences = UserPreference.query.filter_by(user_id=subscription_record.user_id, subscription_id=subscription_record.id).first()	 
+            assistant_preferences = AssistantPreference.query.filter_by(user_id=subscription_record.user_id, subscription_id=subscription_record.id).first()
+            mobile_entries = MobileNumber.query.filter_by(user_id=subscription_record.user_id, subscription_id=subscription_record.id).all()
+            sys_prompt = build_system_prompt(user_preferences, assistant_preferences, extra_info=None, system_message = 'Tell the user that their billing issue has been resolved, and they can continue useing their assistant.')
+            billing_issue_fixed_message = build_and_send_messages_openai(sys_prompt, history_records=None)
+            for mobile_entry in mobile_entries:
+                send_reply(subscription_record.user_id, subscription_record.id, billing_issue_fixed_message, mobile_entry.mobile_number, subscription_record.twillio_number, Client(app.config['TWILIO_ACCOUNT_SID'], app.config['TWILIO_AUTH_TOKEN']), save_message=False)
+	    
         current_app.logger.info(
             f"handle_payment_success: Updated subscription {subscription_id} "
             f"with payment details. Current Period Start: {current_period_start}, "
@@ -942,7 +952,15 @@ def handle_billing_issue(invoice):
         subscription_record.billing_error = True
         subscription_record.status = 'Billing Issue'
         db.session.commit()
-        
+
+        user_preferences = UserPreference.query.filter_by(user_id=subscription_record.user_id, subscription_id=subscription_record.id).first()	 
+        assistant_preferences = AssistantPreference.query.filter_by(user_id=subscription_record.user_id, subscription_id=subscription_record.id).first()
+        mobile_entries = MobileNumber.query.filter_by(user_id=subscription_record.user_id, subscription_id=subscription_record.id).all()
+        sys_prompt = build_system_prompt(user_preferences, assistant_preferences, extra_info=None, system_message = 'Tell the user that their account had a billing issue and to fix it they need to update their payment info on '+request.url_root[:-1]+'. Until then you will not be available to them')
+        billing_issue_message = build_and_send_messages_openai(sys_prompt, history_records=None)
+        for mobile_entry in mobile_entries:
+            send_reply(subscription_record.user_id, subscription_record.id, billing_issue_message, mobile_entry.mobile_number, subscription_record.twillio_number, Client(app.config['TWILIO_ACCOUNT_SID'], app.config['TWILIO_AUTH_TOKEN']), save_message=False)
+	    
         current_app.logger.info(
             f"handle_billing_issue: Updated subscription {subscription_id} "
             f"with billing issue status. Subscription ID: {subscription_id}"
