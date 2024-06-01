@@ -202,10 +202,12 @@ def configure_routes(app):
                                 db.session.add(new_mobile_number)
                                 db.session.commit()
                                 
-                                # Welcome Message Testing
+                                subscription_rec = Subscription.query.filter_by(id=subscription_id, enabled=True).first()
+
+                                # Welcome Message 
                                 sys_prompt = build_system_prompt(new_user_preference, new_assistant_preference, extra_info=None, system_message = 'Create an initial introduction and welcome message for your user.')
                                 welcome_message = build_and_send_messages_openai(sys_prompt, history_records=None)
-                                send_reply(user.id, subscription_id, welcome_message, new_mobile_number.mobile_number, '+17782007510', Client(app.config['TWILIO_ACCOUNT_SID'], app.config['TWILIO_AUTH_TOKEN']), save_message=False)
+                                send_reply(user.id, subscription_id, welcome_message, new_mobile_number.mobile_number, subscription_rec.twillio_number, Client(app.config['TWILIO_ACCOUNT_SID'], app.config['TWILIO_AUTH_TOKEN']), save_message=True)
 
                                 return redirect(url_for('dashboard_page'))
                     else:
@@ -631,7 +633,7 @@ def configure_routes(app):
 
             #outgoing_message = build_and_send_messages(prompt, chat_history)     
 
-            outgoing_message = build_and_send_messages_openai(prompt, chat_history)  
+            outgoing_message = build_and_send_messages_openai(prompt, history_records=chat_history)  
 
             current_app.logger.info(f'Assistant Response: {outgoing_message}')
 
