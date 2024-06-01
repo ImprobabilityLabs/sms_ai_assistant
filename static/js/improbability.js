@@ -761,7 +761,7 @@ function validatePersonalPreferences() {
         }
     }
 
-    // Validate Mobile Number
+
     const userMobile = document.getElementById('user-mobile');
     if (userMobile) {
         // Remove non-numeric characters from input
@@ -769,7 +769,8 @@ function validatePersonalPreferences() {
 
         // Get the selected subscription option's country
         const selectedOption = document.querySelector('input[name="subscriptionOption"]:checked');
-        const selectedPlanCountry = selectedOption ? selectedOption.getAttribute('data-country') : null;
+        const hiddenCountry = document.getElementById('hidden-country');
+        const selectedPlanCountry = selectedOption ? selectedOption.getAttribute('data-country') : (hiddenCountry ? hiddenCountry.value : null);
 
         // Parse the phone number with the appropriate country code if a subscription option is selected
         let isValidCountryNumber = true;
@@ -782,18 +783,18 @@ function validatePersonalPreferences() {
         // North American number format excluding country code
         const mobilePattern = /^[2-9]\d{2}[2-9](?!11)\d{2}\d{4}$/;
         if (!mobilePattern.test(cleanMobileNumber)) {
-            errors.push("Your Mobile Number must be a valid North American number.");
-            userMobile.style.borderColor = 'red';
+            errors.push("Your mobile number must be a valid North American number from the selected subscription's country.");
+            userMobile.style.borderColor = 'red';   
             isValid = false;
         } else if (!isValidCountryNumber && selectedPlanCountry) {
-            errors.push("Your Mobile Number must be from the same country as the selected subscription Country.");
+            errors.push("Your mobile number must match the selected subscription's country.");
             userMobile.style.borderColor = 'red';
             isValid = false;
         } else {
             userMobile.style.borderColor = '';
         }
     }
-        
+          
     // Validate Preferred Communication Language, Title, and Measurement using the long-label for error messages
     const userLanguage = document.getElementById('user-language');
     const userTitle = document.getElementById('user-title');
