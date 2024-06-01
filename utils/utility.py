@@ -381,7 +381,7 @@ def handle_stripe_operations(user, form_data, referrer):
             stripe_plan_id=subscription.plan.id,
             stripe_product_id=subscription.plan.product,
             twillio_number = twillio_numr,
-            twillio_number_sid = twillio_uid,
+            twillio_number_sid = twillio_sid,
             stripe_subscription_id = subscription.id,
             current_period_start=current_period_start,
             current_period_end=current_period_end,
