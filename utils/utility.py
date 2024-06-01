@@ -20,6 +20,7 @@ from requests.packages.urllib3.util.retry import Retry
 import aiohttp
 import asyncio
 from openai import OpenAI
+import secrets
 
 def remove_keys(data, keys_to_remove):
     """ Recursively remove specified keys from a dictionary. """
@@ -369,12 +370,18 @@ def handle_stripe_operations(user, form_data, referrer):
         current_period_end = datetime.utcfromtimestamp(subscription.current_period_end).strftime('%Y-%m-%d %H:%M:%S')
         status = subscription.status.capitalize()
 
+        #get twillio number replace with fnction
+        twillio_numr = '+17782007510'
+        twillio_sid = ''.join(secrets.choice('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789') for _ in range(16))
+
         # Create a new Subscription record in the database
         new_subscription = Subscription(
             user_id=user.id,
             stripe_customer_id=user.stripe_customer_id,
             stripe_plan_id=subscription.plan.id,
             stripe_product_id=subscription.plan.product,
+            twillio_number = twillio_numr,
+            twillio_number_sid = twillio_uid,
             stripe_subscription_id = subscription.id,
             current_period_start=current_period_start,
             current_period_end=current_period_end,
