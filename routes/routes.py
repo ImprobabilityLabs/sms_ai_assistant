@@ -215,6 +215,7 @@ def configure_routes(app):
                                 
                                 return redirect(url_for('dashboard_page'))
                         else:
+                            current_app.logger.info("Before error_message")
                             current_app.logger.error(error_message)
                         
             product_data = get_products()
