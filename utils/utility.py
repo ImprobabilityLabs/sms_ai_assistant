@@ -1011,3 +1011,15 @@ def send_email(to_email, subject, html_content, text_content):
     except Exception as e:
 	current_app.logger.error(f"send_email: Failed to send email: {e}")
 
+
+def send_new_subscription_email(user_name, user_email):
+    subject = "Meet Your New SMS AI Assistant from Improbability Labs!"
+    html_content = render_template('emails/new_subscription.html', User_Name=user_name, User_Email=user_email)
+    text_content = render_template('emails/new_subscription.txt', User_Name=user_name, User_Email=user_email)
+    send_email(user_email, subject, html_content, text_content)
+
+def send_end_subscription_email(user_name, user_email):
+    subject = "We're Sorry to See You Go"
+    html_content = render_template('emails/end_subscription.html', User_Name=user_name, User_Email=user_email)
+    text_content = render_template('emails/end_subscription.txt', User_Name=user_name, User_Email=user_email)
+    send_email(user_email, subject, html_content, text_content)
