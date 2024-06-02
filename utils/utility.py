@@ -295,16 +295,12 @@ def get_products():
     return product_data
 
 
-def handle_stripe_operations(user, form_data, referrer):
+def update_customer_billing_info(user, form_data):
     try:
-        current_app.logger.info("Starting Stripe operations for user: %s", user.id)
-
-        if not user.stripe_customer_id:
-            raise ValueError("Stripe customer ID not found for user.")
-        current_app.logger.info("Retrieved Stripe customer ID: %s", user.stripe_customer_id)
-
-        # Retrieve the existing customer and update the billing information
+        # Retrieve the existing customer
         customer = stripe.Customer.retrieve(user.stripe_customer_id)
+        
+        # Update customer details
         customer.name = form_data['card-name']
         customer.email = user.email
         customer.address = {
@@ -313,10 +309,24 @@ def handle_stripe_operations(user, form_data, referrer):
             'state': form_data['billing-state'],
             'postal_code': form_data['billing-zip'],
         }
+        
+        # Save the updated customer information
         customer.save()
-        current_app.logger.info("Updated customer billing information.")
+        
+        # Log the successful update
+        current_app.logger.info("Updated customer billing information for user ID %s.", user.id)
+        
+        return True
+    except Exception as e:
+        # Log the error
+        current_app.logger.error("Failed to update customer billing information for user ID %s. Error: %s", user.id, str(e))
+        
+        return False
 
-        # Convert token to PaymentMethod and attach it to the customer
+
+def create_and_attach_payment_method(user, form_data):
+    try:
+        # Create the payment method
         payment_method = stripe.PaymentMethod.create(
             type="card",
             card={"token": form_data['stripeToken']},
@@ -331,23 +341,63 @@ def handle_stripe_operations(user, form_data, referrer):
                 }
             }
         )
-        current_app.logger.info("Created new payment method.")
+        current_app.logger.info("Created new payment method for user ID %s.", user.id)
+
+        # Check if the card is valid
+        if payment_method.card.checks.cvc_check == 'pass':
+            current_app.logger.info("Card is valid for user ID %s.", user.id)
+            
+            # Attach the payment method to the customer
+            stripe.PaymentMethod.attach(
+                payment_method.id,
+                customer=user.stripe_customer_id,
+            )
+            current_app.logger.info("Attached payment method to customer for user ID %s.", user.id)
+            
+            return payment_method.id
+        else:
+            current_app.logger.warning("Card validation failed for user ID %s. CVC check status: %s", user.id, payment_method.card.checks.cvc_check)
+            return False
+        
+    except stripe.error.StripeError as e:
+        # Log the Stripe error
+        current_app.logger.error("Stripe error for user ID %s. Error: %s", user.id, str(e))
+        return False
+    except Exception as e:
+        # Log any other errors
+        current_app.logger.error("Failed to create or attach payment method for user ID %s. Error: %s", user.id, str(e))
+        return False
+
+
+
+def handle_stripe_operations(user, form_data, referrer):
+    try:
+        current_app.logger.info("Starting Stripe operations for user: %s", user.id)
+
+        if not user.stripe_customer_id:
+            raise ValueError("Stripe customer ID not found for user.")
+
+        current_app.logger.info("Retrieved Stripe customer ID: %s", user.stripe_customer_id)
+
+        update_customer = update_customer_billing_info(user, form_data)
+
+        if not update_customer:
+            return False, 'Error saving Stripe Customer', -1
 
         # Conditionally apply tax rates based on the billing country
         tax_rate_ids = get_tax_rate_ids(form_data['billing-country'])
         current_app.logger.info("Retrieved tax rate IDs: %s", tax_rate_ids)
 
-        stripe.PaymentMethod.attach(
-            payment_method.id,
-            customer=user.stripe_customer_id,
-        )
-        current_app.logger.info("Attached payment method to customer.")
+        payment_info_update = create_and_attach_payment_method(user, form_data)	    
 
+        if not payment_info_update:
+            return False, 'Error with Stripe Paymeny information.', -1
+		
         # Set the new payment method as the default
         stripe.Customer.modify(
             user.stripe_customer_id,
             invoice_settings={
-                'default_payment_method': payment_method.id,
+                'default_payment_method': payment_info_update,
             },
         )
         current_app.logger.info("Set new payment method as default.")
