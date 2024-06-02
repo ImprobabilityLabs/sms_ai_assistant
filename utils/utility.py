@@ -1011,10 +1011,9 @@ def send_email(to_email, subject, html_content, text_content):
     try:
         sg = SendGridAPIClient(current_app.config['SENDGRID_API'])
         response = sg.send(message)
-	current_app.logger.info(f"send_email: Email sent! Status code: {response.status_code}")
-        print()
+        current_app.logger.info(f"send_email: Email sent! Status code: {response.status_code}")
     except Exception as e:
-	current_app.logger.error(f"send_email: Failed to send email: {e}")
+        current_app.logger.error(f"send_email: Failed to send email: {e}")
 
 
 def send_new_subscription_email(user_name, user_email, user_number, assistant_name, assistant_number):
