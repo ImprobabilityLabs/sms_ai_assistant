@@ -1012,10 +1012,10 @@ def send_email(to_email, subject, html_content, text_content):
 	current_app.logger.error(f"send_email: Failed to send email: {e}")
 
 
-def send_new_subscription_email(user_name, user_email):
+def send_new_subscription_email(user_name, user_email, user_number, assistant_name, assistant_number):
     subject = "Meet Your New SMS AI Assistant from Improbability Labs!"
-    html_content = render_template('emails/new_subscription.html', User_Name=user_name, User_Email=user_email)
-    text_content = render_template('emails/new_subscription.txt', User_Name=user_name, User_Email=user_email)
+    html_content = render_template('emails/new_subscription.html', User_Name=user_name, User_Number=user_number, Assistant_Name=assistant_name, Assistant_Number=assistant_number )
+    text_content = render_template('emails/new_subscription.txt', User_Name=user_name, User_Number=user_number, Assistant_Name=assistant_name, Assistant_Number=assistant_number )
     send_email(user_email, subject, html_content, text_content)
 
 def send_end_subscription_email(user_name, user_email):
