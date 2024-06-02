@@ -1004,7 +1004,7 @@ def send_email(to_email, subject, html_content, text_content):
     )
 
     try:
-        sg = SendGridAPIClient(current_app.config['OPEN_AI_KEY'])
+        sg = SendGridAPIClient(current_app.config['SENDGRID_API'])
         response = sg.send(message)
 	current_app.logger.info(f"send_email: Email sent! Status code: {response.status_code}")
         print()
