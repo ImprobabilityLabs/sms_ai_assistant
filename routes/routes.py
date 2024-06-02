@@ -213,8 +213,8 @@ def configure_routes(app):
                                 send_new_subscription_email(user.name, user.email, new_mobile_number.mobile_number, new_assistant_preference.assistant_name, subscription_rec.twillio_number)
                                 
                                 return redirect(url_for('dashboard_page'))
-                    else:
-                        current_app.logger.error(error_message)
+                        else:
+                            current_app.logger.error(error_message)
                         
             product_data = get_products()
             current_app.logger.info('Info: Subscribe Page - Products Object: ' + str(product_data))
