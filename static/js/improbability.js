@@ -1153,6 +1153,7 @@ function togglePaymentEdit(event) {
         processStripeDetails(function(success) {
             if (success) {
                 // Submit the form if Stripe details are valid
+                document.getElementById('sms-improbability-overlay').style.display = 'flex';
                 document.getElementById('payment-form').submit();
             }
         });
