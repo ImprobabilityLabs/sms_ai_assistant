@@ -11,6 +11,7 @@ import aiohttp
 import asyncio
 import openai
 from datetime import datetime
+from meta_tags import MetaTags
 
 def configure_routes(app):
 
