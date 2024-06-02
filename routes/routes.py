@@ -153,6 +153,7 @@ def configure_routes(app):
                         if user:
                             referrer = session.get('referrer', '')
                             success, error_message, subscription_id = handle_stripe_operations(user, request.form, referrer)
+                            current_app.logger.info("After handle_stripe_operations")
                             if success:
                                 location_dict = get_location(request.form['user-location'])
                                 if location_dict['location_text'] != 'null':
