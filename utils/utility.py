@@ -974,6 +974,7 @@ def handle_billing_issue(invoice):
 def handle_subscription_cancellation(subscription):
     subscription_id = subscription['id']
     subscription_record = Subscription.query.filter_by(stripe_subscription_id=subscription_id, enabled=True).first()
+    user = User.query.filter_by(id=subscription_record.user_id).first()
 
     # Delete Twillio Number
 
@@ -983,7 +984,9 @@ def handle_subscription_cancellation(subscription):
         subscription_record.twillio_number = None
         subscription_record.twillio_number_sid = None
         db.session.commit()
-        
+
+        send_end_subscription_email(user.name, user.email)
+	    
         current_app.logger.info(
             f"handle_subscription_cancellation: Updated subscription {subscription_id} "
             f"with cancellation status. Subscription ID: {subscription_id}"
