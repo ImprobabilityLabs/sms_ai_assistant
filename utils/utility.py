@@ -992,3 +992,22 @@ def handle_subscription_cancellation(subscription):
         current_app.logger.info(
             f"handle_subscription_cancellation: Subscription with ID {subscription_id} not found"
         )
+
+
+def send_email(to_email, subject, html_content, text_content):
+    message = Mail(
+        from_email='support@improbability.io',
+        to_emails=to_email,
+        subject=subject,
+        html_content=html_content,
+        plain_text_content=text_content
+    )
+
+    try:
+        sg = SendGridAPIClient(current_app.config['OPEN_AI_KEY'])
+        response = sg.send(message)
+	current_app.logger.info(f"send_email: Email sent! Status code: {response.status_code}")
+        print()
+    except Exception as e:
+	current_app.logger.error(f"send_email: Failed to send email: {e}")
+
