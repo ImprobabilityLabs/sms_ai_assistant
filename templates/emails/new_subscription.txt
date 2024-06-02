@@ -1,13 +1,13 @@
-Dear {{ User-Name }},
+Dear {{ User_Name }},
 
 Welcome to Improbability Labs! We're thrilled to have you on board.
 
 Your SMS AI Assistant
 Your personal SMS AI Assistant is now ready to assist you 24/7. Here are a few key details about your new assistant:
 
- - Assistant's Name: {{ Assistant-Name }}
- - Assistant's Contact Number: {{ Assistant-Number }}
- - Your Contact Number: {{ User-Number }}
+ - Assistant's Name: {{ Assistant_Name }}
+ - Assistant's Contact Number: {{ Assistant_Number }}
+ - Your Contact Number: {{ User_Number }}
  - Your assistant will communicate with you exclusively from its number.
 
 You can update your contact number and other preferences anytime by logging into your dashboard:
