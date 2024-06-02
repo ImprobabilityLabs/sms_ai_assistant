@@ -22,6 +22,8 @@ import aiohttp
 import asyncio
 from openai import OpenAI
 import secrets
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 def remove_keys(data, keys_to_remove):
     """ Recursively remove specified keys from a dictionary. """
