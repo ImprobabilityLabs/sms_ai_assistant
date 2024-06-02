@@ -472,16 +472,6 @@ def configure_routes(app):
 
         # Redirect to the homepage
         return response
-    
-    @app.route("/api/apple/authorize")
-    def authorize_apple():
-        # Apple-specific OAuth configuration and redirect
-        pass
-
-    @app.route("/api/apple/callback")
-    def apple_callback():
-        # Apple-specific OAuth configuration and redirect
-        pass
 
     @app.route("/api/microsoft/authorize")
     def microsoft_authorize():
