@@ -297,9 +297,11 @@ def get_products():
 
 def handle_stripe_operations(user, form_data, referrer):
     try:
+        current_app.logger.info("Starting Stripe operations for user: %s", user.id)
+
         if not user.stripe_customer_id:
-            # Raise an exception if the Stripe customer ID does not exist
             raise ValueError("Stripe customer ID not found for user.")
+        current_app.logger.info("Retrieved Stripe customer ID: %s", user.stripe_customer_id)
 
         # Retrieve the existing customer and update the billing information
         customer = stripe.Customer.retrieve(user.stripe_customer_id)
@@ -312,6 +314,7 @@ def handle_stripe_operations(user, form_data, referrer):
             'postal_code': form_data['billing-zip'],
         }
         customer.save()
+        current_app.logger.info("Updated customer billing information.")
 
         # Convert token to PaymentMethod and attach it to the customer
         payment_method = stripe.PaymentMethod.create(
@@ -319,7 +322,7 @@ def handle_stripe_operations(user, form_data, referrer):
             card={"token": form_data['stripeToken']},
             billing_details={
                 'name': form_data['card-name'],
-                'email': user.email, 
+                'email': user.email,
                 'address': {
                     'line1': form_data['billing-address'],
                     'country': form_data['billing-country'],
@@ -328,11 +331,17 @@ def handle_stripe_operations(user, form_data, referrer):
                 }
             }
         )
+        current_app.logger.info("Created new payment method.")
+
+        # Conditionally apply tax rates based on the billing country
+        tax_rate_ids = get_tax_rate_ids(form_data['billing-country'])
+        current_app.logger.info("Retrieved tax rate IDs: %s", tax_rate_ids)
 
         stripe.PaymentMethod.attach(
             payment_method.id,
             customer=user.stripe_customer_id,
         )
+        current_app.logger.info("Attached payment method to customer.")
 
         # Set the new payment method as the default
         stripe.Customer.modify(
@@ -341,16 +350,7 @@ def handle_stripe_operations(user, form_data, referrer):
                 'default_payment_method': payment_method.id,
             },
         )
- 
-        # Conditionally apply tax rates based on the billing country
-        tax_rate_ids = []
-        if form_data['billing-country'] == 'CA':  # Check if the billing country is Canada
-            # Retrieve the tax rate ID for Canada programmatically
-            tax_rates = stripe.TaxRate.list(active=True)
-            for tax_rate in tax_rates:
-                if tax_rate.country == 'CA':
-                    tax_rate_ids.append(tax_rate.id)
-                    break
+        current_app.logger.info("Set new payment method as default.")
 
         # Create or update the Stripe subscription
         subscription = stripe.Subscription.create(
@@ -359,13 +359,14 @@ def handle_stripe_operations(user, form_data, referrer):
             default_tax_rates=tax_rate_ids,
             expand=['latest_invoice.payment_intent', 'latest_invoice'],
         )
+        current_app.logger.info("Created new subscription.")
 
         # Check if the payment was successful
         payment_intent = subscription.latest_invoice.payment_intent
         if payment_intent.status != 'succeeded':
-            # Delete the subscription if payment was not successful
             stripe.Subscription.delete(subscription.id)
             raise ValueError("Payment was not successful.")
+        current_app.logger.info("Payment was successful.")
 
         # Extract necessary fields from the subscription
         subscription_id = subscription.id
@@ -373,9 +374,9 @@ def handle_stripe_operations(user, form_data, referrer):
         current_period_end = datetime.utcfromtimestamp(subscription.current_period_end).strftime('%Y-%m-%d %H:%M:%S')
         status = subscription.status.capitalize()
 
-        #get twillio number replace with fnction
-        twillio_numr = '+17782007510'
-        twillio_sid = ''.join(secrets.choice('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789') for _ in range(16))
+        # Get Twilio number and SID (replace with appropriate function)
+        twilio_numr = '+17782007510'
+        twilio_sid = ''.join(secrets.choice('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789') for _ in range(16))
 
         # Create a new Subscription record in the database
         new_subscription = Subscription(
@@ -383,9 +384,9 @@ def handle_stripe_operations(user, form_data, referrer):
             stripe_customer_id=user.stripe_customer_id,
             stripe_plan_id=subscription.plan.id,
             stripe_product_id=subscription.plan.product,
-            twillio_number = twillio_numr,
-            twillio_number_sid = twillio_sid,
-            stripe_subscription_id = subscription.id,
+            twilio_number=twilio_numr,
+            twilio_number_sid=twilio_sid,
+            stripe_subscription_id=subscription.id,
             current_period_start=current_period_start,
             current_period_end=current_period_end,
             status=status,
@@ -395,10 +396,11 @@ def handle_stripe_operations(user, form_data, referrer):
         # Add the new subscription to the database
         db.session.add(new_subscription)
         db.session.commit()
+        current_app.logger.info("New subscription record added to the database.")
 
         subscription_id = new_subscription.id
 
-        current_app.logger.info('Subscription created successfully.')
+        current_app.logger.info('Subscription created successfully for user: %s', user.id)
         return True, None, subscription_id
 
     except stripe.error.StripeError as e:
@@ -407,7 +409,7 @@ def handle_stripe_operations(user, form_data, referrer):
     except Exception as e:
         current_app.logger.error(f'Error: {str(e)}')
         return False, str(e), -1
-
+	    
 
 def update_billing_info(user, form_data):
     try:
@@ -461,14 +463,7 @@ def update_billing_info(user, form_data):
         )
 
         # Conditionally apply tax rates based on the billing country
-        tax_rate_ids = []
-        if form_data['billing-country'] == 'CA':  # Check if the billing country is Canada
-            # Retrieve the tax rate ID for Canada programmatically
-            tax_rates = stripe.TaxRate.list(active=True)
-            for tax_rate in tax_rates:
-                if tax_rate.country == 'CA':
-                    tax_rate_ids.append(tax_rate.id)
-                    break
+        tax_rate_ids = get_tax_rate_ids(form_data['billing-country'])
 
         # Pay any outstanding invoices immediately
         invoices = stripe.Invoice.list(customer=user.stripe_customer_id, status='open')
@@ -550,6 +545,17 @@ async def process_questions_answers(text_message, location, location_country='US
         current_app.logger.error(f"Error in process_questions_answers: {e}")
         return None
 
+
+def get_tax_rate_ids(country_code):
+    tax_rate_ids = []
+    if country_code == 'CA': 
+        tax_rates = stripe.TaxRate.list(active=True)
+        for tax_rate in tax_rates.data:  
+            if tax_rate.country == 'CA':
+                tax_rate_ids.append(tax_rate.id)
+    return tax_rate_ids
+		    
+                
 def clean_phone_number(phone_number):
     # Remove all non-numeric characters
     clean_number = re.sub(r'\D', '', phone_number)
