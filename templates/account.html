@@ -139,7 +139,7 @@
     <h4 style="color: green;">{{ subscription_details.status }}</h4>
   {% elif status_first_word == "Canceling" %}
     <h4 style="color: orange;">{{ subscription_details.status }}</h4>
-  {% elif status_first_word == "Error" %}
+  {% elif status_first_word == "Billing" %}
     <h4 style="color: red;">{{ subscription_details.status }}</h4>
   {% else %}
     <h4>{{ subscription_details.status }}</h4>
