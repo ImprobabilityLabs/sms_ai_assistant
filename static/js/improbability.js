@@ -1035,6 +1035,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (isValidAssistant && isValidPersonal && isValidSubscription && isValidPayment) {
                 validateStripeDetails(function(isValidStripe) {
                     if (isValidStripe) {
+                        document.getElementById('sms-improbability-overlay').style.display = 'flex';
                         document.getElementById('subscribe-form').submit();
                     }
                 });
