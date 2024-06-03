@@ -439,7 +439,8 @@ def handle_stripe_operations(user, form_data, referrer):
         mobile_number = '+1'+str(clean_number)
 
         # Get Twilio number and SID (replace with appropriate function)
-        twilio_numr, twilio_sid = search_and_buy_sms_number(mobile_number, country=location_country)
+        twilio_client = Client(current_app.config['TWILIO_ACCOUNT_SID'], current_app.config['TWILIO_AUTH_TOKEN'])
+        twilio_numr, twilio_sid = search_and_buy_sms_number(mobile_number, country=location_country, client=twilio_client)
         #twilio_numr = '+17782007510'
         #twilio_sid = ''.join(secrets.choice('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789') for _ in range(16))
 
@@ -1214,7 +1215,7 @@ def send_end_subscription_email(user_name, user_email):
     send_email(user_email, subject, html_content, text_content)
 
 
-def search_and_buy_sms_number(phone_number, country='CA', client=Client(current_app.config['TWILIO_ACCOUNT_SID'], current_app.config['TWILIO_AUTH_TOKEN'])):
+def search_and_buy_sms_number(phone_number, country='CA', client):
 
     # Search for available phone numbers near the specified phone number
     numbers = client.available_phone_numbers(country.upper()).local.list(
