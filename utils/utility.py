@@ -701,7 +701,7 @@ def send_new_subscription_communications(subscription_id):
         reply=welcome_message,
         to_number='+1'+str(mobile.mobile_number),
         from_number=subscription.twillio_number,
-        client=Client(current_app.config['TWILIO_ACCOUNT_SID'], current_app.config['TWILIO_AUTH_TOKEN']),
+        twilio_client=Client(current_app.config['TWILIO_ACCOUNT_SID'], current_app.config['TWILIO_AUTH_TOKEN']),
         save_message=True
     )
 
