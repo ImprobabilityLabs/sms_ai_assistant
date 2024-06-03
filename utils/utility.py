@@ -616,29 +616,35 @@ def get_country_code(phone_number):
     return country_code
 
 def get_location(location_txt):
-    client = Groq()
-    completion = client.chat.completions.create(
-        model="llama3-8b-8192",
-        messages=[
-            {
-                "role": "system",
-                "content": "Convert the users input into a Location Full Text(City, State or Province, Country) and Country ISO Code( ISO 3166-1 alpha-2). If the location does not match, respond with null.\n\nRespond in a JSON Format with 2 fields (location_text, country_code) and no other text."
-            },
-            {
-                 "role": "user",
-                 "content": json.dumps(location_txt, indent=2)
-            }
-        ],
-        temperature=1,
-        max_tokens=128,
-        top_p=1,
-        stream=False,
-        stop=None,
-    )
+    try:
+        client = Groq()
+        completion = client.chat.completions.create(
+            model="llama3-8b-8192",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "Convert the users input into a Location Full Text(City, State or Province, Country) and Country ISO Code( ISO 3166-1 alpha-2). If the location does not match, respond with null.\n\nRespond in a JSON Format with 2 fields (location_text, country_code) and no other text."
+                },
+                {
+                    "role": "user",
+                    "content": json.dumps(location_txt, indent=2)
+                }
+            ],
+            temperature=1,
+            max_tokens=128,
+            top_p=1,
+            stream=False,
+            stop=None,
+        )
 
-    output = completion.choices[0].message.content
+        output = completion.choices[0].message.content
 
-    return json.loads(output)
+        return json.loads(output)
+
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return False
+
 
 def validate_incomming_message(from_number, phone_sid):
     try:
