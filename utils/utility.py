@@ -1199,3 +1199,27 @@ def send_end_subscription_email(user_name, user_email):
     html_content = render_template('emails/end_subscription.html', User_Name=user_name, User_Email=user_email)
     text_content = render_template('emails/end_subscription.txt', User_Name=user_name, User_Email=user_email)
     send_email(user_email, subject, html_content, text_content)
+
+
+def search_and_buy_sms_number(phone_number, country='CA', client=Client(current_app.config['TWILIO_ACCOUNT_SID'], current_app.config['TWILIO_AUTH_TOKEN'])):
+
+    # Search for available phone numbers near the specified phone number
+    numbers = client.available_phone_numbers(country.upper()).local.list(
+        near_number=phone_number,
+        sms_enabled=True,
+        limit=5
+    )
+
+    if numbers:
+        # Buy the first number in the list
+        chosen_number = numbers[0].phone_number
+        purchased_number = client.incoming_phone_numbers.create(
+            phone_number=chosen_number,
+            sms_url='https://url.com/callback'
+        )
+        current_app.logger.info(f'Purchased phone number: {purchased_number.phone_number}')
+        current_app.logger.info(f'Number SID: {purchased_number.sid}')
+        return purchased_number.phone_number, purchased_number.sid
+    else:
+        current_app.logger.info(f'No SMS-enabled numbers available near {phone_number}')
+        return None, None
