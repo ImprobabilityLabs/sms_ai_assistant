@@ -1164,8 +1164,9 @@ def handle_subscription_cancellation(subscription):
     subscription_record = Subscription.query.filter_by(stripe_subscription_id=subscription_id, enabled=True).first()
     user = User.query.filter_by(id=subscription_record.user_id).first()
 
-    # Delete Twillio Number
-
+    twilio_client = Client(current_app.config['TWILIO_ACCOUNT_SID'], current_app.config['TWILIO_AUTH_TOKEN']) 
+    delete_twilio_number(subscription_record.twillio_number_sid, twilio_client)
+	
     if subscription_record:
         subscription_record.enabled = False
         subscription_record.status = 'Cancelled'
@@ -1237,3 +1238,14 @@ def search_and_buy_sms_number(phone_number, client, country):
     else:
         current_app.logger.info(f'No SMS-enabled numbers available near {phone_number}')
         return None, None
+
+def delete_twilio_number(number_sid, client):
+
+    try:
+        # Delete the phone number using its SID
+        client.incoming_phone_numbers(number_sid).delete()
+        current_app.logger.info(f"Deleted phone number with SID: {number_sid}")
+        return True
+    except Exception as e:
+        current_app.logger.info(f"Failed to delete phone number with SID: {number_sid}. Error: {e}")
+        return False
