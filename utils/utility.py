@@ -653,9 +653,9 @@ def save_user_and_assistant_preferences(user, subscription_id, form_data):
     except Exception as e:
         db.session.rollback()
         current_app.logger.error("Failed to save user and assistant preferences for user ID %s. Error: %s", user.id, str(e))
-        return False, str(e)
+        return False
     
-    return True, None
+    return True
 
 
 def get_tax_rate_ids(country_code):
