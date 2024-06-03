@@ -593,10 +593,76 @@ async def process_questions_answers(text_message, location, location_country='US
         return None
 
 
+def save_user_and_assistant_preferences(user, subscription_id, form_data):
+    try:
+        # Get location details
+        location_dict = get_location(form_data['user-location'])
+        if location_dict and location_dict.get('location_text') != 'null':
+            location_user = location_dict['location_text']
+            location_country = location_dict['country_code']
+        else:
+            location_user = form_data['user-location']
+            location_country = form_data['billing-country']
+        
+        # Save assistant preferences
+        new_assistant_preference = AssistantPreference(
+            user_id=user.id,
+            subscription_id=subscription_id,
+            assistant_name=form_data['assistant-name'],
+            assistant_origin=form_data['assistant-origin'],
+            assistant_gender=form_data['assistant-gender'],
+            assistant_personality=form_data['assistant-personality'],
+            assistant_response_style=form_data['assistant-response-style']
+        )
+        db.session.add(new_assistant_preference)
+        
+        # Save user preferences
+        new_user_preference = UserPreference(
+            user_id=user.id,
+            subscription_id=subscription_id,
+            user_name=form_data['user-name'],
+            user_title=form_data['user-title'],
+            user_measurement=form_data['user-measurement'],
+            user_bio=form_data.get('user-description', ''),
+            user_language=form_data['user-language'],
+            user_location_full=location_user, 
+            user_location_country=location_country
+        )
+        db.session.add(new_user_preference)
+        
+        # Commit preferences
+        db.session.commit()
+        
+        # Clean phone number and save it
+        clean_number = clean_phone_number(form_data['user-mobile'])
+        ctry_code = 1  # Assuming country code is 1
+        
+        new_mobile_number = MobileNumber(
+            user_id=user.id,
+            subscription_id=subscription_id,
+            country_code=ctry_code,
+            mobile_number=int(clean_number)
+        )
+        db.session.add(new_mobile_number)
+        
+        # Commit mobile number
+        db.session.commit()
+        
+        current_app.logger.info("Saved user and assistant preferences for user ID %s.", user.id)
+        
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error("Failed to save user and assistant preferences for user ID %s. Error: %s", user.id, str(e))
+        return False, str(e)
+    
+    return True, None
+
+
 def get_tax_rate_ids(country_code):
     tax_rate_ids = []
     if country_code == 'CA': 
         tax_rates = stripe.TaxRate.list(active=True)
+        current_app.logger.error("get_tax_rate_ids: "+str(tax_rates))
         for tax_rate in tax_rates.data:  
             if tax_rate.country == 'CA':
                 tax_rate_ids.append(tax_rate.id)
