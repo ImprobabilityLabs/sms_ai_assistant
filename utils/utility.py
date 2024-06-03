@@ -667,7 +667,46 @@ def get_tax_rate_ids(country_code):
             if tax_rate.country == 'CA':
                 tax_rate_ids.append(tax_rate.id)
     return tax_rate_ids
-		    
+
+
+def send_new_subscription_communications(subscription_id):
+    # Retrieve subscription, user preferences, and assistant preferences
+    subscription = Subscription.query.filter_by(id=subscription_id, enabled=True).first()
+    user_preferences = UserPreference.query.filter_by(user_id=subscription.user_id, subscription_id=subscription.id).first()
+    assistant_preferences = AssistantPreference.query.filter_by(user_id=subscription.user_id, subscription_id=subscription.id).first()
+    mobile = MobileNumber.query.filter_by(user_id=subscription.user_id, subscription_id=subscription.id).first()
+
+    # Build system prompt for the welcome message
+    sys_prompt = build_system_prompt(
+        new_user_preference=user_preferences,
+        new_assistant_preference=assistant_preferences,
+        extra_info=None,
+        system_message='Create an initial introduction and welcome message for your user.'
+    )
+
+    # Generate the welcome message
+    welcome_message = build_and_send_messages_openai(sys_prompt, history_records=None)
+
+    # Send the welcome message
+    send_reply(
+        user_id=subscription.user_id,
+        subscription_id=subscription_id,
+        message=welcome_message,
+        to_mobile=mobile.mobile_number,
+        from_mobile=subscription.twillio_number,
+        client=Client(current_app.config['TWILIO_ACCOUNT_SID'], current_app.config['TWILIO_AUTH_TOKEN']),
+        save_message=True
+    )
+
+    # Send new subscription email
+    send_new_subscription_email(
+        user_name=user.name,
+        user_email=user.email,
+        new_mobile_number=mobile.mobile_number,
+        assistant_name=assistant_preferences.assistant_name,
+        twilio_number=subscription.twillio_number
+    )
+	
                 
 def clean_phone_number(phone_number):
     # Remove all non-numeric characters
