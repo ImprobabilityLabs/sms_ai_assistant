@@ -685,10 +685,10 @@ def send_new_subscription_communications(subscription_id):
 
     # Build system prompt for the welcome message
     sys_prompt = build_system_prompt(
-        new_user_preference=user_preferences,
-        new_assistant_preference=assistant_preferences,
+        user_preferences,
+        assistant_preferences,
         extra_info=None,
-        system_message='Create an initial introduction and welcome message for your user.'
+        system_message='Create an initial introduction and welcome message for your user in their preffered language.'
     )
 
     # Generate the welcome message
@@ -699,7 +699,7 @@ def send_new_subscription_communications(subscription_id):
         user_id=subscription.user_id,
         subscription_id=subscription_id,
         message=welcome_message,
-        to_mobile=mobile.mobile_number,
+        to_mobile='+1'+str(mobile.mobile_number),
         from_mobile=subscription.twillio_number,
         client=Client(current_app.config['TWILIO_ACCOUNT_SID'], current_app.config['TWILIO_AUTH_TOKEN']),
         save_message=True
@@ -709,9 +709,9 @@ def send_new_subscription_communications(subscription_id):
     send_new_subscription_email(
         user_name=user.name,
         user_email=user.email,
-        new_mobile_number=mobile.mobile_number,
+        user_number='+1'+str(mobile.mobile_number),
         assistant_name=assistant_preferences.assistant_name,
-        twilio_number=subscription.twillio_number
+        assistant_number=subscription.twillio_number
     )
 	
                 
