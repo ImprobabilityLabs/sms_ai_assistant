@@ -363,12 +363,17 @@ def create_and_attach_payment_method(user, form_data):
         
     except stripe.error.CardError as e:
         # Handle card errors like declined, expired, etc.
-        current_app.logger.warning("Card error for user ID %s. Error: %s", user.id, str(e))
-        return False, str(e)
+        error_body = e.json_body
+        card_err = error_body.get('error', {})
+        error_message = card_err.get('message', 'Problem with card.')
+        current_app.logger.warning("Card error for user ID %s. Error: %s", user.id, error_message)
+        return False, error_message
+
     except stripe.error.StripeError as e:
         # Handle other Stripe errors
         current_app.logger.error("Stripe error for user ID %s. Error: %s", user.id, str(e))
         return False, str(e)
+
     except Exception as e:
         # Handle any other errors
         current_app.logger.error("Failed to create or attach payment method for user ID %s. Error: %s", user.id, str(e))
