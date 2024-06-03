@@ -679,6 +679,7 @@ def get_tax_rate_ids(country_code):
 def send_new_subscription_communications(subscription_id):
     # Retrieve subscription, user preferences, and assistant preferences
     subscription = Subscription.query.filter_by(id=subscription_id, enabled=True).first()
+    user = User.query.filter_by(id=subscription.user_id).first()
     user_preferences = UserPreference.query.filter_by(user_id=subscription.user_id, subscription_id=subscription.id).first()
     assistant_preferences = AssistantPreference.query.filter_by(user_id=subscription.user_id, subscription_id=subscription.id).first()
     mobile = MobileNumber.query.filter_by(user_id=subscription.user_id, subscription_id=subscription.id).first()
