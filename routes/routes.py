@@ -5,7 +5,7 @@ from twilio.request_validator import RequestValidator
 from twilio.rest import Client
 from oauthlib.oauth2 import WebApplicationClient
 from requests_oauthlib import OAuth2Session
-from utils.utility import fetch_data, check_user_subscription, generate_menu, get_products, handle_stripe_operations, get_location, get_country_code, clean_phone_number, validate_incomming_message, save_sms_history, load_sms_history, build_system_prompt, process_questions_answers, build_and_send_messages, send_reply, build_and_send_messages_openai, update_billing_info, format_phone_number, handle_payment_success, handle_billing_issue, handle_subscription_cancellation, send_new_subscription_email, send_end_subscription_email
+from utils.utility import fetch_data, check_user_subscription, generate_menu, get_products, handle_stripe_operations, get_country_code, clean_phone_number, validate_incomming_message, save_sms_history, load_sms_history, build_system_prompt, process_questions_answers, build_and_send_messages, send_reply, build_and_send_messages_openai, update_billing_info, format_phone_number, handle_payment_success, handle_billing_issue, handle_subscription_cancellation, send_new_subscription_email, send_end_subscription_email, save_user_and_assistant_preferences
 import stripe
 import aiohttp
 import asyncio
@@ -155,63 +155,16 @@ def configure_routes(app):
                         success, error_message, subscription_id = handle_stripe_operations(user, request.form, referrer)
                         
                         if success:
-                            location_dict = get_location(request.form['user-location'])
-                            if location_dict['location_text'] != 'null':
-                                location_user = location_dict['location_text']
-                                location_country = location_dict['country_code']
-                            else:
-                                location_user = request.form['user-location']
-                                location_country = request.form['billing-country']
-                                
-                            new_assistant_preference = AssistantPreference(
-                                user_id=user.id,
-                                subscription_id=subscription_id,
-                                assistant_name=request.form['assistant-name'],
-                                assistant_origin=request.form['assistant-origin'],
-                                assistant_gender=request.form['assistant-gender'],
-                                assistant_personality=request.form['assistant-personality'],
-                                assistant_response_style=request.form['assistant-response-style']
-                            )
-
-                            db.session.add(new_assistant_preference)
-                            db.session.commit() 
-
-                            new_user_preference = UserPreference(
-                                user_id=user.id,
-                                subscription_id=subscription_id,
-                                user_name=request.form['user-name'],
-                                user_title=request.form['user-title'],
-                                user_measurement=request.form['user-measurement'],
-                                user_bio=request.form.get('user-description', ''),
-                                user_language=request.form['user-language'],
-                                user_location_full=location_user, 
-                                user_location_country=location_country
-                            )
-
-                            db.session.add(new_user_preference)
-                            db.session.commit()
-                                
-                            clean_number = clean_phone_number(request.form['user-mobile'])
-                            ctry_code = 1
-
-                            new_mobile_number = MobileNumber(
-                                user_id=user.id,
-                                subscription_id=subscription_id,
-                                country_code=ctry_code,
-                                mobile_number=int(clean_number)
-                            )
-    
-                            db.session.add(new_mobile_number)
-                            db.session.commit()
+                            if save_user_and_assistant_preferences(user, subscription_id, request.form):
                               
-                            subscription_rec = Subscription.query.filter_by(id=subscription_id, enabled=True).first()
+                                subscription_rec = Subscription.query.filter_by(id=subscription_id, enabled=True).first()
 
-                            # Welcome Message 
-                            sys_prompt = build_system_prompt(new_user_preference, new_assistant_preference, extra_info=None, system_message = 'Create an initial introduction and welcome message for your user.')
-                            welcome_message = build_and_send_messages_openai(sys_prompt, history_records=None)
-                            send_reply(user.id, subscription_id, welcome_message, new_mobile_number.mobile_number, subscription_rec.twillio_number, Client(current_app.config['TWILIO_ACCOUNT_SID'], current_app.config['TWILIO_AUTH_TOKEN']), save_message=True)
+                                # Welcome Message 
+                                sys_prompt = build_system_prompt(new_user_preference, new_assistant_preference, extra_info=None, system_message = 'Create an initial introduction and welcome message for your user.')
+                                welcome_message = build_and_send_messages_openai(sys_prompt, history_records=None)
+                                send_reply(user.id, subscription_id, welcome_message, new_mobile_number.mobile_number, subscription_rec.twillio_number, Client(current_app.config['TWILIO_ACCOUNT_SID'], current_app.config['TWILIO_AUTH_TOKEN']), save_message=True)
 
-                            send_new_subscription_email(user.name, user.email, new_mobile_number.mobile_number, new_assistant_preference.assistant_name, subscription_rec.twillio_number)
+                                send_new_subscription_email(user.name, user.email, new_mobile_number.mobile_number, new_assistant_preference.assistant_name, subscription_rec.twillio_number)
                                 
                             return redirect(url_for('dashboard_page'))
                     else:
