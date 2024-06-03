@@ -343,30 +343,36 @@ def create_and_attach_payment_method(user, form_data):
         )
         current_app.logger.info("Created new payment method for user ID %s.", user.id)
 
-        # Check if the card is valid
-        if payment_method.card.checks.cvc_check == 'pass':
-            current_app.logger.info("Card is valid for user ID %s.", user.id)
-            
-            # Attach the payment method to the customer
-            stripe.PaymentMethod.attach(
-                payment_method.id,
-                customer=user.stripe_customer_id,
-            )
-            current_app.logger.info("Attached payment method to customer for user ID %s.", user.id)
-            
-            return payment_method.id
-        else:
-            current_app.logger.warning("Card validation failed for user ID %s. CVC check status: %s", user.id, payment_method.card.checks.cvc_check)
-            return False
+        # Attach the payment method to the customer
+        stripe.PaymentMethod.attach(
+            payment_method.id,
+            customer=user.stripe_customer_id,
+        )
+        current_app.logger.info("Attached payment method to customer for user ID %s.", user.id)
+
+        # Set the new payment method as the default
+        stripe.Customer.modify(
+            user.stripe_customer_id,
+            invoice_settings={
+                'default_payment_method': payment_method.id,
+            },
+        )
+        current_app.logger.info("Set new payment method as default for user ID %s.", user.id)
+
+        return True, None
         
+    except stripe.error.CardError as e:
+        # Handle card errors like declined, expired, etc.
+        current_app.logger.warning("Card error for user ID %s. Error: %s", user.id, str(e))
+        return False, str(e)
     except stripe.error.StripeError as e:
-        # Log the Stripe error
+        # Handle other Stripe errors
         current_app.logger.error("Stripe error for user ID %s. Error: %s", user.id, str(e))
-        return False
+        return False, str(e)
     except Exception as e:
-        # Log any other errors
+        # Handle any other errors
         current_app.logger.error("Failed to create or attach payment method for user ID %s. Error: %s", user.id, str(e))
-        return False
+        return False, str(e)
 
 
 
@@ -388,20 +394,11 @@ def handle_stripe_operations(user, form_data, referrer):
         tax_rate_ids = get_tax_rate_ids(form_data['billing-country'])
         current_app.logger.info("Retrieved tax rate IDs: %s", tax_rate_ids)
 
-        payment_info_update = create_and_attach_payment_method(user, form_data)	    
+        payment_info_update, payment_info_error = create_and_attach_payment_method(user, form_data)	    
 
         if not payment_info_update:
-            return False, 'Error with Stripe Paymeny information.', -1
+            return False, payment_info_error, -1
 		
-        # Set the new payment method as the default
-        stripe.Customer.modify(
-            user.stripe_customer_id,
-            invoice_settings={
-                'default_payment_method': payment_info_update,
-            },
-        )
-        current_app.logger.info("Set new payment method as default.")
-
         # Create or update the Stripe subscription
         subscription = stripe.Subscription.create(
             customer=user.stripe_customer_id,
