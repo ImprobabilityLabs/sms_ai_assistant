@@ -430,6 +430,8 @@ def handle_stripe_operations(user, form_data, referrer):
         twilio_numr = '+17782007510'
         twilio_sid = ''.join(secrets.choice('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789') for _ in range(16))
 
+        current_app.logger.info("handle_stripe_operations: Creating New subscription record.")
+	    
         # Create a new Subscription record in the database
         new_subscription = Subscription(
             user_id=user.id,
