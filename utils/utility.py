@@ -698,7 +698,7 @@ def send_new_subscription_communications(subscription_id):
     send_reply(
         user_id=subscription.user_id,
         subscription_id=subscription_id,
-        message=welcome_message,
+        reply=welcome_message,
         to_mobile='+1'+str(mobile.mobile_number),
         from_mobile=subscription.twillio_number,
         client=Client(current_app.config['TWILIO_ACCOUNT_SID'], current_app.config['TWILIO_AUTH_TOKEN']),
