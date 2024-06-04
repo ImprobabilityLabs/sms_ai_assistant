@@ -20,6 +20,7 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 import aiohttp
 import asyncio
+import regex
 from openai import OpenAI
 import secrets
 from sendgrid import SendGridAPIClient
@@ -1027,8 +1028,20 @@ def build_and_send_messages(system_prompt, history_records):
     return json.loads(json.dumps(output))
 
 def clean_string(s):
-    """Cleans the input string by removing non-ASCII characters, except hyphens."""
-    return "".join(c for c in s if c.isascii() and c != '\u2013' and c != '\u2014')
+    """Cleans the input string by removing emoji and similar characters, but retains characters used in major languages."""
+    # Define a regex pattern to match emoji and symbols
+    emoji_pattern = regex.compile(
+        r'['
+        r'\p{Cs}'  # Surrogate codes
+        r'\p{Sk}'  # Symbol, modifier
+        r'\p{So}'  # Symbol, other
+        r'\p{Cn}'  # Unassigned
+        r']+', 
+        flags=regex.UNICODE
+    )
+    
+    # Remove matched patterns from the string
+    return emoji_pattern.sub('', s)
 
 
 def send_reply(user_id, subscription_id, reply, to_number, from_number, twilio_client, save_message=True):
