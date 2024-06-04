@@ -298,12 +298,13 @@ def get_products():
 
 def update_customer_billing_info(user, form_data):
     try:
+        card_name = sanitize_string(form_data['card-name'], 30)
         # Retrieve the existing customer
         customer = stripe.Customer.retrieve(user.stripe_customer_id)
         
         # Update customer details
-        customer.name = sanitize_string(form_data['card-name'], 30),
-        customer.email = sanitize_string(user.email, 255),
+        customer.name = card_name,
+        customer.email = user.email,
         customer.address = {
             'line1': sanitize_string(form_data['billing-address'], 255),
             'country': sanitize_string(form_data['billing-country'], 2),
@@ -328,12 +329,13 @@ def update_customer_billing_info(user, form_data):
 def create_and_attach_payment_method(user, form_data):
     try:
         # Create the payment method
+        card_name = sanitize_string(form_data['card-name'], 30)
         payment_method = stripe.PaymentMethod.create(
             type="card",
             card={"token": form_data['stripeToken']},
             billing_details={
-                'name': sanitize_string(form_data['card-name'], 30),
-                'email': sanitize_string(user.email, 255),
+                'name': card_name,
+                'email': user.email,
                 'address': {
                     'line1': sanitize_string(form_data['billing-address'], 255),
                     'country': sanitize_string(form_data['billing-country'], 2),
