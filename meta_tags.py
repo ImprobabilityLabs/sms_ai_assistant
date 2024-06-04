@@ -7,6 +7,3 @@ class MetaTags:
     FACEBOOK = None
     AUTHOR = "Improbability Labs Inc. ( Rahim Khoja )"
     WEBMASTER = "rahimk@improbability.io"
-    GOOGLE_ANALYTICS_ID = 'G-3FLPEVT336'
-    GOOGLE_SITE_VERIFICATION = None
-    BING_SITE_VERIFICATION = None
