@@ -179,16 +179,12 @@ $(document).ready(function() {
 
 
 
-
-
-
-
-
-
-
-
 document.addEventListener('DOMContentLoaded', function() {
     var form = document.getElementById("improbability-sms-contact-form");
+    if (!form) {
+        console.log("The form with id 'improbability-sms-contact-form' does not exist on this page.");
+        return;
+    }
 
     async function handleContactSubmit(event) {
         event.preventDefault();
