@@ -70,7 +70,7 @@ def configure_routes(app):
             is_user = False
         current_app.logger.info('Info: Index Page - Member Object: ' + str(member))
         menu = generate_menu(member)
-        return render_template('index.html', menu=menu, is_user=is_user)
+        return render_template('index.html', seometa=MetaTags, menu=menu, is_user=is_user)
 
     @app.route('/terms')
     def terms_page():
@@ -90,7 +90,7 @@ def configure_routes(app):
             member = check_user_subscription(None)
         current_app.logger.info('Info: Privacy Page - Member Object: ' + str(member))
         menu = generate_menu(member)
-        return render_template('privacy.html', menu=menu)
+        return render_template('privacy.html', seometa=MetaTags, menu=menu)
 
     @app.route('/about')
     def about_page():
@@ -100,7 +100,7 @@ def configure_routes(app):
             member = check_user_subscription(None)
         current_app.logger.info('Info: About Page - Member Object: ' + str(member))
         menu = generate_menu(member)
-        return render_template('about.html', menu=menu)
+        return render_template('about.html', seometa=MetaTags, menu=menu)
 
     @app.route('/faq')
     def faq_page():
@@ -110,7 +110,7 @@ def configure_routes(app):
             member = check_user_subscription(None)
         current_app.logger.info('Info: Faq Page - Member Object: ' + str(member))
         menu = generate_menu(member)
-        return render_template('faq.html', menu=menu)
+        return render_template('faq.html', seometa=MetaTags, menu=menu)
       
     @app.route('/contact', methods=['GET', 'POST'])
     def contact_page():
@@ -120,7 +120,7 @@ def configure_routes(app):
             member = check_user_subscription(None)
         current_app.logger.info('Info: Contact Page - Member Object: ' + str(member))
         menu = generate_menu(member)
-        return render_template('contact.html', menu=menu)
+        return render_template('contact.html', seometa=MetaTags, menu=menu)
 
     @app.route('/subscribe', methods=['GET', 'POST'])
     def subscribe_page():
@@ -165,7 +165,7 @@ def configure_routes(app):
                         
             product_data = get_products()
             current_app.logger.info('Info: Subscribe Page - Products Object: ' + str(product_data))
-            return render_template('subscribe.html', menu=menu, products=product_data, form_data=request.form, error=error_message)
+            return render_template('subscribe.html', seometa=MetaTags, menu=menu, products=product_data, form_data=request.form, error=error_message)
 
     
     @app.route('/account', methods=['GET', 'POST'])
@@ -295,7 +295,7 @@ def configure_routes(app):
                     'status': subscription.status
                 }
                 current_app.logger.info(f"Account: form_data: {form_data}")
-                return render_template('account.html', menu=menu, invoices=invoice_data, form_data=form_data, subscription_details=subscription_details, subscription_canceled=subscription_canceled, show_response=show_response, payment_error_msg=payment_error_msg)
+                return render_template('account.html', seometa=MetaTags, menu=menu, invoices=invoice_data, form_data=form_data, subscription_details=subscription_details, subscription_canceled=subscription_canceled, show_response=show_response, payment_error_msg=payment_error_msg)
         
             except Exception as e:
                 return jsonify({'error': str(e)}), 500
@@ -404,7 +404,7 @@ def configure_routes(app):
                 'location_full': user_preferences.user_location_full
             }  
             
-            return render_template('dashboard.html', menu=menu, history_records=history_records, assistant_details=assistant_details, assistant_preferences=assistant_preferences, user_preferences=user_preferences, user_success=user_success, assistant_success=assistant_success, stripe_product_country=stripe_product_country)
+            return render_template('dashboard.html', seometa=MetaTags, menu=menu, history_records=history_records, assistant_details=assistant_details, assistant_preferences=assistant_preferences, user_preferences=user_preferences, user_success=user_success, assistant_success=assistant_success, stripe_product_country=stripe_product_country)
         elif member['is_subscribed'] and member['has_billing_error']:
             return redirect(url_for('account_page'))
 
