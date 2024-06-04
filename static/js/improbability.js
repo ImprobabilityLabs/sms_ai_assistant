@@ -182,7 +182,6 @@ $(document).ready(function() {
 document.addEventListener('DOMContentLoaded', function() {
     var form = document.getElementById("improbability-sms-contact-form");
     if (!form) {
-        console.log("The form with id 'improbability-sms-contact-form' does not exist on this page.");
         return;
     }
 
@@ -270,9 +269,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 brandText.textContent = 'FAQ'; // You can adjust this if different text is needed for smaller sizes
             }
-        } else {
-            console.log('Element with class faq-page-title not found on this page.');
-        }
+        } 
     }
 
     // Run the function once the page has fully loaded
@@ -294,9 +291,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 brandText.textContent = 'SMS AI Assistant'; // You can adjust this if different text is needed for smaller sizes
             }
-        } else {
-            console.log('Element with class brand-text not found on this page.');
-        }
+        } 
     }
 
     // Run the function once the page has fully loaded
@@ -542,19 +537,13 @@ document.addEventListener('DOMContentLoaded', function() {
   const billingZip = document.getElementById('billing-zip');
 
   if (billingCountry && billingZip) {
-    console.log('Initial setup:');
-    console.log('billingCountry:', billingCountry);
-    console.log('billingZip:', billingZip);
 
     billingCountry.addEventListener('change', function() {
-      console.log('Country changed to:', billingCountry.value);
-      billingZip.value = ''; // Clear postal code field when country changes
-      console.log('Cleared billing-zip value');
+      billingZip.value = ''; 
     });
 
     billingZip.addEventListener('input', function(e) {
       const country = billingCountry.value;
-      console.log('Input event triggered:', e.target.value);
       let input = e.target.value.toUpperCase(); // Convert to uppercase
       let formattedInput = '';
 
@@ -577,7 +566,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
 
-      console.log('Formatted input:', formattedInput);
       e.target.value = formattedInput;
     });
   }
@@ -939,7 +927,6 @@ function validatePaymentDetails() {
     let zipPattern;
     if (country && country.selectedIndex > 0) {
         const countryCode = country.value;
-        console.log('Country code:', countryCode);
         if (countryCode === "US") {
             zipPattern = /^\d{5}$/;
         } else if (countryCode === "CA") {
