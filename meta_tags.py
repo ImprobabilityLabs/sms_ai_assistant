@@ -6,5 +6,5 @@ class MetaTags:
     TWITTER = "https://twitter.com/ImprobLabs"
     FACEBOOK = None
     AUTHOR = "Improbability Labs Inc. ( Rahim Khoja )"
-    WEBMASTER = "rahimk@improbability.io"
+    WEBMASTER = "support@improbability.io"
     ORG_URL = "https://improbability.io/"
