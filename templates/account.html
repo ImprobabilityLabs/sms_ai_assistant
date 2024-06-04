@@ -39,13 +39,26 @@
       "name": "Improbability Labs Inc. - SMS AI Assistant",
       "url": "{{ request.url_root[:-1] }}",
       "sameAs": [
-        "https://twitter.com/ImprobLabs",
-        "https://www.linkedin.com/company/improbability-labs/"
+        {% if seometa.LINKEDIN %}"{{ seometa.LINKEDIN }}"{% endif %}{% if seometa.LINKEDIN and (seometa.TWITTER or seometa.FACEBOOK) %},{% endif %}
+        {% if seometa.TWITTER %}"{{ seometa.TWITTER }}"{% endif %}{% if seometa.TWITTER and seometa.FACEBOOK %},{% endif %}
+        {% if seometa.FACEBOOK %}"{{ seometa.FACEBOOK }}"{% endif %}
       ]
     }
     </script>
+    <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "name": "Improbability Labs Inc.",
+      "url": "{{ seometa.ORG_URL }}",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "{{ seometa.WEBMASTER }}",
+        "contactType": "customer service"
+      }
+    }
+    </script>	
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css">
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <link href="<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/ie10-viewport-bug-workaround.css') }}">
     <script src="{{ url_for('static', filename='js/ie-emulation-modes-warning.js') }}"></script>
