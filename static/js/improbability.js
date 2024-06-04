@@ -606,6 +606,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
       inputElement.value = phoneNumber; // Update the input value with formatted or unformatted number
     });
+    // Trigger the input event manually on page load
+    userMobile.dispatchEvent(new Event('input'));
   }
 
   // For card name validation
@@ -616,8 +618,6 @@ document.addEventListener('DOMContentLoaded', function() {
       e.target.value = input;
     });
   }
-  // Trigger the input event manually on page load
-  userMobile.dispatchEvent(new Event('input'));
 });
 
 
