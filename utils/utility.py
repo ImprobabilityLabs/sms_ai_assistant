@@ -381,7 +381,7 @@ def create_and_attach_payment_method(user, form_data):
 
 
 
-def handle_stripe_operations(user, form_data, referrer):
+def handle_stripe_operations(user, form_data, referrer, url_base):
     try:
         current_app.logger.info("Starting Stripe operations for user: %s", user.id)
 
@@ -440,9 +440,7 @@ def handle_stripe_operations(user, form_data, referrer):
 
         # Get Twilio number and SID (replace with appropriate function)
         twilio_client = Client(current_app.config['TWILIO_ACCOUNT_SID'], current_app.config['TWILIO_AUTH_TOKEN'])
-        twilio_numr, twilio_sid = search_and_buy_sms_number(mobile_number, twilio_client, location_country)
-        #twilio_numr = '+17782007510'
-        #twilio_sid = ''.join(secrets.choice('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789') for _ in range(16))
+        twilio_numr, twilio_sid = search_and_buy_sms_number(mobile_number, twilio_client, location_country, url_base)
 
         current_app.logger.info("handle_stripe_operations: Creating New subscription record.")
 	    
@@ -1216,7 +1214,7 @@ def send_end_subscription_email(user_name, user_email):
     send_email(user_email, subject, html_content, text_content)
 
 
-def search_and_buy_sms_number(phone_number, client, country):
+def search_and_buy_sms_number(phone_number, client, country, base_url):
 
     # Search for available phone numbers near the specified phone number
     numbers = client.available_phone_numbers(country.upper()).local.list(
@@ -1230,7 +1228,7 @@ def search_and_buy_sms_number(phone_number, client, country):
         chosen_number = numbers[0].phone_number
         purchased_number = client.incoming_phone_numbers.create(
             phone_number=chosen_number,
-            sms_url='https://sms.improbability.io/api/sms/callback'
+            sms_url=f'{{base_url}}/api/sms/callback'
         )
         current_app.logger.info(f'Purchased phone number: {purchased_number.phone_number}')
         current_app.logger.info(f'Number SID: {purchased_number.sid}')
