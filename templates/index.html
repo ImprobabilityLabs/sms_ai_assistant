@@ -150,14 +150,14 @@
               <h3 style="float: left;">Follow Us</h3>
               <ul class="socbut" style="float: left; list-style-type: none; height: 40px; line-height: 24px; margin-bottom: 0px; margin-left: 5px; margin-top: 20px; padding-left: 0px; padding-bottom: 5px;">
                 <li style="display: inline; padding-left: 7px; padding-right: 7px;">
-                  <a href="https://www.linkedin.com/company/improbability-labs/" target="_blank">
+                  <a href="{{ seometa.LINKEDIN }}" target="_blank">
                   <img src="{{ url_for('static', filename='images/linkdin.svg') }}" width="30px" 
                     onmouseover="this.src='{{ url_for('static', filename='images/linkdin_hover.svg') }}'" 
                     onmouseout="this.src='{{ url_for('static', filename='images/linkdin.svg') }}'" />
                   </a>
                 </li>
                 <li style="display: inline; padding-left: 7px; padding-right: 7px;">
-                  <a href="https://twitter.com/ImprobLabs" target="_blank">
+                  <a href="{{ seometa.TWITTER }}" target="_blank">
                   <img src="{{ url_for('static', filename='images/twitter.svg') }}" width="30px" 
                     onmouseover="this.src='{{ url_for('static', filename='images/twitter_hover.svg') }}'" 
                     onmouseout="this.src='{{ url_for('static', filename='images/twitter.svg') }}'" />
@@ -169,7 +169,7 @@
           <hr />
           <div class="copyright" style="padding-top: 25px; padding-bottom: 25px">
             <center>
-              <p><a class="footer-links" href="https://improbability.io/">&copy; 2024 Improbability Labs Inc.</a></p>
+              <p><a class="footer-links" href="{{ seometa.ORG_URL }}">&copy; 2024 Improbability Labs Inc.</a></p>
             </center>
           </div>
           <p class="pull-right"><a class="footer-links" href="#">Back to top</a></p>
