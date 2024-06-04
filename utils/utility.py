@@ -302,13 +302,13 @@ def update_customer_billing_info(user, form_data):
         customer = stripe.Customer.retrieve(user.stripe_customer_id)
         
         # Update customer details
-        customer.name = form_data['card-name']
-        customer.email = user.email
+        customer.name = sanitize_string(form_data['card-name'], 30),
+        customer.email = sanitize_string(user.email, 255),
         customer.address = {
-            'line1': form_data['billing-address'],
-            'country': form_data['billing-country'],
-            'state': form_data['billing-state'],
-            'postal_code': form_data['billing-zip'],
+            'line1': sanitize_string(form_data['billing-address'], 255),
+            'country': sanitize_string(form_data['billing-country'], 2),
+            'state': sanitize_string(form_data['billing-state'], 128),
+            'postal_code': sanitize_string(form_data['billing-zip'], 20),
         }
         
         # Save the updated customer information
@@ -332,13 +332,13 @@ def create_and_attach_payment_method(user, form_data):
             type="card",
             card={"token": form_data['stripeToken']},
             billing_details={
-                'name': form_data['card-name'],
-                'email': user.email,
+                'name': sanitize_string(form_data['card-name'], 30),
+                'email': sanitize_string(user.email, 255),
                 'address': {
-                    'line1': form_data['billing-address'],
-                    'country': form_data['billing-country'],
-                    'state': form_data['billing-state'],
-                    'postal_code': form_data['billing-zip'],
+                    'line1': sanitize_string(form_data['billing-address'], 255),
+                    'country': sanitize_string(form_data['billing-country'], 2),
+                    'state': sanitize_string(form_data['billing-state'], 128),
+                    'postal_code': sanitize_string(form_data['billing-zip'], 20),
                 }
             }
         )
@@ -486,13 +486,13 @@ def update_billing_info(user, form_data):
 
         # Retrieve the existing customer and update the billing information
         customer = stripe.Customer.retrieve(user.stripe_customer_id)
-        customer.name = form_data['card-name']
-        customer.email = user.email
+        customer.name = sanitize_string(form_data['card-name'], 30),
+        customer.email = sanitize_string(user.email, 255),
         customer.address = {
-            'line1': form_data['billing-address'],
-            'country': form_data['billing-country'],
-            'state': form_data['billing-state'],
-            'postal_code': form_data['billing-zip'],
+            'line1': sanitize_string(form_data['billing-address'], 255),
+            'country': sanitize_string(form_data['billing-country'], 2),
+            'state': sanitize_string(form_data['billing-state'], 128),
+            'postal_code': sanitize_string(form_data['billing-zip'], 20),
         }
         customer.save()
 
@@ -504,13 +504,13 @@ def update_billing_info(user, form_data):
             type="card",
             card={"token": form_data['stripeToken']},
             billing_details={
-                'name': form_data['card-name'],
-                'email': user.email,
+                'name': sanitize_string(form_data['card-name'], 30),
+                'email': sanitize_string(user.email, 255),
                 'address': {
-                    'line1': form_data['billing-address'],
-                    'country': form_data['billing-country'],
-                    'state': form_data['billing-state'],
-                    'postal_code': form_data['billing-zip'],
+                    'line1': sanitize_string(form_data['billing-address'], 255),
+                    'country': sanitize_string(form_data['billing-country'], 2),
+                    'state': sanitize_string(form_data['billing-state'], 128),
+                    'postal_code': sanitize_string(form_data['billing-zip'], 20),
                 }
             }
         )
@@ -628,11 +628,11 @@ def save_user_and_assistant_preferences(user, subscription_id, form_data):
         new_assistant_preference = AssistantPreference(
             user_id=user.id,
             subscription_id=subscription_id,
-            assistant_name=form_data['assistant-name'],
-            assistant_origin=form_data['assistant-origin'],
-            assistant_gender=form_data['assistant-gender'],
-            assistant_personality=form_data['assistant-personality'],
-            assistant_response_style=form_data['assistant-response-style']
+            assistant_name=sanitize_string(form_data['assistant-name'], 64),
+            assistant_origin=sanitize_string(form_data['assistant-origin'], 64),
+            assistant_gender=sanitize_string(form_data['assistant-gender'], 64),
+            assistant_personality=sanitize_string(form_data['assistant-personality'], 64),
+            assistant_response_style=sanitize_string(form_data['assistant-response-style'], 64)
         )
         db.session.add(new_assistant_preference)
         
@@ -640,13 +640,13 @@ def save_user_and_assistant_preferences(user, subscription_id, form_data):
         new_user_preference = UserPreference(
             user_id=user.id,
             subscription_id=subscription_id,
-            user_name=form_data['user-name'],
-            user_title=form_data['user-title'],
-            user_measurement=form_data['user-measurement'],
-            user_bio=form_data.get('user-description', ''),
-            user_language=form_data['user-language'],
-            user_location_full=location_user, 
-            user_location_country=location_country
+            user_name=sanitize_string(form_data['user-name'], 64),
+            user_title=sanitize_string(form_data['user-title'], 64),
+            user_measurement=sanitize_string(form_data['user-measurement'], 64),
+            user_bio=sanitize_string(form_data.get('user-description', ''), 512),
+            user_language=sanitize_string(form_data['user-language'], 64),
+            user_location_full=sanitize_string(location_user, 64), 
+            user_location_country=sanitize_string(location_country, 3)
         )
         db.session.add(new_user_preference)
         
@@ -1260,3 +1260,9 @@ def delete_twilio_number(number_sid, client):
     except Exception as e:
         current_app.logger.info(f"Failed to delete phone number with SID: {number_sid}. Error: {e}")
         return False
+
+
+def sanitize_string(var, max_length):
+    internal_var = str(var)
+    internal_var = internal_var.strip()[:max_length]
+    return internal_var
