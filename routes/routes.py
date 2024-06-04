@@ -318,6 +318,7 @@ def configure_routes(app):
             subscription = Subscription.query.filter_by(user_id=user.id, enabled=True).first()
             user_preferences = UserPreference.query.filter_by(user_id=user.id, subscription_id=subscription.id).first()
             assistant_preferences = AssistantPreference.query.filter_by(user_id=user.id, subscription_id=subscription.id).first()
+            mobile = MobileNumber.query.filter_by(user_id=subscription.user_id, subscription_id=subscription.id).first()
             history_records = History.query.filter_by(user_id=user.id, subscription_id=subscription.id)\
                                .order_by(History.created.desc())\
                                .limit(120)\
@@ -372,7 +373,8 @@ def configure_routes(app):
             assistant_details = {
                 'name': assistant_preferences.assistant_name,
                 'birthdate': datetime.strftime(assistant_preferences.created, "%A, %B %d, %Y"),
-                'mobile_number': subscription.twillio_number,
+                'assistant_mobile_number': subscription.twillio_number,
+                'user_mobile_number': '+1'+str(mobile.mobile_number),
                 'status': subscription.status
             }
 
@@ -390,6 +392,7 @@ def configure_routes(app):
                 'measurement': user_preferences.user_measurement,
                 'bio': user_preferences.user_bio,
                 'language': user_preferences.user_language,
+                'user_mobile_number': '+1'+str(mobile.mobile_number),
                 'location_full': user_preferences.user_location_full
             }  
             
