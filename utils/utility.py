@@ -303,7 +303,7 @@ def update_customer_billing_info(user, form_data):
         customer = stripe.Customer.retrieve(user.stripe_customer_id)
         
         # Update customer details
-        customer.name = card_name,
+        customer.name = form_data['card-name'],
         customer.email = user.email,
         customer.address = {
             'line1': sanitize_string(form_data['billing-address'], 255),
@@ -334,7 +334,7 @@ def create_and_attach_payment_method(user, form_data):
             type="card",
             card={"token": form_data['stripeToken']},
             billing_details={
-                'name': card_name,
+                'name': form_data['card-name'],
                 'email': user.email,
                 'address': {
                     'line1': sanitize_string(form_data['billing-address'], 255),
@@ -484,8 +484,8 @@ def update_billing_info(user, form_data):
 
         # Retrieve the existing customer and update the billing information
         customer = stripe.Customer.retrieve(user.stripe_customer_id)
-        customer.name = sanitize_string(form_data['card-name'], 30),
-        customer.email = sanitize_string(user.email, 255),
+        customer.name = form_data['card-name'],
+        customer.email = user.email,
         customer.address = {
             'line1': sanitize_string(form_data['billing-address'], 255),
             'country': sanitize_string(form_data['billing-country'], 2),
