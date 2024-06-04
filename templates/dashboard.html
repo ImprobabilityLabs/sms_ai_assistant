@@ -100,7 +100,7 @@
   <h3 class="title black-title">Account Details</h3>
   <section style="display:block">
     <div class="row">
-      <div class="col-xs-12">
+      <div class="col-xs-12 col-sm-6">
         <div class="form-group form-type-text">
           <h5 style="font-weight: bold;">Assistant Name:</h5>
           <h4>{{ assistant_details.name }}</h4>
@@ -116,6 +116,12 @@
         <div class="form-group form-type-text">
           <h5 style="font-weight: bold;">Assistant Number:</h5>
           <h4>{{ assistant_details.mobile_number  | format_phone_number }}</h4>
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-6">
+        <div class="form-group form-type-text">
+          <h5 style="font-weight: bold;">Your Number:</h5>
+          <h4>1 - 234-2567 - 3</h4>
         </div>
       </div>
       <div class="col-xs-12">
@@ -287,6 +293,14 @@
             <label for="user-location" class="long-label">Your Location</label>
             <label for="user-location" class="short-label">Location</label>
             <input id="user-location" type="text" class="form-control" required="" name="user-location" placeholder="What city are you located in?" title="Specify your current location (City, State, Country)." value="{{ user_preferences.get('location_full', '') }}" disabled>
+          </div>
+        </div>
+        <!-- Time Zone -->
+        <div class="col-xs-6">
+          <div class="form-group form-type-text">
+            <label for="user-mobile" class="long-label">Mobile Number</label>
+            <label for="user-mobile" class="short-label">Mobile</label>
+            <input id="user-mobile" type="text" class="form-control" required="" name="user-mobile" placeholder="The mobile number your assistant can reach you on." title="Enter a mobile number for your assistant to contact you on." value="{{ form_data.get('user-mobile', '') }}">
           </div>
         </div>
         <!-- Communication Language -->
