@@ -1108,7 +1108,9 @@ function processStripeDetails(callback) {
 }
 
 function togglePaymentEdit(event) {
-  event.preventDefault(); // Prevent the default form submission
+  if (event) {
+    event.preventDefault(); // Prevent the default form submission
+  }
 
   const cardNumberElement = document.getElementById('card-number-element');
   const cardExpiryElement = document.getElementById('card-expiry-element');
@@ -1161,7 +1163,9 @@ function togglePaymentEdit(event) {
 }
 
 function toggleUserPreferencesEdit(event) {
-  event.preventDefault(); // Prevent the default form submission
+  if (event) {
+    event.preventDefault(); // Prevent the default form submission
+  }
 
   const formElements = document.querySelectorAll('#personal-form .form-control');
   const editButton = document.getElementById('user-update');
@@ -1183,7 +1187,9 @@ function toggleUserPreferencesEdit(event) {
 }
 
 function toggleAssistantPreferencesEdit(event) {
-  event.preventDefault(); // Prevent the default form submission
+  if (event) {
+    event.preventDefault(); // Prevent the default form submission
+  }
 
   const formElements = document.querySelectorAll('#assistant-preferences-form .form-control');
   const editButton = document.getElementById('assistant-update');
