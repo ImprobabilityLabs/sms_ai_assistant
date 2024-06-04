@@ -502,8 +502,8 @@ def update_billing_info(user, form_data):
             type="card",
             card={"token": form_data['stripeToken']},
             billing_details={
-                'name': sanitize_string(form_data['card-name'], 30),
-                'email': sanitize_string(user.email, 255),
+                'name': form_data['card-name'],
+                'email': user.email,
                 'address': {
                     'line1': sanitize_string(form_data['billing-address'], 255),
                     'country': sanitize_string(form_data['billing-country'], 2),
