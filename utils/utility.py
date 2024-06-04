@@ -427,13 +427,9 @@ def handle_stripe_operations(user, form_data, referrer, url_base):
         current_period_end = datetime.utcfromtimestamp(subscription.current_period_end).strftime('%Y-%m-%d %H:%M:%S')
         status = subscription.status.capitalize()
 
-        location_dict = get_location(form_data['user-location'])
-        if location_dict and location_dict.get('location_text') != 'null':
-            location_user = location_dict['location_text']
-            location_country = location_dict['country_code']
-        else:
-            location_user = form_data['user-location']
-            location_country = form_data['billing-country']
+        stripe_product = stripe.Product.retrieve(id=subscription.plan.product)
+
+        stripe_product_country = stripe_product.metadata.get('country', '')
 
         # Clean phone number and save it
         clean_number = clean_phone_number(form_data['user-mobile'])
@@ -441,7 +437,7 @@ def handle_stripe_operations(user, form_data, referrer, url_base):
 
         # Get Twilio number and SID (replace with appropriate function)
         twilio_client = Client(current_app.config['TWILIO_ACCOUNT_SID'], current_app.config['TWILIO_AUTH_TOKEN'])
-        twilio_numr, twilio_sid = search_and_buy_sms_number(mobile_number, twilio_client, location_country, url_base)
+        twilio_numr, twilio_sid = search_and_buy_sms_number(mobile_number, twilio_client, str(stripe_product_country), url_base)
 
         current_app.logger.info("handle_stripe_operations: Creating New subscription record.")
 	    
