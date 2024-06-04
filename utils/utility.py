@@ -1228,7 +1228,7 @@ def search_and_buy_sms_number(phone_number, client, country, base_url):
         chosen_number = numbers[0].phone_number
         purchased_number = client.incoming_phone_numbers.create(
             phone_number=chosen_number,
-            sms_url=f'{{base_url}}/api/sms/callback'
+            sms_url=f'{base_url}/api/sms/callback'
         )
         current_app.logger.info(f'Purchased phone number: {purchased_number.phone_number}')
         current_app.logger.info(f'Number SID: {purchased_number.sid}')
