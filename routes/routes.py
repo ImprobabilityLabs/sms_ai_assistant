@@ -136,6 +136,7 @@ def configure_routes(app):
             error_message = None
             if request.method == 'POST':
                 current_app.logger.info('Received POST request with following form data:')
+                base_url = request.url_root[:-1]
                 for key in request.form:
                     current_app.logger.info(f'{key}: {request.form[key]}')
                 # Validate form data
@@ -152,7 +153,7 @@ def configure_routes(app):
                     user = User.query.filter_by(provider_id=session.get('user_provider_id')).first()
                     if user:
                         referrer = session.get('referrer', '')
-                        success, error_message, subscription_id = handle_stripe_operations(user, request.form, referrer)
+                        success, error_message, subscription_id = handle_stripe_operations(user, request.form, referrer, base_url)
                         
                         if success:
                             if save_user_and_assistant_preferences(user, subscription_id, request.form):
