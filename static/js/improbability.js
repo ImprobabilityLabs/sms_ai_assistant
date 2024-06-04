@@ -1168,6 +1168,7 @@ function toggleUserPreferencesEdit(event) {
   } else {
     // Validate payment details
     if (validatePersonalPreferences()) {
+        document.getElementById('sms-improbability-overlay').style.display = 'flex';
         document.getElementById('personal-form').submit();
     }
   }
@@ -1192,6 +1193,7 @@ function toggleAssistantPreferencesEdit(event) {
   } else {
     // Validate payment details
     if (validateAssistantDetails()) {
+        document.getElementById('sms-improbability-overlay').style.display = 'flex';
         document.getElementById('assistant-preferences-form').submit();
     }
   }
