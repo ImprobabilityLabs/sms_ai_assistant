@@ -1261,6 +1261,6 @@ def delete_twilio_number(number_sid, client):
 def sanitize_string(var, max_length):
     internal_var = str(var)
     internal_var = internal_var.strip()[:max_length]
-    internal_var = str(internal_var)
+    sanitized_var = str(internal_var)
     print(f"Original: {var}, Sanitized: {sanitized_var}")  # Debug print
-    return internal_var
+    return sanitized_var
