@@ -357,13 +357,16 @@ def configure_routes(app):
                     user_language = request.form.get('user-language', '').strip()[:64]
                     user_mobile = clean_phone_number(request.form.get('user-mobile', ''))
                     location_dict = get_location(request.form['user-location'])
-                    if location_dict['location_text'] != 'null':
-                        location_user = location_dict['location_text'].strip()[:64]  
-                        location_country = location_dict['country_code'].strip()[:2]  
+                    if location_dict:
+                        if location_dict['location_text'] != 'null':
+                            location_user = location_dict['location_text'].strip()[:64]  
+                            location_country = location_dict['country_code'].strip()[:2]  
+                        else:
+                            location_user = request.form['user-location'].strip()[:64]  
+                            location_country = user_preferences.user_location_country.strip()[:2]  
                     else:
                         location_user = request.form['user-location'].strip()[:64]  
                         location_country = user_preferences.user_location_country.strip()[:2]  
-            
                     user_preferences.user_name = user_name
                     user_preferences.user_title = user_title
                     user_preferences.user_measurement = user_measurement
