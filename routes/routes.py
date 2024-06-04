@@ -327,6 +327,10 @@ def configure_routes(app):
             assistant_success = None
             user_success = None
 
+            stripe_product = stripe.Product.retrieve(id=subscription.stripe_product_id)
+
+            stripe_product_country = stripe_product.metadata.get('country', '')
+            
             if request.method == 'POST':
                 process_form = request.form.get('process-form')
                 if process_form == 'assistant':
@@ -396,7 +400,7 @@ def configure_routes(app):
                 'location_full': user_preferences.user_location_full
             }  
             
-            return render_template('dashboard.html', menu=menu, history_records=history_records, assistant_details=assistant_details, assistant_preferences=assistant_preferences, user_preferences=user_preferences, user_success=user_success, assistant_success=assistant_success)
+            return render_template('dashboard.html', menu=menu, history_records=history_records, assistant_details=assistant_details, assistant_preferences=assistant_preferences, user_preferences=user_preferences, user_success=user_success, assistant_success=assistant_success, stripe_product_country=stripe_product_country)
         elif member['is_subscribed'] and member['has_billing_error']:
             return redirect(url_for('account_page'))
 
