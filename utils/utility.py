@@ -1102,7 +1102,7 @@ def handle_payment_success(invoice):
     current_period_end = datetime.fromtimestamp(subscription['current_period_end'])
 
     subscription_record = Subscription.query.filter_by(stripe_subscription_id=subscription_id, enabled=True).first()
-    had_billing_issue = subscription_record.billing_error
+    had_billing_issue = getattr(subscription_record, 'billing_error', False) or False
     if subscription_record:
         subscription_record.enabled = True
         subscription_record.billing_error = False
