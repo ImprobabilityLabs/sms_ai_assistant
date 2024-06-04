@@ -616,6 +616,8 @@ document.addEventListener('DOMContentLoaded', function() {
       e.target.value = input;
     });
   }
+  // Trigger the input event manually on page load
+  userMobile.dispatchEvent(new Event('input'));
 });
 
 
