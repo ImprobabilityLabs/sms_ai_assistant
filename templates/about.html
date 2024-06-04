@@ -4,17 +4,18 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="author" content="Improbability Labs Inc. ( Rahim Khoja )">
-    <meta name="description" content="Improbability Labs Inc. - SMS AI Assistant is a cutting-edge web application designed to enhance your SMS experience. Our AI assistant can perform real-time Google lookups, allowing you to stay updated with the latest information at your fingertips. Connect multiple phone numbers for seamless communication and enjoy the personalized interaction with an AI that learns and adapts to your preferences. With paid subscription plans, you get access to advanced features powered by OpenAI and Groq, making it not just a tool, but a companion for those seeking a friendly and helpful assistant. Ideal for older adults and anyone looking for a reliable friend in their pocket.">
-    <meta name="keywords" content="SMS AI Assistant, AI, ChatBot, SMS, Assistant, Real-time Google Lookups, Paid Subscriptions, OpenAI, Groq, Personalized AI, Personal Assistant, Elderly Friendly AI, Companion AI, Loneliness Solutions, AI Friend, Improbability Labs Inc.">
+    <meta name="author" content="{{ seometa.AUTHOR }}">
+    <meta name="description" content="{{ seometa.DESCRIPTION }}">
+    <meta name="keywords" content="{{ seometa.KEYWORDS }}">
+    <meta name="webmaster" content="{{ seometa.WEBMASTER }}">	  
     <meta name="robots" content="index, follow">
     <meta property="og:title" content="Improbability Labs Inc. - SMS AI Assistant">
-    <meta property="og:description" content="Improbability Labs Inc. - SMS AI Assistant is a cutting-edge web application designed to enhance your SMS experience. Our AI assistant can perform real-time Google lookups, allowing you to stay updated with the latest information at your fingertips. Connect multiple phone numbers for seamless communication and enjoy the personalized interaction with an AI that learns and adapts to your preferences. With paid subscription plans, you get access to advanced features powered by OpenAI and Groq, making it not just a tool, but a companion for those seeking a friendly and helpful assistant. Ideal for older adults and anyone looking for a reliable friend in their pocket.">
+    <meta property="og:description" content="{{ seometa.DESCRIPTION }}">
     <meta property="og:image" content="{{ url_for('static', filename='images/improbability-labs.png') }}">
-    <meta property="og:url" content="https://sms.improbability.io/">
+    <meta property="og:url" content="{{ request.url_root[:-1] }}">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Improbability Labs Inc. - SMS AI Assistant">
-    <meta name="twitter:description" content="Improbability Labs Inc. - SMS AI Assistant is a cutting-edge web application designed to enhance your SMS experience. Our AI assistant can perform real-time Google lookups, allowing you to stay updated with the latest information at your fingertips. Connect multiple phone numbers for seamless communication and enjoy the personalized interaction with an AI that learns and adapts to your preferences. With paid subscription plans, you get access to advanced features powered by OpenAI and Groq, making it not just a tool, but a companion for those seeking a friendly and helpful assistant. Ideal for older adults and anyone looking for a reliable friend in their pocket.">
+    <meta name="twitter:description" content="{{ seometa.DESCRIPTION }}">
     <meta name="twitter:image" content="{{ url_for('static', filename='images/improbability-labs.png') }}">
     <link rel="canonical" href="https://sms.improbability.io/">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}">
@@ -38,12 +39,25 @@
       "name": "Improbability Labs Inc. - SMS AI Assistant",
       "url": "{{ request.url_root[:-1] }}",
       "sameAs": [
-        "https://twitter.com/ImprobLabs",
-        "https://www.linkedin.com/company/improbability-labs/"
+        {% if seometa.LINKEDIN %}"{{ seometa.LINKEDIN }}"{% endif %}{% if seometa.LINKEDIN and (seometa.TWITTER or seometa.FACEBOOK) %},{% endif %}
+        {% if seometa.TWITTER %}"{{ seometa.TWITTER }}"{% endif %}{% if seometa.TWITTER and seometa.FACEBOOK %},{% endif %}
+        {% if seometa.FACEBOOK %}"{{ seometa.FACEBOOK }}"{% endif %}
       ]
     }
     </script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css">
+    <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "name": "Improbability Labs Inc.",
+      "url": "{{ seometa.ORG_URL }}",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "{{ seometa.WEBMASTER }}",
+        "contactType": "customer service"
+      }
+    }
+    </script>	
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <link href="<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/ie10-viewport-bug-workaround.css') }}">
@@ -128,14 +142,14 @@
               <h3 style="float: left;">Follow Us</h3>
               <ul class="socbut" style="float: left; list-style-type: none; height: 40px; line-height: 24px; margin-bottom: 0px; margin-left: 5px; margin-top: 20px; padding-left: 0px; padding-bottom: 5px;">
                 <li style="display: inline; padding-left: 7px; padding-right: 7px;">
-                  <a href="https://www.linkedin.com/company/improbability-labs/" target="_blank">
+                  <a href="{{ seometa.LINKEDIN }}" target="_blank">
                   <img src="{{ url_for('static', filename='images/linkdin.svg') }}" width="30px" 
                     onmouseover="this.src='{{ url_for('static', filename='images/linkdin_hover.svg') }}'" 
                     onmouseout="this.src='{{ url_for('static', filename='images/linkdin.svg') }}'" />
                   </a>
                 </li>
                 <li style="display: inline; padding-left: 7px; padding-right: 7px;">
-                  <a href="https://twitter.com/ImprobLabs" target="_blank">
+                  <a href="{{ seometa.TWITTER }}" target="_blank">
                   <img src="{{ url_for('static', filename='images/twitter.svg') }}" width="30px" 
                     onmouseover="this.src='{{ url_for('static', filename='images/twitter_hover.svg') }}'" 
                     onmouseout="this.src='{{ url_for('static', filename='images/twitter.svg') }}'" />
