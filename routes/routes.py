@@ -54,7 +54,6 @@ def configure_routes(app):
             "Allow: /faq",
             f"Sitemap: {base_url}/sitemap.xml"
         ]
-        current_app.logger.info(f'Meta Tags Test: {str(MetaTags.KEYWORDS)}')
         return Response("\n".join(lines), mimetype="text/plain")
 
     @app.route('/', methods=['GET', 'POST'])
@@ -81,7 +80,7 @@ def configure_routes(app):
             member = check_user_subscription(None)
         current_app.logger.info('Info: Terms Page - Member Object: ' + str(member))
         menu = generate_menu(member)
-        return render_template('terms.html', menu=menu)
+        return render_template('terms.html', seometa=MetaTags, menu=menu)
 
     @app.route('/privacy')
     def privacy_page():
