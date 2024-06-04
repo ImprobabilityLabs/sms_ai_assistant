@@ -354,7 +354,8 @@ def configure_routes(app):
                     user_title = request.form.get('user-title', '').strip()[:64]
                     user_measurement = request.form.get('user-measurement', '').strip()[:64]
                     user_bio = request.form.get('user-description', '').strip()[:512]  
-                    user_language = request.form.get('user-language', '').strip()[:64] 
+                    user_language = request.form.get('user-language', '').strip()[:64]
+                    user_mobile = clean_phone_number(request.form.get('user-mobile', ''))
                     location_dict = get_location(request.form['user-location'])
                     if location_dict['location_text'] != 'null':
                         location_user = location_dict['location_text'].strip()[:64]  
@@ -368,8 +369,11 @@ def configure_routes(app):
                     user_preferences.user_measurement = user_measurement
                     user_preferences.user_bio = user_bio
                     user_preferences.user_language = user_language
-                    user_preferences.user_location_full=location_user 
-                    user_preferences.user_location_country=location_country
+                    user_preferences.user_location_full = location_user 
+                    user_preferences.user_location_country = location_country
+
+                    mobile.mobile_number = user_mobile
+                    
                     db.session.commit()
                     current_app.logger.info('Dashboard Page - User Prefrences DB Updated')
                     user_success = True
