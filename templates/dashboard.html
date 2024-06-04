@@ -300,7 +300,7 @@
           <div class="form-group form-type-text">
             <label for="user-mobile" class="long-label">Mobile Number</label>
             <label for="user-mobile" class="short-label">Mobile</label>
-            <input id="user-mobile" type="text" class="form-control" required="" name="user-mobile" placeholder="The mobile number your assistant can reach you on." title="Enter a mobile number for your assistant to contact you on." value="{{ user_preferences.get('user_mobile_number', '') }}">
+            <input id="user-mobile" type="text" class="form-control" required="" name="user-mobile" placeholder="The mobile number your assistant can reach you on." title="Enter a mobile number for your assistant to contact you on." value="{{ user_preferences.get('user_mobile_number', '') }}" disabled>
           </div>
         </div>
         <!-- Communication Language -->
