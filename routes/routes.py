@@ -54,7 +54,7 @@ def configure_routes(app):
             "Allow: /faq",
             f"Sitemap: {base_url}/sitemap.xml"
         ]
-        current_app.logger.info(f'Meta Tags Test: {str(MetaTags)}')
+        current_app.logger.info(f'Meta Tags Test: {str(MetaTags.KEYWORDS)}')
         return Response("\n".join(lines), mimetype="text/plain")
 
     @app.route('/', methods=['GET', 'POST'])
