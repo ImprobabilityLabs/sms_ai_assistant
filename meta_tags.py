@@ -7,3 +7,4 @@ class MetaTags:
     FACEBOOK = None
     AUTHOR = "Improbability Labs Inc. ( Rahim Khoja )"
     WEBMASTER = "rahimk@improbability.io"
+    ORG_URL = "https://improbability.io/"
