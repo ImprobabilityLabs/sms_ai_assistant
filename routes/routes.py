@@ -392,7 +392,7 @@ def configure_routes(app):
                 'measurement': user_preferences.user_measurement,
                 'bio': user_preferences.user_bio,
                 'language': user_preferences.user_language,
-                'user_mobile_number': '+1'+str(mobile.mobile_number),
+                'user_mobile_number': str(mobile.mobile_number),
                 'location_full': user_preferences.user_location_full
             }  
             
