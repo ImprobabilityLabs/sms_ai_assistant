@@ -152,7 +152,7 @@ def extract_questions(message_text, loc_text):
         if not isinstance(message_text, str):
             raise ValueError("message_text must be a string")
 
-        system_message = f"Extract questions from the text. Reframe each question to make it standalone and understandable without additional context. Output each question on a separate line with a question mark. Only output Questions. Ignore questions related to personal or specific context that cannot be understood or answered without additional private knowledge. Do not include Notes or extra information. If no questions are found, reply without a question mark. If a question's location is ambiguous or unknown, incorporate the provided location into the question text: '{loc_text}'. Replace 'near me' with '{loc_text}' in questions."
+        system_message = f"Extract questions from the text. Reframe each question to make it standalone and understandable without additional context. Output each question on a separate line with a question mark. Only output Questions. Ignore questions related to personal or specific context that cannot be understood or answered without additional private knowledge. Do not include Notes or extra information. If no questions are found, reply without a question mark. If a question's location is ambiguous or unknown, incorporate the provided location into the question text: '{loc_text}'."
 
         current_app.logger.debug(f"extract_questions() system_message: {system_message}")
 
@@ -179,6 +179,7 @@ def extract_questions(message_text, loc_text):
         print(f"Tokens: {completion.usage}")
 
         lines = completion.choices[0].message.content.split('\n')
+        lines = [line.replace('near me', loc_text) for line in lines]
         current_app.logger.debug(f"extract_questions - Dirty Questions: {lines}")
 
         # Filter lines containing the question mark and clean them
