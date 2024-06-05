@@ -152,13 +152,17 @@ def extract_questions(message_text, loc_text):
         if not isinstance(message_text, str):
             raise ValueError("message_text must be a string")
 
+        system_message = f"Extract questions from the text. Reframe each question to make it standalone and understandable without additional context. Output each question on a separate line with a question mark. Only output Questions. Ignore questions related to personal or specific context that cannot be understood or answered without additional private knowledge. Do not include Notes or extra information. If no questions are found, reply without a question mark. If a question's location is ambiguous or unknown, incorporate the provided location into the question text: '{loc_text}'."
+
+        current_app.logger.debug(f"extract_questions() system_message: {system_message}")
+
         client = Groq()
         completion = client.chat.completions.create(
             model="llama3-8b-8192",
             messages=[
                 {
                     "role": "system",
-                    "content": "Extract questions from the text. Reframe each question to make it standalone and understandable without requiring additional context. Output each question on a separate line with a question mark. Only output Questions. Ignore questions related to personal or specific context that cannot be understood or answered without additional private knowledge. Do not include Notes or extra information. If no questions are found reply without a question mark. If a question location is ambigous or unknown, use the following location in the question text: "+str(loc_text)+'.'
+                    "content": system_message
                 },
                 {
                     "role": "user",
