@@ -116,7 +116,7 @@ async def answer_question(question, data):
             "Content-Type": "application/json"
         }
         payload = {
-            "model": "llama3-8b-8192",
+            "model": "llama3-70b-8192",
             "messages": [
                 {
                     "role": "system",
@@ -128,7 +128,7 @@ async def answer_question(question, data):
                 }
             ],
             "temperature": 1,
-            "max_tokens": 256,
+            "max_tokens": 386,
             "top_p": 1,
             "stream": False,
             "stop": None
