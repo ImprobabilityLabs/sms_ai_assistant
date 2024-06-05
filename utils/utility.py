@@ -282,7 +282,7 @@ def get_products():
             tax_name = product.metadata.get('tax_name', '')
 
             # Extract feature names from the features and marketing_features
-            features = [feature['name'] for feature in product.get('features', [])]
+            features = [feature['name'] for feature in product.get('marketing_features', [])]
 
             # Handle the image URL
             images = product.images
