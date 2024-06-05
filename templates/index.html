@@ -145,10 +145,8 @@
         <!-- Subscription Option 1: Canada -->
 {% for product in products %}
 <div class="panel panel-default col-xs-12 col-sm-6">
-    <div class="panel-heading">
+    <div class="panel-body" style="height:250px;">
             <h4>{{ product.product_name }}&nbsp;&nbsp;<img src="{{ product.image_url }}" alt="{{ product.product_name }} Image" style="height:20px;"></h4>
-    </div>
-    <div class="panel-body">
     <p><strong>${{ product.amount }} {{ product.currency }} / {{ product.interval }}</strong></p>
     <ul>
         {% for feature in product.features %}
@@ -156,7 +154,6 @@
         {% endfor %}
     </ul>
     <p>{{ product.long_desc }}</p>
-</div>
 </div>
 {% endfor %}
       </div>
