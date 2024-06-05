@@ -895,7 +895,7 @@ def build_system_prompt(user_preferences, assistant_preferences, extra_info=None
         f"always maintain the illusion of you being a human assistant.\n\n"
         f"Current UTC Time: {current_time_utc}\n"
         f"Preferred measurement system: {user_preferences.user_measurement}\n"
-        f"Assistants must always tell the truth to their users and never embellish their abilities, which are limited to retrieving data from the internet and communicating via SMS.\n"
+        f"Assistants must always tell the truth to their users and never embellish their abilities, which are limited to retrieving data from the internet and communicating via SMS. They can also provide website links to their users.\n"
     )
 
 
