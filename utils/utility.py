@@ -928,6 +928,63 @@ def build_system_prompt(user_preferences, assistant_preferences, extra_info=None
 
 def build_and_send_messages_openai(system_prompt, history_records=None):
     """
+    Builds a list of messages for the conversation, placing the system prompt as the second last message, and sends them using the OpenAI client.
+
+    Args:
+        system_prompt: The system prompt in JSON format.
+        history_records: List of History records.
+          
+    Returns:
+        The assistant's response.
+    """
+    
+    # Initialize the messages list
+    messages = []
+
+    if history_records:
+        # Take the 6 most recent messages
+        recent_history = history_records[-6:]
+    
+        # Process history records to build the conversation
+        for record in recent_history:
+            role = "user" if record.direction == 'incoming' else "assistant"
+            cleaned_record_body = clean_string(record.body)
+            messages.append({"role": role, "content": [{"type": "text", "text": cleaned_record_body}]})
+    
+    # Insert the system prompt as the second last message
+    system_message = {"role": "system", "content": [{"type": "text", "text": system_prompt}]}
+    if messages:
+        messages.insert(-1, system_message)
+    else:
+        messages.append(system_message)
+    
+    cleaned_messages = json.loads(json.dumps(messages))
+
+    current_app.logger.debug(f"build_and_send_messages: messages: {cleaned_messages}")
+
+    # Initialize OpenAI client and create a completion
+    client = OpenAI(api_key=current_app.config['OPEN_AI_KEY'])
+    completion = client.chat.completions.create(
+        model=current_app.config['OPEN_AI_MODEL'],
+        messages=cleaned_messages,
+        temperature=1,
+        max_tokens=1024,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
+
+    output = clean_string(completion.choices[0].message.content)
+
+    current_app.logger.debug(f"{output}")
+
+    # Return the output content
+    return json.loads(json.dumps(output))
+
+
+
+def build_and_send_messages_openai_old(system_prompt, history_records=None):
+    """
     Builds a list of messages for the conversation and sends them using the OpenAI client.
 
     Args:
