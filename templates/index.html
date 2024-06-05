@@ -141,18 +141,18 @@
 <div class="box box-primary">
     <h3 class="title black-title">Our Plans</h3>
     <section style="display: block;">
-        <div class="row black-title">
+        <div class="row black-title" style="display: flex; flex-wrap: wrap;">
             <!-- Subscription Option 1: Canada -->
             {% for product in products %}
-            <div class="col-xs-12 col-sm-6" style="padding-bottom: 20px;">
-                <div class="panel panel-default" style="height: 100%; display: flex; flex-direction: column;">
-                    <div class="panel-body" style="flex: 1; display: flex; flex-direction: column;">
+            <div class="col-xs-12 col-sm-6" style="display: flex; padding-bottom: 20px;">
+                <div class="panel panel-default" style="flex: 1; display: flex; flex-direction: column; margin: 0;">
+                    <div class="panel-body" style="display: flex; flex-direction: column; flex: 1;">
                         <h4 style="margin-bottom: 10px;">
                             {{ product.product_name }}
                             <img src="{{ product.image_url }}" alt="{{ product.product_name }} Image" style="height: 20px; float: right;">
                         </h4>
                         <p><strong>${{ product.amount }} {{ product.currency }} / {{ product.interval }}</strong></p>
-                        <ul style="flex-grow: 1;">
+                        <ul style="flex-grow: 1; overflow: hidden;">
                             {% for feature in product.features %}
                             <li><strong>{{ feature }}</strong></li>
                             {% endfor %}
