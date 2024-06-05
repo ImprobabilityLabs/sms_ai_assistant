@@ -68,9 +68,10 @@ def configure_routes(app):
         else:
             member = check_user_subscription(None)
             is_user = False
+        product_data = get_products()
         current_app.logger.info('Info: Index Page - Member Object: ' + str(member))
         menu = generate_menu(member)
-        return render_template('index.html', seometa=MetaTags, menu=menu, is_user=is_user)
+        return render_template('index.html', seometa=MetaTags, menu=menu, is_user=is_user, product_data=product_data)
 
     @app.route('/terms')
     def terms_page():
