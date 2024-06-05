@@ -943,10 +943,12 @@ def build_and_send_messages_openai(system_prompt, history_records=None):
 
     if history_records:
         # Take the 6 most recent messages
-        recent_history = history_records[-6:]
+        recent_history = history_records[:6]
+        
+        reversed_history = list(reversed(recent_history))  # Reverse to maintain chronological order
     
         # Process history records to build the conversation
-        for record in recent_history:
+        for record in reversed_history:
             role = "user" if record.direction == 'incoming' else "assistant"
             cleaned_record_body = clean_string(record.body)
             messages.append({"role": role, "content": [{"type": "text", "text": cleaned_record_body}]})
