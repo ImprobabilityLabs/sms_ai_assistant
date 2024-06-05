@@ -280,6 +280,7 @@ def get_products():
             country = product.metadata.get('country', '')
             tax = float(product.metadata.get('tax', 0.0))
             tax_name = product.metadata.get('tax_name', '')
+            long_desc = product.metadata.get('long_desc', '')
 
             # Extract feature names from the features and marketing_features
             features = [feature['name'] for feature in product.get('marketing_features', [])]
@@ -299,7 +300,8 @@ def get_products():
                 'country': country,
                 'features': features,
                 'image_url': image_url,
-                'product_name': product.name
+                'product_name': product.name,
+                'long_desc': long_desc
             })
 
     return product_data
