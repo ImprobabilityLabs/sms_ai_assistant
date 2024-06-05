@@ -145,7 +145,7 @@ async def answer_question(question, data):
         current_app.logger.error("answer_question() Exception Error")
         return None
         
-def extract_questions(message_text):
+def extract_questions(message_text, loc_text):
     current_app.logger.debug(f"extract_questions - Message Text: {message_text}")
     try:
         # Ensure message_text is a string
@@ -158,7 +158,7 @@ def extract_questions(message_text):
             messages=[
                 {
                     "role": "system",
-                    "content": "Extract questions from the text. Reframe each question to make it standalone and understandable without requiring additional context. Output each question on a separate line with a question mark. Only output Questions. Ignore questions related to personal or specific context that cannot be understood or answered without additional private knowledge. Do not include Notes or extra information. If no questions are found reply without a question mark."
+                    "content": "Extract questions from the text. Reframe each question to make it standalone and understandable without requiring additional context. Output each question on a separate line with a question mark. Only output Questions. Ignore questions related to personal or specific context that cannot be understood or answered without additional private knowledge. Do not include Notes or extra information. If no questions are found reply without a question mark. If a question location is ambigous or unknown, use the following location in the question text: "+str(loc_text)+'.'
                 },
                 {
                     "role": "user",
@@ -577,9 +577,7 @@ def update_billing_info(user, form_data):
 async def process_questions_answers(text_message, location, location_country='US'):
     try:
         # Trim whitespace from the text message
-        text_message = text_message.strip()
-        text_loc = f"Users Location for Questions: {location}\n"
-        text_message = text_loc + text_message         
+        text_message = text_message.strip()     
 
         # Check if text_message is empty
         if not text_message:
@@ -588,7 +586,7 @@ async def process_questions_answers(text_message, location, location_country='US
 
         current_app.logger.debug(f"process_questions_answers() Position 1")
         # Check if questions is a list
-        questions = extract_questions(text_message)
+        questions = extract_questions(text_message, location)
         current_app.logger.debug(f"process_questions_answers() Position 2")
         
         answers = []
