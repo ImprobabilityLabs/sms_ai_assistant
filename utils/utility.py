@@ -180,6 +180,8 @@ def extract_questions(message_text, loc_text):
 
         lines = completion.choices[0].message.content.split('\n')
         lines = [line.replace('near me', loc_text) for line in lines]
+        lines = [line.replace('to me?', loc_text+'?') for line in lines]
+        lines = [line.replace('current location', loc_text) for line in lines]
         current_app.logger.debug(f"extract_questions - Dirty Questions: {lines}")
 
         # Filter lines containing the question mark and clean them
