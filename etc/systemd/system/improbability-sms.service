@@ -3,8 +3,7 @@ Description=Improbability SMS Assistant
 After=network.target
 
 [Service]
-# Use Gunicorn to start the Flask app
-ExecStart=/usr/bin/gunicorn -b :8000 -w 4 --chdir /opt/improbability/sms_ai_assistant app:app
+ExecStart=/usr/bin/gunicorn -b :8000 -w 4 --chdir /opt/improbability/sms_ai_assistant --timeout 30 --keep-alive 5 -k gthread app:app
 WorkingDirectory=/opt/improbability/sms_ai_assistant
 User=root
 Group=root
