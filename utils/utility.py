@@ -917,7 +917,7 @@ def build_system_prompt(user_preferences, assistant_preferences, extra_info=None
             extra_info_str = "\n".join(extra_info)
         else:
             extra_info_str = str(extra_info)
-        system_prompt += f"\n\nAdditional Information:\n{extra_info_str}"
+        system_prompt += f"\n\nUse this additional Information to answer user questions. It is current search results. \nAdditional Information:\n{extra_info_str}"
 
     if system_message and not extra_info:
         
