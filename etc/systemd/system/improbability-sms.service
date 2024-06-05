@@ -7,7 +7,7 @@ ExecStart=/usr/bin/gunicorn -b :8000 -w 4 --chdir /opt/improbability/sms_ai_assi
 WorkingDirectory=/opt/improbability/sms_ai_assistant
 User=root
 Group=root
-EnvironmentFile=/etc/improbability/exports  # Update this file to inlcude your ENV Options needed for the application
+EnvironmentFile=/etc/improbability/exports
 PassEnvironment=GROQ_SECRET_ACCESS_KEY GROQ_API_KEY
 Restart=always
 
