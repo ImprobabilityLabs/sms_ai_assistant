@@ -297,14 +297,15 @@ def get_products():
 
 
 def update_customer_billing_info(user, form_data):
+    current_app.logger.info("update_customer_billing_info()")
     try:
         card_name = sanitize_string(form_data['card-name'], 30)
         # Retrieve the existing customer
         customer = stripe.Customer.retrieve(user.stripe_customer_id)
         
         # Update customer details
-        customer.name = form_data['card-name'],
-        customer.email = user.email,
+        customer.name = card_name
+        customer.email = user.email
         customer.address = {
             'line1': sanitize_string(form_data['billing-address'], 255),
             'country': sanitize_string(form_data['billing-country'], 2),
@@ -327,6 +328,8 @@ def update_customer_billing_info(user, form_data):
 
 
 def create_and_attach_payment_method(user, form_data):
+    current_app.logger.info("create_and_attach_payment_method()")
+    card_name = sanitize_string(form_data['card-name'], 30)
     try:
         # Create the payment method
         card_name = sanitize_string(form_data['card-name'], 30)
@@ -334,7 +337,7 @@ def create_and_attach_payment_method(user, form_data):
             type="card",
             card={"token": form_data['stripeToken']},
             billing_details={
-                'name': form_data['card-name'],
+                'name': card_name,
                 'email': user.email,
                 'address': {
                     'line1': sanitize_string(form_data['billing-address'], 255),
@@ -477,6 +480,8 @@ def handle_stripe_operations(user, form_data, referrer, url_base):
 	    
 
 def update_billing_info(user, form_data):
+    current_app.logger.info("update_billing_info()")
+    card_name = sanitize_string(form_data['card-name'], 30)
     try:
         if not user.stripe_customer_id:
             # Raise an exception if the Stripe customer ID does not exist
@@ -484,8 +489,8 @@ def update_billing_info(user, form_data):
 
         # Retrieve the existing customer and update the billing information
         customer = stripe.Customer.retrieve(user.stripe_customer_id)
-        customer.name = form_data['card-name'],
-        customer.email = user.email,
+        customer.name = card_name
+        customer.email = user.email
         customer.address = {
             'line1': sanitize_string(form_data['billing-address'], 255),
             'country': sanitize_string(form_data['billing-country'], 2),
