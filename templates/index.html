@@ -153,10 +153,10 @@
      {{product.features}}
     <ul>
         {% for feature in product.features %}
-        <li>{{ feature }}</li>
+        <li><strong>{{ feature }}</strong></li>
         {% endfor %}
     </ul>
-    <p>{{ product.description }}</p>
+    <p>{{ product.long_desc }}</p>
 </div>
 {% endfor %}
       </div>
