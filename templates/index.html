@@ -106,7 +106,7 @@
     <!-- Open Container -->
     <div class="container" style="padding-top: 10px; padding-bottom: px;">
 <div class="flex-middle flex-space-between full-width">
-    <h1>SMS AI Assistant</h1>
+    <h1>AI Answers, Right in Your Pocket</h1>
     <div class="action-area"></div>
 </div>
 <!-- Open Intro Box -->
@@ -133,7 +133,34 @@
     </section>
 </div>
 <!-- Close Intro Box -->
-
+{% if not is_user %}<div class="box box-primary">
+    <section style="display:block">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12">
+                <!-- Title for Account Creation/Login -->
+                <div class="form-group">
+                    <h4 class="title">
+                        Create an Account to Subscribe or Login to manage your Account
+                    </h4>
+                </div>
+                <!-- Google Login Button -->
+                <a href="/api/google/authorize">
+                    <button class="btn btn-default login-button">
+                        <img src="{{ url_for('static', filename='images/google-logo.svg') }}" alt="Google logo" style="width: 24px; height: 24px;">
+                        Continue with Google
+                    </button>
+                </a>
+                <!-- Microsoft Login Button -->
+                <a href="/api/microsoft/authorize">
+                    <button class="btn btn-default login-button">
+                        <img src="{{ url_for('static', filename='images/microsoft-logo.svg') }}" alt="Microsoft logo" style="width: 24px; height: 24px;">
+                        Continue with Microsoft
+                    </button>
+                </a>
+            </div>
+        </div>
+    </section>
+</div>{% endif %}
 <div class="box box-primary">
     <h3 class="title black-title">Explore Our SMS AI Assistant Use Cases</h3><br>
     <section style="display:block">
@@ -190,34 +217,6 @@
     </section>
 </div>
 <!-- Close Use Case Box -->
-{% if not is_user %}<div class="box box-primary">
-    <section style="display:block">
-        <div class="row">
-            <div class="col-xs-12 col-sm-12">
-                <!-- Title for Account Creation/Login -->
-                <div class="form-group">
-                    <h4 class="title">
-                        Create an Account to Subscribe or Login to manage your Account
-                    </h4>
-                </div>
-                <!-- Google Login Button -->
-                <a href="/api/google/authorize">
-                    <button class="btn btn-default login-button">
-                        <img src="{{ url_for('static', filename='images/google-logo.svg') }}" alt="Google logo" style="width: 24px; height: 24px;">
-                        Continue with Google
-                    </button>
-                </a>
-                <!-- Microsoft Login Button -->
-                <a href="/api/microsoft/authorize">
-                    <button class="btn btn-default login-button">
-                        <img src="{{ url_for('static', filename='images/microsoft-logo.svg') }}" alt="Microsoft logo" style="width: 24px; height: 24px;">
-                        Continue with Microsoft
-                    </button>
-                </a>
-            </div>
-        </div>
-    </section>
-</div>{% endif %}
 <!-- Open Our Plans Box -->
 <div class="box box-primary">
     <h3 class="title black-title">Our Subscriptions</h3><br>
