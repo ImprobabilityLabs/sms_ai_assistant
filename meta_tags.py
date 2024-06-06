@@ -1,6 +1,6 @@
 class MetaTags:
-    KEYWORDS = "SMS AI Assistant, AI, ChatBot, SMS, Assistant, Real-time Google Lookups, Paid Subscriptions, OpenAI, Groq, Personalized AI, Personal Assistant, Elderly Friendly AI, Companion AI, Loneliness Solutions, AI Friend, Improbability Labs Inc."
-    DESCRIPTION = "Improbability Labs Inc. - SMS AI Assistant is a cutting-edge web application designed to enhance your SMS experience. Our AI assistant can perform real-time Google lookups, allowing you to stay updated with the latest information at your fingertips. Connect multiple phone numbers for seamless communication and enjoy the personalized interaction with an AI that learns and adapts to your preferences. With paid subscription plans, you get access to advanced features powered by OpenAI and Groq, making it not just a tool, but a companion for those seeking a friendly and helpful assistant. Ideal for older adults and anyone looking for a reliable friend in their pocket."
+    KEYWORDS = "SMS AI Assistant, Personal AI Companion, AI Assistance, Multilingual, Global AI Communication, Educational AI Assistant, Remote Area Connectivity, Customizable AI Settings, Environmentally Friendly AI, Dedicated SMS Number, SMS, Improbability Labs"
+    DESCRIPTION = "Your pocket AI companion - Explore, learn, decide—anywhere, anytime with your SMS AI Assistant. No internet? No problem! Personalized AI at your fingertips."
     LINKEDIN = "https://www.linkedin.com/company/improbability-labs/"
     TWITTER = "https://twitter.com/ImprobLabs"
     FACEBOOK = None
