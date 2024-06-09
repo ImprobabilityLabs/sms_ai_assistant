@@ -329,95 +329,151 @@ def check_user_subscription(provider_id):
     return user_status
 
 def generate_menu(member):
+    """
+    Generates navigation menu items based on the member's status.
+    
+    Args:
+    - member (dict): A dictionary containing member's subscription and user status.
+    
+    Returns:
+    - list: A list of dictionaries where each dictionary represents a menu item.
+    """
+    # Initialize the menu list
+    menu = []
+
+    # Check if the member is not a user
     if not member['is_user']: 
+        current_app.logger.debug("Generating menu for non-user.")
         menu = [
             {"name": "Home", "url": "/"},
             {"name": "About", "url": "/about"},
             {"name": "FAQ", "url": "/faq"},
             {"name": "Contact", "url": "/contact"},
         ]
+
+    # Check if the member is a user but not subscribed
     elif member['is_user'] and not member['is_subscribed']:
+        current_app.logger.debug("Generating menu for unsubscribed user.")
         menu = [
             {"name": "Home", "url": "/"},
             {"name": "Subscribe", "url": "/subscribe"},
             {"name": "Contact", "url": "/contact"},
             {"name": "Logout", "url": "/logout"},
         ]
+
+    # Check if the member is a subscribed user without billing errors
     elif member['is_user'] and member['is_subscribed'] and not member['has_billing_error']:
+        current_app.logger.debug("Generating menu for subscribed user without billing issues.")
         menu = [
             {"name": "Home", "url": "/"},
             {"name": "Dashboard", "url": "/dashboard"},
             {"name": "Account", "url": "/account"},
             {"name": "Logout", "url": "/logout"},
         ]
+
+    # Check if the member is a subscribed user with billing errors
     elif member['is_user'] and member['is_subscribed'] and member['has_billing_error']:
+        current_app.logger.warning("Generating menu for subscribed user with billing issues.")
         menu = [
             {"name": "Home", "url": "/"},
             {"name": "Account", "url": "/account"},
             {"name": "Contact", "url": "/contact"},
             {"name": "Logout", "url": "/logout"},
         ]
+
+    # Return the generated menu
     return menu
 
 def get_products():
-    products = stripe.Product.list(limit=10)  # Adjust limit as necessary
+    """
+    Retrieves a list of product details including associated prices and metadata from Stripe.
+
+    Returns:
+        list: A list of dictionaries, each containing details about a product.
+    """
+    # Fetch a list of products from Stripe with a specified limit
+    try:
+        products = stripe.Product.list(limit=10)  # Adjust limit as necessary
+        current_app.logger.info("Successfully retrieved products from Stripe.")
+    except Exception as e:
+        current_app.logger.error(f"Error fetching products from Stripe: {e}")
+        return []  # Return an empty list in case of failure
 
     product_data = []
 
+    # Iterate through each product retrieved from Stripe
     for product in products.auto_paging_iter():
-        # Retrieve prices associated with the product
-        prices = stripe.Price.list(product=product.id, type='recurring')
+        current_app.logger.debug(f"Processing product {product.id}")
 
+        # Fetch recurring prices for each product
+        try:
+            prices = stripe.Price.list(product=product.id, type='recurring')
+            current_app.logger.debug(f"Retrieved prices for product {product.id}")
+        except Exception as e:
+            current_app.logger.error(f"Error fetching prices for product {product.id}: {e}")
+            continue  # Skip to the next product on error
+
+        # Iterate through each price object retrieved
         for price in prices.data:
-            # Access price fields
-            price_id = price.id
+            # Calculate and format amount
             amount = price.unit_amount / 100
-            currency = price.currency.upper()
-            interval = price.recurring.interval
+            formatted_amount = f"{amount:.2f}"
 
-            # Retrieve product details including description
+            # Retrieve and format product and pricing details
             description = product.description or ""
-
-            # Access metadata
             country = product.metadata.get('country', '')
-            tax = float(product.metadata.get('tax', 0.0))
+            tax_rate = float(product.metadata.get('tax', 0.0))
             tax_name = product.metadata.get('tax_name', '')
-            long_desc = product.metadata.get('long_desc', '')
-
-            # Extract feature names from the features and marketing_features
+            long_description = product.metadata.get('long_desc', '')
             features = [feature['name'] for feature in product.get('marketing_features', [])]
 
-            # Handle the image URL
+            # Handle product images, providing a default if none are available
             images = product.images
-            image_url = images[0] if images else 'https://example.com/default-image.jpg'  # Default image if none available
+            image_url = images[0] if images else 'https://example.com/default-image.jpg'
 
-            # Append to product data
+            # Append the detailed product data to the list
             product_data.append({
                 'product_id': product.id,
-                'price_id': price_id,
-                'amount': f"{amount:.2f}",
-                'currency': currency,
-                'interval': interval,
+                'price_id': price.id,
+                'amount': formatted_amount,
+                'currency': price.currency.upper(),
+                'interval': price.recurring.interval,
                 'description': description,
                 'country': country,
                 'features': features,
                 'image_url': image_url,
                 'product_name': product.name,
-                'long_desc': long_desc
+                'long_desc': long_description
             })
 
+    current_app.logger.info("Completed processing all products.")
     return product_data
 
-
 def update_customer_billing_info(user, form_data):
-    current_app.logger.info("update_customer_billing_info()")
+    """
+    Updates the billing information of a customer in Stripe based on the provided form data.
+    
+    Parameters:
+    - user: The user object containing user-specific data like email and stripe_customer_id.
+    - form_data: A dictionary containing the billing information fields from a submitted form.
+    
+    Returns:
+    - True if the billing information was successfully updated, False otherwise.
+    """
+    
+    # Log the initiation of the billing info update process
+    current_app.logger.info("Starting update of customer billing information for user ID %s.", user.id)
+    
     try:
-        card_name = sanitize_string(form_data['card-name'], 30)
-        # Retrieve the existing customer
-        customer = stripe.Customer.retrieve(user.stripe_customer_id)
+        # Sanitize and assign the card name from form data
+        sanitized_card_name = sanitize_string(form_data['card-name'], 30)
         
-        # Update customer details
-        customer.name = card_name
+        # Retrieve the existing customer from Stripe
+        customer = stripe.Customer.retrieve(user.stripe_customer_id)
+        current_app.logger.debug("Retrieved Stripe customer data for user ID %s.", user.id)
+        
+        # Update customer details in Stripe
+        customer.name = sanitized_card_name
         customer.email = user.email
         customer.address = {
             'line1': sanitize_string(form_data['billing-address'], 255),
@@ -426,15 +482,13 @@ def update_customer_billing_info(user, form_data):
             'postal_code': sanitize_string(form_data['billing-zip'], 20),
         }
         
-        # Save the updated customer information
+        # Save the updated customer information to Stripe
         customer.save()
-        
-        # Log the successful update
-        current_app.logger.info("Updated customer billing information for user ID %s.", user.id)
+        current_app.logger.info("Successfully updated customer billing information for user ID %s.", user.id)
         
         return True
     except Exception as e:
-        # Log the error
+        # Log the exception with error level logging
         current_app.logger.error("Failed to update customer billing information for user ID %s. Error: %s", user.id, str(e))
         
         return False
