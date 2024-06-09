@@ -27,94 +27,95 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
 def remove_keys(data, keys_to_remove):
-    """ Recursively remove specified keys from a dictionary. """
+    """
+    Recursively remove specified keys from a dictionary or list of dictionaries.
+
+    Args:
+    data (dict or list): The input data from which keys need to be removed.
+    keys_to_remove (list): A list of keys that need to be removed from the data.
+
+    Returns:
+    dict or list: The modified data with specified keys removed.
+    """
     if isinstance(data, dict):
-        return {key: remove_keys(value, keys_to_remove) for key, value in data.items() if key not in keys_to_remove}
+        # Iterate over each key-value pair in the dictionary and apply the function recursively
+        current_app.logger.debug(f"Processing a dictionary with keys: {data.keys()}")
+        modified_dict = {key: remove_keys(value, keys_to_remove)
+                         for key, value in data.items() if key not in keys_to_remove}
+        return modified_dict
     elif isinstance(data, list):
-        return [remove_keys(item, keys_to_remove) for item in data]
+        # Apply the function to each item in the list recursively
+        current_app.logger.debug("Processing a list of items")
+        modified_list = [remove_keys(item, keys_to_remove) for item in data]
+        return modified_list
     else:
+        # Return the item unchanged if it is neither a dictionary nor a list
+        current_app.logger.debug("Encountered a non-list, non-dict type; returning it unchanged")
         return data
 
-async def fetch_data(question, location=None):
-    """Fetch data from the DataForSEO API for the specified question."""
-    url = "https://api.dataforseo.com/v3/serp/google/organic/live/advanced"
+def clean_data(data):
+    """
+    Removes unnecessary keys from the data and returns the cleaned data in JSON format.
     
-    current_app.logger.debug(f"fetch_data() Question Input: {question}")
+    Args:
+        data (dict): The original dictionary from which unnecessary keys will be removed.
 
-    # Set location code based on input
-    location_code = 2840  # Default to US location code
-    if location == 'US':
-        location_code = 2840
-    elif location == 'CA':
-        location_code = 2124
-    
-    # Prepare payload
-    payload = json.dumps([{
-        "keyword": question,
-        "location_code": location_code,
-        "language_code": "en",
-        "device": "desktop",
-        "os": "windows",
-        "depth": 1
-    }])
-    
-    headers = {
-        'Authorization': f"Basic {current_app.config['SEO_FOR_DATA_KEY']}",
-        'Content-Type': 'application/json'
+    Returns:
+        str: A JSON string of the cleaned dictionary with a readable indentation.
+
+    The function uses a predefined set of keys that are considered unnecessary for further processing and should be removed.
+    """
+    # Define a set of keys that need to be removed from the input data
+    keys_to_remove = {
+        'xpath', 'image_url', 'url', 'images', 'cache_url', 'is_image', 'is_video', 'type',
+        'rank_group', 'rank_absolute', 'position', 'rectangle', 'reviews_count', 'rating',
+        'place_id', 'feature', 'cid', 'data_attrid', 'domain', 'faq', 'extended_people_also_search',
+        'about_this_result', 'timestamp', 'related_result', 'se_domain', 'location_code',
+        'language_code', 'check_url', 'datetime', 'se_results_count', 'items_count', 'related_search_url',
+        'breadcrumb', 'is_malicious', 'is_web_story', 'amp_version', 'card_id', 'logo_url',
+        'is_featured_snippet', 'pre_snippet', 'extended_snippet', 'price', 'links'
     }
 
-    async with aiohttp.ClientSession() as session:
-        try:
-            async with session.post(url, headers=headers, data=payload, timeout=10) as response:
-                current_app.logger.debug(f"fetch_data() Position 1 - Response Status: {response.status}")
-                response.raise_for_status()  # Raise an exception for bad responses
-                response_text = await response.text()
-                current_app.logger.debug(f"fetch_data() Position 2 - Response Text: {response_text}")
-                data = await response.json()
-                current_app.logger.debug(f"fetch_data() Position 3 - JSON Data: {data}")
-                
-                # Check if the response contains the expected data
-                if 'tasks' in data and len(data['tasks']) > 0 and 'result' in data['tasks'][0]:
-                    return data['tasks'][0]['result']
-                else:
-                    current_app.logger.warning("fetch_data() - No result found in the response")
-                    return None  # Or handle the case where the result is not found
+    # Log the initial state of data for debugging purposes
+    current_app.logger.debug("Starting data cleanup process.")
 
-        except aiohttp.ClientError as e:
-            current_app.logger.error(f"Request failed: {e}")
-            current_app.logger.error("fetch_data() Request Exception Error")
-            return None
-
-        except json.JSONDecodeError:
-            current_app.logger.error("fetch_data() JSONDecodeError - Failed to decode JSON response")
-            return None
-
-        except KeyError:
-            current_app.logger.error("fetch_data() KeyError - Unexpected response structure")
-            return None
-
-
-def clean_data(data):
-    """ Remove unnecessary keys from the data. """
-    keys_to_remove = {'xpath', 'image_url', 'url', 'images', 'cache_url', 'is_image', 'is_video', 'type',
-                      'rank_group', 'rank_absolute', 'position', 'rectangle', 'reviews_count', 'rating',
-                      'place_id', 'feature', 'cid', 'data_attrid', 'domain', 'faq', 'extended_people_also_search',
-                      'about_this_result', 'timestamp', 'related_result', 'se_domain', 'location_code',
-                      'language_code', 'check_url', 'datetime', 'se_results_count', 'items_count', 'related_search_url',
-                      'breadcrumb', 'is_malicious', 'is_web_story', 'amp_version', 'card_id', 'logo_url',
-                      'is_featured_snippet', 'pre_snippet', 'extended_snippet', 'price', 'links'}
+    # Removing the keys from the data
     cleaned_data = remove_keys(data, keys_to_remove)
-    return json.dumps(cleaned_data, indent=2)
+
+    # Convert the cleaned dictionary to a JSON string with indentation for readability
+    cleaned_json = json.dumps(cleaned_data, indent=2)
+
+    # Log the completion of the data cleanup process
+    current_app.logger.info("Data cleanup completed successfully.")
+
+    return cleaned_json
 
 
-async def answer_question(question, data):
-    current_app.logger.debug(f"answer_question - Question Input: {question}")
+async def answer_question(question, user_input):
+    """
+    Asynchronously fetches an answer to a question using the Groq API.
+
+    Args:
+        question (str): The question to answer.
+        user_input (str): Additional context or prompt for the AI.
+
+    Returns:
+        str: The AI-generated answer or None if an error occurs.
+    """
+    # Log the input question for debugging purposes
+    current_app.logger.debug(f"Received question: {question}")
+
     try:
-        url = "https://api.groq.com/openai/v1/chat/completions"
+        # API endpoint for Groq AI completions
+        api_url = "https://api.groq.com/openai/v1/chat/completions"
+        
+        # Headers including authorization and content type
         headers = {
             "Authorization": f"Bearer {current_app.config['GROQ_KEY']}",
             "Content-Type": "application/json"
         }
+        
+        # Payload to send, including model details and messages
         payload = {
             "model": "llama3-70b-8192",
             "messages": [
@@ -124,7 +125,7 @@ async def answer_question(question, data):
                 },
                 {
                     "role": "user",
-                    "content": data
+                    "content": user_input
                 }
             ],
             "temperature": 1,
@@ -134,40 +135,121 @@ async def answer_question(question, data):
             "stop": None
         }
 
+        # Asynchronous HTTP session
         async with aiohttp.ClientSession() as session:
-            async with session.post(url, headers=headers, json=payload, timeout=10) as response:
-                response.raise_for_status()
+            # POST request with timeout
+            async with session.post(api_url, headers=headers, json=payload, timeout=10) as response:
+                response.raise_for_status()  # Raises an HTTPError for bad responses
                 response_json = await response.json()
-                current_app.logger.debug(f"answer_question() Position 1 - Response JSON: {response_json}")
+                # Log the response for debugging
+                current_app.logger.debug(f"API Response: {response_json}")
+                # Extract the answer from the response
                 return response_json['choices'][0]['message']['content']
     except Exception as e:
-        current_app.logger.error(f"An error occurred: {e}")
-        current_app.logger.error("answer_question() Exception Error")
+        # Log any exceptions that occur during the function execution
+        current_app.logger.error(f"An error occurred while answering the question: {e}")
         return None
-        
-def extract_questions(message_text, loc_text):
-    current_app.logger.debug(f"extract_questions - Message Text: {message_text}")
+
+async def fetch_data(question, location=None):
+    """
+    Fetch data from the DataForSEO API for the specified question.
+    
+    Args:
+    - question (str): The search query or question.
+    - location (str, optional): The geographical location code (default=None, which sets to US).
+    
+    Returns:
+    - dict or None: The result from the DataForSEO API or None if an error occurs.
+    """
+    # API endpoint
+    url = "https://api.dataforseo.com/v3/serp/google/organic/live/advanced"
+    current_app.logger.debug(f"fetch_data() called with question: {question}, location: {location}")
+    
+    # Determine the location code based on input, default is US (2840)
+    location_code = 2840 if location not in ['US', 'CA'] else (2124 if location == 'CA' else 2840)
+    
+    # Construct the request payload
+    payload = json.dumps([{
+        "keyword": question,
+        "location_code": location_code,
+        "language_code": "en",
+        "device": "desktop",
+        "os": "windows",
+        "depth": 1
+    }])
+    
+    # Headers for the API request
+    headers = {
+        'Authorization': f"Basic {current_app.config['SEO_FOR_DATA_KEY']}",
+        'Content-Type': 'application/json'
+    }
+
+    # Perform the HTTP POST request asynchronously
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.post(url, headers=headers, data=payload, timeout=10) as response:
+                current_app.logger.debug(f"HTTP POST response status: {response.status}")
+                response.raise_for_status()  # Ensure we notice bad responses
+                response_text = await response.text()
+                current_app.logger.debug(f"HTTP response text: {response_text}")
+                data = await response.json()
+                current_app.logger.debug(f"Response JSON: {data}")
+
+                # Check if expected data is in the response
+                if 'tasks' in data and data['tasks'] and 'result' in data['tasks'][0]:
+                    return data['tasks'][0]['result']
+                else:
+                    current_app.logger.warning("No result found in response")
+                    return None
+
+        except aiohttp.ClientError as e:
+            current_app.logger.error(f"Request failed due to client error: {e}")
+            return None
+        except json.JSONDecodeError:
+            current_app.logger.error("Failed to decode JSON response")
+            return None
+        except KeyError:
+            current_app.logger.error("Unexpected response structure")
+            return None
+
+def extract_questions(message_text, location_text):
+    """
+    Extracts and reformats questions from a given text using an AI model.
+    
+    Args:
+    message_text (str): The text from which questions are to be extracted.
+    location_text (str): Location description to be included in questions where needed.
+    
+    Returns:
+    list: A list of cleaned and reformatted questions.
+    """
+    current_app.logger.debug("Starting the extraction of questions.")
+    
     try:
-        # Ensure message_text is a string
+        # Validate the message_text input to ensure it's a string
         if not isinstance(message_text, str):
             raise ValueError("message_text must be a string")
+        
+        # Prepare the system message for the AI model
+        system_message = (
+            "Extract questions from the text. Reframe each question to make it standalone and understandable "
+            "without additional context. Output each question on a separate line with a question mark. "
+            "Only output questions. Ignore questions related to personal or specific context that cannot be "
+            "understood or answered without additional private knowledge. Do not include Notes or extra information. "
+            "If no questions are found, reply without a question mark. If a question's location is ambiguous or unknown, "
+            f"incorporate the provided location into the question text: '{location_text}'."
+        )
 
-        system_message = f"Extract questions from the text. Reframe each question to make it standalone and understandable without additional context. Output each question on a separate line with a question mark. Only output Questions. Ignore questions related to personal or specific context that cannot be understood or answered without additional private knowledge. Do not include Notes or extra information. If no questions are found, reply without a question mark. If a question's location is ambiguous or unknown, incorporate the provided location into the question text: '{loc_text}'."
+        # Log the prepared system message
+        current_app.logger.debug("System message prepared for AI model.")
 
-        current_app.logger.debug(f"extract_questions() system_message: {system_message}")
-
+        # Initialize the AI model client and request question extraction
         client = Groq()
         completion = client.chat.completions.create(
             model="llama3-8b-8192",
             messages=[
-                {
-                    "role": "system",
-                    "content": system_message
-                },
-                {
-                    "role": "user",
-                    "content": json.dumps(message_text)
-                }
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": json.dumps(message_text)}
             ],
             temperature=1,
             max_tokens=386,
@@ -176,55 +258,75 @@ def extract_questions(message_text, loc_text):
             stop=None,
         )
 
-        print(f"Tokens: {completion.usage}")
+        # Log the token usage information
+        current_app.logger.info(f"Tokens used: {completion.usage}")
 
+        # Process the AI's response to integrate the location text
         lines = completion.choices[0].message.content.split('\n')
-        lines = [line.replace('near me', 'near '+loc_text) for line in lines]
-        lines = [line.replace('to me?', 'near '+loc_text+'?') for line in lines]
-        lines = [line.replace('current location', 'near '+loc_text) for line in lines]
-        lines = [line.replace('where I am located', 'near '+loc_text) for line in lines]
-	    
-        current_app.logger.debug(f"extract_questions - Dirty Questions: {lines}")
+        for phrase in ["near me", "to me?", "current location", "where I am located"]:
+            lines = [line.replace(phrase, 'near ' + location_text) for line in lines]
+        
+        # Log the processed lines
+        current_app.logger.debug("Questions processed with location context.")
 
-        # Filter lines containing the question mark and clean them
-        filtered_questions = [
-            re.sub(r"[^\w\s?.-]", "", line).strip() for line in lines if '?' in line
-        ]
-        current_app.logger.debug(f"extract_questions - Filtered Questions: {filtered_questions}")
+        # Filter and clean the questions
+        filtered_questions = [re.sub(r"[^\w\s?.-]", "", line).strip() for line in lines if '?' in line]
+
+        # Log the filtered questions
+        current_app.logger.debug(f"Filtered questions: {filtered_questions}")
+
         return filtered_questions
 
     except Exception as e:
-        current_app.logger.error(f"An error occurred: {e}")
-        current_app.logger.error("extract_questions() Exception Error")
+        # Log error details
+        current_app.logger.error(f"An error occurred: {str(e)}")
         return []
 
-
 def check_user_subscription(provider_id):
-    # Initialize the result dictionary
-    result = {
+    """
+    Check the subscription status of a user based on their provider ID.
+
+    Args:
+    provider_id (str): The unique identifier for the user from an external provider.
+
+    Returns:
+    dict: A dictionary containing boolean status of user existence, subscription status, and billing error presence.
+    """
+    # Initialize the result dictionary to store user status
+    user_status = {
         "is_user": False,
         "is_subscribed": False,
         "has_billing_error": False
     }
+    
+    # Log the attempt to find the user
+    current_app.logger.debug(f"Attempting to find user with provider ID: {provider_id}")
     
     # Query the user based on provider_id
     user = User.query.filter_by(provider_id=provider_id).first()
     
     # Check if the user exists
     if user:
-        result['is_user'] = True
+        current_app.logger.info(f"User found: {user.id}")
+        user_status['is_user'] = True
         
         # Query the subscription based on user id and check if it is enabled
         subscription = Subscription.query.filter_by(user_id=user.id, enabled=True).first()
         
         if subscription:
-            result['is_subscribed'] = True
+            current_app.logger.info(f"Active subscription found for user ID: {user.id}")
+            user_status['is_subscribed'] = True
             
             # Check if there is a billing error
             if subscription.billing_error:
-                result['has_billing_error'] = True
-                
-    return result
+                current_app.logger.error(f"Billing error found for user ID: {user.id}")
+                user_status['has_billing_error'] = True
+        else:
+            current_app.logger.warning(f"No active subscription found for user ID: {user.id}")
+    else:
+        current_app.logger.warning(f"No user found with provider ID: {provider_id}")
+    
+    return user_status
 
 def generate_menu(member):
     if not member['is_user']: 
