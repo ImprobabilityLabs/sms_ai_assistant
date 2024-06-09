@@ -960,7 +960,7 @@ def build_and_send_messages_openai(system_prompt, history_records=None):
     # Insert the system prompt as the second last message
     system_message = {"role": "system", "content": [{"type": "text", "text": system_prompt}]}
     if messages:
-        messages.insert(-1, system_message)
+        messages.insert(-3, system_message)
     else:
         messages.append(system_message)
     
