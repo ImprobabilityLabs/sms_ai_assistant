@@ -3,6 +3,7 @@ import json
 import os
 import re
 import sys
+import time
 import asyncio
 from datetime import datetime
 
@@ -29,70 +30,6 @@ from openai import OpenAI
 
 # Local application/library specific imports
 from models import db, User, Subscription, MobileNumber, History, UserPreference, AssistantPreference 
-
-def remove_keys(data, keys_to_remove):
-    """
-    Recursively remove specified keys from a dictionary or list of dictionaries.
-
-    Args:
-    data (dict or list): The input data from which keys need to be removed.
-    keys_to_remove (list): A list of keys that need to be removed from the data.
-
-    Returns:
-    dict or list: The modified data with specified keys removed.
-    """
-    if isinstance(data, dict):
-        # Iterate over each key-value pair in the dictionary and apply the function recursively
-        current_app.logger.debug(f"Processing a dictionary with keys: {data.keys()}")
-        modified_dict = {key: remove_keys(value, keys_to_remove)
-                         for key, value in data.items() if key not in keys_to_remove}
-        return modified_dict
-    elif isinstance(data, list):
-        # Apply the function to each item in the list recursively
-        current_app.logger.debug("Processing a list of items")
-        modified_list = [remove_keys(item, keys_to_remove) for item in data]
-        return modified_list
-    else:
-        # Return the item unchanged if it is neither a dictionary nor a list
-        current_app.logger.debug("Encountered a non-list, non-dict type; returning it unchanged")
-        return data
-
-def clean_data(data):
-    """
-    Removes unnecessary keys from the data and returns the cleaned data in JSON format.
-    
-    Args:
-        data (dict): The original dictionary from which unnecessary keys will be removed.
-
-    Returns:
-        str: A JSON string of the cleaned dictionary with a readable indentation.
-
-    The function uses a predefined set of keys that are considered unnecessary for further processing and should be removed.
-    """
-    # Define a set of keys that need to be removed from the input data
-    keys_to_remove = {
-        'xpath', 'image_url', 'url', 'images', 'cache_url', 'is_image', 'is_video', 'type',
-        'rank_group', 'rank_absolute', 'position', 'rectangle', 'reviews_count', 'rating',
-        'place_id', 'feature', 'cid', 'data_attrid', 'domain', 'faq', 'extended_people_also_search',
-        'about_this_result', 'timestamp', 'related_result', 'se_domain', 'location_code',
-        'language_code', 'check_url', 'datetime', 'se_results_count', 'items_count', 'related_search_url',
-        'breadcrumb', 'is_malicious', 'is_web_story', 'amp_version', 'card_id', 'logo_url',
-        'is_featured_snippet', 'pre_snippet', 'extended_snippet', 'price', 'links'
-    }
-
-    # Log the initial state of data for debugging purposes
-    current_app.logger.debug("Starting data cleanup process.")
-
-    # Removing the keys from the data
-    cleaned_data = remove_keys(data, keys_to_remove)
-
-    # Convert the cleaned dictionary to a JSON string with indentation for readability
-    cleaned_json = json.dumps(cleaned_data, indent=2)
-
-    # Log the completion of the data cleanup process
-    current_app.logger.info("Data cleanup completed successfully.")
-
-    return cleaned_json
 
 async def answer_question(question, user_input):
     """
@@ -343,6 +280,163 @@ def extract_questions(message_text, location_text):
         # Log error details
         current_app.logger.error(f"An error occurred: {str(e)}")
         return []
+
+def remove_keys(data, keys_to_remove):
+    """
+    Recursively remove specified keys from a dictionary or list of dictionaries.
+
+    Args:
+    data (dict or list): The input data from which keys need to be removed.
+    keys_to_remove (list): A list of keys that need to be removed from the data.
+
+    Returns:
+    dict or list: The modified data with specified keys removed.
+    """
+    if isinstance(data, dict):
+        # Iterate over each key-value pair in the dictionary and apply the function recursively
+        current_app.logger.debug(f"Processing a dictionary with keys: {data.keys()}")
+        modified_dict = {key: remove_keys(value, keys_to_remove)
+                         for key, value in data.items() if key not in keys_to_remove}
+        return modified_dict
+    elif isinstance(data, list):
+        # Apply the function to each item in the list recursively
+        current_app.logger.debug("Processing a list of items")
+        modified_list = [remove_keys(item, keys_to_remove) for item in data]
+        return modified_list
+    else:
+        # Return the item unchanged if it is neither a dictionary nor a list
+        current_app.logger.debug("Encountered a non-list, non-dict type; returning it unchanged")
+        return data
+
+def clean_data(data):
+    """
+    Removes unnecessary keys from the data and returns the cleaned data in JSON format.
+    
+    Args:
+        data (dict): The original dictionary from which unnecessary keys will be removed.
+
+    Returns:
+        str: A JSON string of the cleaned dictionary with a readable indentation.
+
+    The function uses a predefined set of keys that are considered unnecessary for further processing and should be removed.
+    """
+    # Define a set of keys that need to be removed from the input data
+    keys_to_remove = {
+        'xpath', 'image_url', 'url', 'images', 'cache_url', 'is_image', 'is_video', 'type',
+        'rank_group', 'rank_absolute', 'position', 'rectangle', 'reviews_count', 'rating',
+        'place_id', 'feature', 'cid', 'data_attrid', 'domain', 'faq', 'extended_people_also_search',
+        'about_this_result', 'timestamp', 'related_result', 'se_domain', 'location_code',
+        'language_code', 'check_url', 'datetime', 'se_results_count', 'items_count', 'related_search_url',
+        'breadcrumb', 'is_malicious', 'is_web_story', 'amp_version', 'card_id', 'logo_url',
+        'is_featured_snippet', 'pre_snippet', 'extended_snippet', 'price', 'links'
+    }
+
+    # Log the initial state of data for debugging purposes
+    current_app.logger.debug("Starting data cleanup process.")
+
+    # Removing the keys from the data
+    cleaned_data = remove_keys(data, keys_to_remove)
+
+    # Convert the cleaned dictionary to a JSON string with indentation for readability
+    cleaned_json = json.dumps(cleaned_data, indent=2)
+
+    # Log the completion of the data cleanup process
+    current_app.logger.info("Data cleanup completed successfully.")
+
+    return cleaned_json
+
+def sanitize_string(input_string, max_length):
+    """
+    Sanitizes the input string by trimming whitespace and cutting it to a maximum specified length.
+    
+    Args:
+    input_string (str): The string to sanitize.
+    max_length (int): The maximum allowable length of the string after sanitization.
+    
+    Returns:
+    str: The sanitized string.
+    
+    Logs:
+    Debug: Logs the original and the sanitized string values.
+    """
+    # Convert the input to a string (in case it isn't) and trim whitespace
+    trimmed_string = str(input_string).strip()
+    
+    # Limit the string to the specified maximum length
+    limited_length_string = trimmed_string[:max_length]
+    
+    # Log the original and sanitized values for debugging
+    current_app.logger.debug(f"Original: {input_string}, Sanitized: {limited_length_string}")
+    
+    return limited_length_string
+
+def format_phone_number(phone_number):
+    """
+    Format a given phone number into a more readable format.
+
+    This function assumes that the input phone number is in the format +1XXXXXXXXXX
+    (where '1' stands for the US country code and 'XXXXXXXXXX' represents the 10-digit phone number).
+    It reformats the phone number to the style +1 (XXX) XXX-XXXX.
+
+    Parameters:
+        phone_number (str): The phone number to format.
+
+    Returns:
+        str: The formatted phone number.
+    """
+    try:
+        # Log the original phone number
+        current_app.logger.debug(f"Original phone number received: {phone_number}")
+
+        # Ensure the phone number starts with +1 and is exactly 12 characters long
+        if not phone_number.startswith('+1') or len(phone_number) != 12:
+            current_app.logger.error("Invalid phone number format.")
+            return phone_number  # Return the original input if it doesn't meet the criteria
+
+        # Slice the phone number to create the formatted string
+        formatted_number = f"+1 ({phone_number[2:5]}) {phone_number[5:8]}-{phone_number[8:]}"
+
+        # Log the formatted phone number
+        current_app.logger.info(f"Formatted phone number: {formatted_number}")
+        
+        return formatted_number
+    except Exception as e:
+        # Log any exceptions that occur during the formatting
+        current_app.logger.error(f"Error formatting phone number: {e}")
+        return phone_number  # Return the original input in case of error
+
+def clean_string(input_string):
+    """
+    Cleans the input string by removing emoji and similar characters, 
+    but retains characters used in major languages.
+    
+    Args:
+    input_string (str): The string to be cleaned.
+
+    Returns:
+    str: The cleaned string.
+    """
+    # Logging the input string for debugging
+    current_app.logger.debug("Starting to clean the string: %s", input_string)
+    
+    # Define a regex pattern to match emoji and symbols
+    emoji_pattern = regex.compile(
+        '['
+        '\p{Cs}'  # Surrogate codes
+        '\p{Sk}'  # Symbol, modifier
+        '\p{So}'  # Symbol, other
+        '\p{Cn}'  # Unassigned
+        ']+', 
+        flags=regex.UNICODE
+    )
+
+    # Remove matched patterns from the string
+    cleaned_string = emoji_pattern.sub('', input_string)
+
+    # Logging the cleaned string for debugging
+    current_app.logger.debug("Finished cleaning the string: %s", cleaned_string)
+    
+    return cleaned_string
 
 def check_user_subscription(provider_id):
     """
@@ -665,6 +759,77 @@ def load_sms_history(user_id, subscription_id, order='asc'):
     result = query.all()
     current_app.logger.debug("Retrieved {} records from the database.".format(len(result)))
     return result
+
+def delete_twilio_number(twilio_number_sid, twilio_client):
+    """
+    Deletes a Twilio phone number based on its SID.
+    
+    Args:
+    twilio_number_sid (str): The SID of the Twilio phone number to be deleted.
+    twilio_client (object): Instance of the Twilio client used to interact with Twilio API.
+    
+    Returns:
+    bool: True if deletion was successful, False otherwise.
+    """
+    try:
+        # Attempt to delete the phone number using its SID
+        twilio_client.incoming_phone_numbers(twilio_number_sid).delete()
+        current_app.logger.info(f"Deleted phone number with SID: {twilio_number_sid}")
+        return True
+    except Exception as e:
+        # Log the exception details if deletion fails
+        current_app.logger.error(f"Failed to delete phone number with SID: {twilio_number_sid}. Error: {e}")
+        return False
+
+def search_and_buy_sms_number(target_phone_number, twilio_client, country_code, base_url):
+    """
+    Search for and purchase an SMS-capable phone number near a given target number.
+
+    Parameters:
+        target_phone_number (str): The phone number near which to search for available numbers.
+        twilio_client (object): Twilio client object used to interact with the Twilio API.
+        country_code (str): ISO country code where the search should be performed.
+        base_url (str): Base URL for the callback endpoint.
+
+    Returns:
+        tuple: A tuple containing the purchased phone number and its SID if available, otherwise (None, None).
+    """
+    # Convert the country code to uppercase to avoid case sensitivity issues with the API.
+    country_code = country_code.upper()
+
+    # Log the start of the number search process.
+    current_app.logger.info(f'Starting search for SMS-enabled phone numbers near: {target_phone_number} in {country_code}')
+
+    # Retrieve a list of available phone numbers that are SMS-enabled.
+    numbers = twilio_client.available_phone_numbers(country_code).local.list(
+        near_number=target_phone_number,
+        sms_enabled=True,
+        limit=5
+    )
+
+    # Check if any numbers are available.
+    if numbers:
+        # Select the first available number.
+        chosen_number = numbers[0].phone_number
+
+        # Log the chosen number before attempting purchase.
+        current_app.logger.debug(f'Attempting to purchase phone number: {chosen_number}')
+
+        # Purchase the selected phone number.
+        purchased_number = twilio_client.incoming_phone_numbers.create(
+            phone_number=chosen_number,
+            sms_url=f'{base_url}/api/sms/callback'
+        )
+
+        # Log the successful purchase of the number.
+        current_app.logger.info(f'Purchased phone number: {purchased_number.phone_number}')
+        current_app.logger.info(f'Number SID: {purchased_number.sid}')
+
+        return purchased_number.phone_number, purchased_number.sid
+    else:
+        # Log if no numbers are available.
+        current_app.logger.warning(f'No SMS-enabled numbers available near {target_phone_number}')
+        return None, None
 	
 def handle_stripe_operations(user, form_data, referrer, url_base):
     try:
@@ -1190,10 +1355,6 @@ def build_and_send_messages_openai(system_prompt, history_records=None):
     # Return the output content
     return json.loads(json.dumps(output))
 
-
-
-
-
 def build_and_send_messages(system_prompt, history_records):
     """
     Builds a list of messages for the conversation and sends them using the Groq client.
@@ -1252,23 +1413,6 @@ def build_and_send_messages(system_prompt, history_records):
     # Return the output content
     return json.loads(json.dumps(output))
 
-def clean_string(s):
-    """Cleans the input string by removing emoji and similar characters, but retains characters used in major languages."""
-    # Define a regex pattern to match emoji and symbols
-    emoji_pattern = regex.compile(
-        r'['
-        r'\p{Cs}'  # Surrogate codes
-        r'\p{Sk}'  # Symbol, modifier
-        r'\p{So}'  # Symbol, other
-        r'\p{Cn}'  # Unassigned
-        r']+', 
-        flags=regex.UNICODE
-    )
-    
-    # Remove matched patterns from the string
-    return emoji_pattern.sub('', s)
-
-
 def send_reply(user_id, subscription_id, reply, to_number, from_number, twilio_client, save_message=True):
     """Sends a reply to the user, handling multipart messages if necessary.
 
@@ -1324,106 +1468,156 @@ def send_reply(user_id, subscription_id, reply, to_number, from_number, twilio_c
     if save_message:
         save_sms_history(user_id, subscription_id, str(sent_sid), 'outgoing', from_number, to_number, reply, 'sent')
 	    
-
-def format_phone_number(phone_number):
-    # Assuming phone number is in the format +XXXXXXXXXX
-    return f"+1 ({phone_number[2:5]}) {phone_number[5:8]}-{phone_number[8:]}"
-
 def handle_payment_success(invoice):
     subscription_id = invoice['subscription']
     payment_date = datetime.fromtimestamp(invoice['created'])
     last_payment_amount = invoice['amount_paid'] / 100  # Stripe amount is in cents
-    subscription = stripe.Subscription.retrieve(subscription_id)
-    current_period_start = datetime.fromtimestamp(subscription['current_period_start'])
-    current_period_end = datetime.fromtimestamp(subscription['current_period_end'])
 
-    subscription_record = Subscription.query.filter_by(stripe_subscription_id=subscription_id, enabled=True).first()
-    had_billing_issue = getattr(subscription_record, 'billing_error', False) or False
-    if subscription_record:
-        subscription_record.enabled = True
-        subscription_record.billing_error = False
-        subscription_record.status = 'Active'
-        subscription_record.current_period_start = current_period_start
-        subscription_record.current_period_end = current_period_end
-        subscription_record.last_payment_amount = last_payment_amount
-        subscription_record.last_payment_date = payment_date
-        db.session.commit()
+    retries = 0
+    max_retries = 3
+    subscription_record = None
 
-        if had_billing_issue:
-            user_preferences = UserPreference.query.filter_by(user_id=subscription_record.user_id, subscription_id=subscription_record.id).first()	 
-            assistant_preferences = AssistantPreference.query.filter_by(user_id=subscription_record.user_id, subscription_id=subscription_record.id).first()
-            mobile_entries = MobileNumber.query.filter_by(user_id=subscription_record.user_id, subscription_id=subscription_record.id).all()
-            sys_prompt = build_system_prompt(user_preferences, assistant_preferences, extra_info=None, system_message = 'Tell the user that their billing issue has been resolved, and they can continue useing their assistant.')
-            billing_issue_fixed_message = build_and_send_messages_openai(sys_prompt, history_records=None)
-            for mobile_entry in mobile_entries:
-                send_reply(subscription_record.user_id, subscription_record.id, billing_issue_fixed_message, mobile_entry.mobile_number, subscription_record.twillio_number, Client(current_app.config['TWILIO_ACCOUNT_SID'], current_app.config['TWILIO_AUTH_TOKEN']), save_message=False)
-	    
+    while retries < max_retries and subscription_record is None:
+        subscription = stripe.Subscription.retrieve(subscription_id)
+        current_period_start = datetime.fromtimestamp(subscription['current_period_start'])
+        current_period_end = datetime.fromtimestamp(subscription['current_period_end'])
+        
+        subscription_record = Subscription.query.filter_by(stripe_subscription_id=subscription_id, enabled=True).first()
+        if subscription_record:
+            had_billing_issue = getattr(subscription_record, 'billing_error', False) or False
+            subscription_record.enabled = True
+            subscription_record.billing_error = False
+            subscription_record.status = 'Active'
+            subscription_record.current_period_start = current_period_start
+            subscription_record.current_period_end = current_period_end
+            subscription_record.last_payment_amount = last_payment_amount
+            subscription_record.last_payment_date = payment_date
+            db.session.commit()
+
+            if had_billing_issue:
+                user_preferences = UserPreference.query.filter_by(user_id=subscription_record.user_id, subscription_id=subscription_record.id).first()
+                assistant_preferences = AssistantPreference.query.filter_by(user_id=subscription_record.user_id, subscription_id=subscription_record.id).first()
+                mobile_entries = MobileNumber.query.filter_by(user_id=subscription_record.user_id, subscription_id=subscription_record.id).all()
+                sys_prompt = build_system_prompt(user_preferences, assistant_preferences, extra_info=None, system_message='Tell the user that their billing issue has been resolved, and they can continue using their assistant.')
+                billing_issue_fixed_message = build_and_send_messages_openai(sys_prompt, history_records=None)
+                for mobile_entry in mobile_entries:
+                    send_reply(subscription_record.user_id, subscription_record.id, billing_issue_fixed_message, mobile_entry.mobile_number, subscription_record.twillio_number, Client(current_app.config['TWILIO_ACCOUNT_SID'], current_app.config['TWILIO_AUTH_TOKEN']), save_message=False)
+            
+            current_app.logger.info(
+                f"handle_payment_success: Updated subscription {subscription_id} "
+                f"with payment details. Current Period Start: {current_period_start}, "
+                f"Current Period End: {current_period_end}, Last Payment Amount: {last_payment_amount}, "
+                f"Last Payment Date: {payment_date}"
+            )
+        else:
+            retries += 1
+            time.sleep(2)  # Wait for 2 seconds before trying again
+
+    if not subscription_record:
         current_app.logger.info(
-            f"handle_payment_success: Updated subscription {subscription_id} "
-            f"with payment details. Current Period Start: {current_period_start}, "
-            f"Current Period End: {current_period_end}, Last Payment Amount: {last_payment_amount}, "
-            f"Last Payment Date: {payment_date}"
-        )
-    else:
-        current_app.logger.info(
-            f"handle_payment_success: Subscription with ID {subscription_id} not found"
+            f"handle_payment_success: Subscription with ID {subscription_id} not found after {max_retries} retries"
         )
 
 def handle_billing_issue(invoice):
+    """
+    Handle billing issues by updating the subscription status and notifying the user.
+    
+    Args:
+    invoice (dict): A dictionary containing invoice details with a 'subscription' key.
+
+    This function queries the Subscription model to find an active subscription matching
+    the provided subscription ID from the invoice. If found, it updates the subscription's
+    status to indicate a billing error and notifies the user via their registered mobile number(s).
+    """
     subscription_id = invoice['subscription']
+    # Query the database for an active subscription with the provided ID
     subscription_record = Subscription.query.filter_by(stripe_subscription_id=subscription_id, enabled=True).first()
 
     if subscription_record:
+        # Update subscription record with billing issue status
         subscription_record.billing_error = True
         subscription_record.status = 'Billing Issue'
         db.session.commit()
 
+        # Log successful update
+        current_app.logger.debug(f"Subscription {subscription_id} updated with billing error status.")
+
+        # Retrieve user and assistant preferences for building the system prompt
         user_preferences = UserPreference.query.filter_by(user_id=subscription_record.user_id, subscription_id=subscription_record.id).first()	 
         assistant_preferences = AssistantPreference.query.filter_by(user_id=subscription_record.user_id, subscription_id=subscription_record.id).first()
+        
+        # Retrieve all mobile numbers associated with the subscription
         mobile_entries = MobileNumber.query.filter_by(user_id=subscription_record.user_id, subscription_id=subscription_record.id).all()
-        sys_prompt = build_system_prompt(user_preferences, assistant_preferences, extra_info=None, system_message = 'Tell the user that their account had a billing issue and to fix it they need to update their payment info on '+request.url_root[:-1]+'. Until then you will not be available to them, nor will you be able to help them resolve the issue.')
+        
+        # Build system prompt for notifying the user about the billing issue
+        sys_prompt = build_system_prompt(user_preferences, assistant_preferences, extra_info=None, system_message=f'Tell the user that their account had a billing issue and to fix it they need to update their payment info on {request.url_root[:-1]}. Until then you will not be available to them, nor will you be able to help them resolve the issue.')
+        
+        # Send the billing issue message to OpenAI and receive the response
         billing_issue_message = build_and_send_messages_openai(sys_prompt, history_records=None)
+        
+        # Send the message to all user's mobile numbers
         for mobile_entry in mobile_entries:
             send_reply(subscription_record.user_id, subscription_record.id, billing_issue_message, mobile_entry.mobile_number, subscription_record.twillio_number, Client(current_app.config['TWILIO_ACCOUNT_SID'], current_app.config['TWILIO_AUTH_TOKEN']), save_message=False)
 	    
-        current_app.logger.info(
-            f"handle_billing_issue: Updated subscription {subscription_id} "
-            f"with billing issue status. Subscription ID: {subscription_id}"
-        )
+        current_app.logger.info(f"handle_billing_issue: Notified user(s) of the billing issue for subscription ID {subscription_id}.")
     else:
-        current_app.logger.info(
-            f"handle_billing_issue: Subscription with ID {subscription_id} not found"
-        )
+        # Log when no active subscription is found
+        current_app.logger.warning(f"handle_billing_issue: Active subscription with ID {subscription_id} not found.")
+
 
 def handle_subscription_cancellation(subscription):
+    # Extract the subscription ID from the subscription dictionary
     subscription_id = subscription['id']
-    subscription_record = Subscription.query.filter_by(stripe_subscription_id=subscription_id, enabled=True).first()
-    user = User.query.filter_by(id=subscription_record.user_id).first()
 
-    twilio_client = Client(current_app.config['TWILIO_ACCOUNT_SID'], current_app.config['TWILIO_AUTH_TOKEN']) 
-    delete_twilio_number(subscription_record.twillio_number_sid, twilio_client)
-	
+    # Query the database for the active subscription record with the given ID
+    subscription_record = Subscription.query.filter_by(
+        stripe_subscription_id=subscription_id, enabled=True).first()
+
+    # If the subscription record is found, proceed with cancellation
     if subscription_record:
+        # Initialize the Twilio client with credentials from the application config
+        twilio_client = Client(
+            current_app.config['TWILIO_ACCOUNT_SID'], current_app.config['TWILIO_AUTH_TOKEN']) 
+
+        # Delete the associated Twilio number
+        delete_twilio_number(subscription_record.twillio_number_sid, twilio_client)
+
+        # Update the subscription record to reflect its cancellation
         subscription_record.enabled = False
         subscription_record.status = 'Cancelled'
         subscription_record.twillio_number = None
         subscription_record.twillio_number_sid = None
         db.session.commit()
 
-        send_end_subscription_email(user.name, user.email)
+        # Send an email to the user about the subscription ending
+        send_end_subscription_email(subscription_record.user.name, subscription_record.user.email)
 	    
+        # Log the successful cancellation
         current_app.logger.info(
-            f"handle_subscription_cancellation: Updated subscription {subscription_id} "
-            f"with cancellation status. Subscription ID: {subscription_id}"
+            f"handle_subscription_cancellation: Successfully updated subscription {subscription_id} "
+            f"to 'Cancelled' status."
         )
     else:
-        current_app.logger.info(
-            f"handle_subscription_cancellation: Subscription with ID {subscription_id} not found"
+        # Log the failure to find the subscription
+        current_app.logger.warning(
+            f"handle_subscription_cancellation: Subscription with ID {subscription_id} not found or already disabled"
         )
 
-
 def send_email(to_email, subject, html_content, text_content):
-    message = Mail(
+    """
+    Sends an email to a specified recipient.
+
+    Args:
+    to_email (str): The recipient's email address.
+    subject (str): The subject line of the email.
+    html_content (str): The HTML content of the email.
+    text_content (str): The plain text content of the email.
+
+    Returns:
+    None
+    """
+    # Create a Mail object with necessary details
+    email_message = Mail(
         from_email='support@improbability.io',
         to_emails=to_email,
         subject=subject,
@@ -1432,64 +1626,60 @@ def send_email(to_email, subject, html_content, text_content):
     )
 
     try:
-        sg = SendGridAPIClient(current_app.config['SENDGRID_API'])
-        response = sg.send(message)
+        # Retrieve SendGrid API client using the app's configuration
+        sg_client = SendGridAPIClient(current_app.config['SENDGRID_API_KEY'])
+        # Send the email and capture the response
+        response = sg_client.send(email_message)
+        # Log successful email transmission
         current_app.logger.info(f"send_email: Email sent! Status code: {response.status_code}")
-    except Exception as e:
-        current_app.logger.error(f"send_email: Failed to send email: {e}")
-
+    except Exception as error:
+        # Log any errors during the email send process
+        current_app.logger.error(f"send_email: Failed to send email: {error}")
 
 def send_new_subscription_email(user_name, user_email, user_number, assistant_name, assistant_number):
+    # Log the start of the email sending process
+    current_app.logger.debug("Starting to send a new subscription email to {}".format(user_email))
+
+    # Prepare email content and subject
     subject = "Meet Your New SMS AI Assistant from Improbability Labs!"
-    html_content = render_template('emails/new_subscription.html', User_Name=user_name, User_Number=user_number, Assistant_Name=assistant_name, Assistant_Number=assistant_number )
-    text_content = render_template('emails/new_subscription.txt', User_Name=user_name, User_Number=user_number, Assistant_Name=assistant_name, Assistant_Number=assistant_number )
-    send_email(user_email, subject, html_content, text_content)
-
-def send_end_subscription_email(user_name, user_email):
-    subject = "We're Sorry to See You Go"
-    html_content = render_template('emails/end_subscription.html', User_Name=user_name, User_Email=user_email)
-    text_content = render_template('emails/end_subscription.txt', User_Name=user_name, User_Email=user_email)
-    send_email(user_email, subject, html_content, text_content)
-
-
-def search_and_buy_sms_number(phone_number, client, country, base_url):
-
-    # Search for available phone numbers near the specified phone number
-    numbers = client.available_phone_numbers(country.upper()).local.list(
-        near_number=phone_number,
-        sms_enabled=True,
-        limit=5
-    )
-
-    if numbers:
-        # Buy the first number in the list
-        chosen_number = numbers[0].phone_number
-        purchased_number = client.incoming_phone_numbers.create(
-            phone_number=chosen_number,
-            sms_url=f'{base_url}/api/sms/callback'
-        )
-        current_app.logger.info(f'Purchased phone number: {purchased_number.phone_number}')
-        current_app.logger.info(f'Number SID: {purchased_number.sid}')
-        return purchased_number.phone_number, purchased_number.sid
-    else:
-        current_app.logger.info(f'No SMS-enabled numbers available near {phone_number}')
-        return None, None
-
-def delete_twilio_number(number_sid, client):
+    html_content = render_template('emails/new_subscription.html', User_Name=user_name, User_Number=user_number, Assistant_Name=assistant_name, Assistant_Number=assistant_number)
+    text_content = render_template('emails/new_subscription.txt', User_Name=user_name, User_Number=user_number, Assistant_Name=assistant_name, Assistant_Number=assistant_number)
 
     try:
-        # Delete the phone number using its SID
-        client.incoming_phone_numbers(number_sid).delete()
-        current_app.logger.info(f"Deleted phone number with SID: {number_sid}")
-        return True
+        # Attempt to send the email
+        send_email(user_email, subject, html_content, text_content)
+        # Log the successful email sending
+        current_app.logger.info("Successfully sent new subscription email to {}".format(user_email))
     except Exception as e:
-        current_app.logger.info(f"Failed to delete phone number with SID: {number_sid}. Error: {e}")
-        return False
+        # Log any exception that occurs during the email sending
+        current_app.logger.error("Failed to send new subscription email to {}. Error: {}".format(user_email, str(e)))
 
+def send_end_subscription_email(user_name, user_email):
+    """
+    Send an email notification to a user about the end of their subscription.
 
-def sanitize_string(var, max_length):
-    internal_var = str(var)
-    internal_var = internal_var.strip()[:max_length]
-    sanitized_var = str(internal_var)
-    current_app.logger.debug(f"Original: {var}, Sanitized: {sanitized_var}")
-    return sanitized_var
+    Args:
+        user_name (str): The name of the user.
+        user_email (str): The email address of the user.
+    """
+    # Define the email subject
+    subject = "We're Sorry to See You Go"
+    
+    # Log the initiation of the email sending process
+    current_app.logger.info(f"Initiating sending the end subscription email to {user_email}.")
+    
+    try:
+        # Render the HTML content for the email
+        html_content = render_template('emails/end_subscription.html', User_Name=user_name, User_Email=user_email)
+        # Render the plain text content for the email
+        text_content = render_template('emails/end_subscription.txt', User_Name=user_name, User_Email=user_email)
+        
+        # Send the email
+        send_email(user_email, subject, html_content, text_content)
+        
+        # Log successful email sending
+        current_app.logger.info(f"Email successfully sent to {user_email}.")
+        
+    except Exception as e:
+        # Log any error during the email sending process
+        current_app.logger.error(f"Failed to send email to {user_email}: {e}")
