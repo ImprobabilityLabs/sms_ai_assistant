@@ -1572,6 +1572,7 @@ def handle_subscription_cancellation(subscription):
     # Query the database for the active subscription record with the given ID
     subscription_record = Subscription.query.filter_by(
         stripe_subscription_id=subscription_id, enabled=True).first()
+    user = User.query.filter_by(id=subscription_record.user_id).first()
 
     # If the subscription record is found, proceed with cancellation
     if subscription_record:
@@ -1590,7 +1591,7 @@ def handle_subscription_cancellation(subscription):
         db.session.commit()
 
         # Send an email to the user about the subscription ending
-        send_end_subscription_email(subscription_record.user.name, subscription_record.user.email)
+        send_end_subscription_email(user.name, user.email)
 	    
         # Log the successful cancellation
         current_app.logger.info(
