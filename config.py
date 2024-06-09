@@ -27,7 +27,7 @@ class Config:
     GROQ_KEY = os.getenv('GROQ_KEY')
     OPEN_AI_KEY = os.getenv('OPEN_AI_KEY')
     OPEN_AI_MODEL = os.getenv('OPEN_AI_MODEL')
-    SENDGRID_API = os.getenv('SENDGRID_API')
+    SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
     GOOGLE_ANALYTICS_ID = os.getenv('GOOGLE_ANALYTICS_ID')
     if GOOGLE_ANALYTICS_ID and GOOGLE_ANALYTICS_ID.upper() == 'NONE':
         GOOGLE_ANALYTICS_ID = None
