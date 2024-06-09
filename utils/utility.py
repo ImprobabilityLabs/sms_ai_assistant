@@ -1,30 +1,34 @@
-import requests
+# Standard library imports
 import json
-from groq import Groq
-import sys
+import os
 import re
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify, abort, current_app
-from models import db, User, Subscription, MobileNumber, History, UserPreference, AssistantPreference 
-from twilio.rest import Client
-from twilio.request_validator import RequestValidator
-from flask_sqlalchemy import SQLAlchemy
-from oauthlib.oauth2 import WebApplicationClient
-from requests_oauthlib import OAuth2Session
+import sys
+import asyncio
+from datetime import datetime
+
+# Third-party imports
 import requests
 import stripe
-import os
-from datetime import datetime
 import phonenumbers
-from phonenumbers.phonenumberutil import region_code_for_number
+import secrets
+import aiohttp
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, abort, current_app
+from flask_sqlalchemy import SQLAlchemy
+from twilio.rest import Client
+from twilio.request_validator import RequestValidator
+from oauthlib.oauth2 import WebApplicationClient
+from requests_oauthlib import OAuth2Session
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
-import aiohttp
-import asyncio
-import regex
-from openai import OpenAI
-import secrets
+from phonenumbers.phonenumberutil import region_code_for_number
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+from regex import regex
+from groq import Groq
+from openai import OpenAI
+
+# Local application/library specific imports
+from models import db, User, Subscription, MobileNumber, History, UserPreference, AssistantPreference 
 
 def remove_keys(data, keys_to_remove):
     """
@@ -89,7 +93,6 @@ def clean_data(data):
     current_app.logger.info("Data cleanup completed successfully.")
 
     return cleaned_json
-
 
 async def answer_question(question, user_input):
     """
@@ -211,6 +214,65 @@ async def fetch_data(question, location=None):
         except KeyError:
             current_app.logger.error("Unexpected response structure")
             return None
+
+async def process_questions_answers(text_message, location, location_country='US'):
+    """
+    Process text messages to extract questions and fetch answers based on the given location and country.
+    
+    Args:
+        text_message (str): The message text containing questions.
+        location (str): Location information used in data fetching.
+        location_country (str, optional): Country information used in data fetching. Defaults to 'US'.
+    
+    Returns:
+        list or None: A list of answers if available, None otherwise.
+    """
+    try:
+        # Trim whitespace from the text message for clean processing
+        text_message = text_message.strip()
+
+        # Log the processing step
+        current_app.logger.debug("Starting to process the text message.")
+
+        # Check if text_message is empty after stripping
+        if not text_message:
+            current_app.logger.error("Empty text message received.")
+            return None
+
+        # Extract questions from the text message
+        questions = extract_questions(text_message, location)
+        current_app.logger.debug(f"Extracted questions: {questions}")
+
+        # List to hold the answers
+        answers = []
+
+        # Process each question to fetch and clean data
+        for question in questions:
+            current_app.logger.debug(f"Processing question: {question}")
+
+            # Fetch data based on the question and location country
+            fetched_answer = await fetch_data(question, location_country)
+            if fetched_answer is None:
+                current_app.logger.warning(f"No answer fetched for question: {question}")
+                continue
+
+            # Clean the fetched data
+            cleaned_answer = clean_data(fetched_answer)
+
+            # Generate the final answer from the question and cleaned data
+            answer = await answer_question(question, cleaned_answer)
+            current_app.logger.debug(f"Final answer for '{question}': {answer}")
+            
+            # Add the processed answer to the list
+            answers.append(answer)
+
+        # Return the list of processed answers
+        return answers
+
+    except Exception as e:
+        # Log any exceptions that occur during the process
+        current_app.logger.error(f"Error in process_questions_answers: {e}")
+        return None
 
 def extract_questions(message_text, location_text):
     """
@@ -493,13 +555,25 @@ def update_customer_billing_info(user, form_data):
         
         return False
 
-
 def create_and_attach_payment_method(user, form_data):
-    current_app.logger.info("create_and_attach_payment_method()")
+    """
+    Create and attach a payment method for a user using provided form data.
+
+    Args:
+        user (User): The user object containing user-specific data.
+        form_data (dict): Form data containing payment and billing details.
+
+    Returns:
+        tuple: A tuple containing a boolean indicating success or failure, and an error message if applicable.
+    """
+
+    current_app.logger.info("Starting creation and attachment of payment method.")
+
+    # Sanitize and set card name from form data
     card_name = sanitize_string(form_data['card-name'], 30)
+
     try:
-        # Create the payment method
-        card_name = sanitize_string(form_data['card-name'], 30)
+        # Create the payment method with Stripe
         payment_method = stripe.PaymentMethod.create(
             type="card",
             card={"token": form_data['stripeToken']},
@@ -514,14 +588,14 @@ def create_and_attach_payment_method(user, form_data):
                 }
             }
         )
-        current_app.logger.info("Created new payment method for user ID %s.", user.id)
+        current_app.logger.info(f"Created new payment method for user ID {user.id}.")
 
         # Attach the payment method to the customer
         stripe.PaymentMethod.attach(
             payment_method.id,
             customer=user.stripe_customer_id,
         )
-        current_app.logger.info("Attached payment method to customer for user ID %s.", user.id)
+        current_app.logger.info(f"Attached payment method to customer for user ID {user.id}.")
 
         # Set the new payment method as the default
         stripe.Customer.modify(
@@ -530,30 +604,68 @@ def create_and_attach_payment_method(user, form_data):
                 'default_payment_method': payment_method.id,
             },
         )
-        current_app.logger.info("Set new payment method as default for user ID %s.", user.id)
+        current_app.logger.info(f"Set new payment method as default for user ID {user.id}.")
 
         return True, None
-        
+
     except stripe.error.CardError as e:
-        # Handle card errors like declined, expired, etc.
+        # Handle card-specific errors
         error_body = e.json_body
         card_err = error_body.get('error', {})
         error_message = card_err.get('message', 'Problem with card.')
-        current_app.logger.warning("Card error for user ID %s. Error: %s", user.id, error_message)
+        current_app.logger.warning(f"Card error for user ID {user.id}. Error: {error_message}")
         return False, error_message
 
     except stripe.error.StripeError as e:
-        # Handle other Stripe errors
-        current_app.logger.error("Stripe error for user ID %s. Error: %s", user.id, str(e))
+        # Handle other Stripe-specific errors
+        current_app.logger.error(f"Stripe error for user ID {user.id}. Error: {str(e)}")
         return False, str(e)
 
     except Exception as e:
-        # Handle any other errors
-        current_app.logger.error("Failed to create or attach payment method for user ID %s. Error: %s", user.id, str(e))
+        # Handle general errors
+        current_app.logger.error(f"Unexpected error for user ID {user.id}. Error: {str(e)}")
         return False, str(e)
 
-
-
+def load_sms_history(user_id, subscription_id, order='asc'):
+    """
+    Load SMS history for a specific user and subscription from the database.
+    
+    Args:
+        user_id (int): ID of the user whose SMS history is to be retrieved.
+        subscription_id (int): ID of the subscription linked to the SMS history.
+        order (str, optional): Order of the returned messages. Default to 'asc'.
+            'asc' returns messages from oldest to newest,
+            'desc' returns messages from newest to oldest.
+    
+    Returns:
+        list: A list of History records ordered as specified.
+    
+    Raises:
+        ValueError: If the 'order' parameter is not 'asc' or 'desc'.
+    """
+    # Validate the order parameter to prevent SQL injection or errors.
+    if order not in ['asc', 'desc']:
+        current_app.logger.error("Invalid order value: {}".format(order))
+        raise ValueError("Order must be 'asc' or 'desc'")
+    
+    current_app.logger.debug("Loading SMS history for user_id {} with subscription_id {}".format(user_id, subscription_id))
+    
+    # Build the query based on user_id and subscription_id
+    query = History.query.filter_by(user_id=user_id, subscription_id=subscription_id)
+    
+    # Order the query by the 'created' field, either ascending or descending
+    if order == 'asc':
+        query = query.order_by(History.created.asc())
+        current_app.logger.info("Ordered SMS history in ascending order.")
+    else:
+        query = query.order_by(History.created.desc())
+        current_app.logger.info("Ordered SMS history in descending order.")
+    
+    # Fetch and return the results of the query
+    result = query.all()
+    current_app.logger.debug("Retrieved {} records from the database.".format(len(result)))
+    return result
+	
 def handle_stripe_operations(user, form_data, referrer, url_base):
     try:
         current_app.logger.info("Starting Stripe operations for user: %s", user.id)
@@ -739,46 +851,6 @@ def update_billing_info(user, form_data):
     except Exception as e:
         current_app.logger.error(f'Error: {str(e)}')
         return False, str(e)
-
-
-async def process_questions_answers(text_message, location, location_country='US'):
-    try:
-        # Trim whitespace from the text message
-        text_message = text_message.strip()     
-
-        # Check if text_message is empty
-        if not text_message:
-            current_app.logger.error("Empty text message received.")
-            return None
-
-        current_app.logger.debug(f"process_questions_answers() Position 1")
-        # Check if questions is a list
-        questions = extract_questions(text_message, location)
-        current_app.logger.debug(f"process_questions_answers() Position 2")
-        
-        answers = []
-        current_app.logger.debug(f"process_questions_answers - Questions: {questions}")
-        for question in questions:
-            current_app.logger.debug(f"process_questions_answers - Question: {question}")
-            fetched_answer = await fetch_data(question, location_country)
-            current_app.logger.debug(f"process_questions_answers() Position 3")
-            
-            if fetched_answer is None:
-                current_app.logger.warning(f"No answer fetched for question: {question}")
-                continue
-            
-            cleaned_answer = clean_data(fetched_answer)
-           
-            answer = await answer_question(question, cleaned_answer)
-           
-            current_app.logger.debug(f"Answer: {answer}")
-            answers.append(answer)
-
-        return answers
-        
-    except Exception as e:
-        current_app.logger.error(f"Error in process_questions_answers: {e}")
-        return None
 
 
 def save_user_and_assistant_preferences(user, subscription_id, form_data):
@@ -1011,31 +1083,6 @@ def save_sms_history(user_id, subscription_id, message_sid, direction, from_numb
         return False
 
 
-
-def load_sms_history(user_id, subscription_id, order='asc'):
-    """
-    Load chat history for a specific user and subscription.
-
-    :param user_id: ID of the user
-    :param subscription_id: ID of the subscription
-    :param order: 'asc' for oldest to newest, 'desc' for newest to oldest
-    :return: List of History records
-    """
-    if order not in ['asc', 'desc']:
-        raise ValueError("Order must be 'asc' or 'desc'")
-
-    # Query the History table
-    query = History.query.filter_by(user_id=user_id, subscription_id=subscription_id)
-    
-    # Order by created column
-    if order == 'asc':
-        query = query.order_by(History.created.asc())
-    else:
-        query = query.order_by(History.created.desc())
-
-    # Execute the query and return results
-    return query.all()
-
 def build_system_prompt(user_preferences, assistant_preferences, extra_info=None, system_message = None):
     """Builds a system prompt.
 
@@ -1145,59 +1192,6 @@ def build_and_send_messages_openai(system_prompt, history_records=None):
 
 
 
-def build_and_send_messages_openai_old(system_prompt, history_records=None):
-    """
-    Builds a list of messages for the conversation and sends them using the OpenAI client.
-
-    Args:
-        system_prompt: The system prompt in JSON format.
-        history_records: List of History records.
-          
-    Returns:
-        The assistant's response.
-    """
-    
-    # Build the messages list
-    messages = [{"role": "system", "content": [ {"type": "text", "text": system_prompt} ] }]
-
-    if history_records:
-	
-        # Take the 6 most recent messages
-        recent_history = history_records[:6]
-    
-        # Process history records to build the conversation
-        reversed_history = list(reversed(recent_history))  # Reverse to maintain chronological order
-        for idx, record in enumerate(reversed_history):
-            role = "user" if record.direction == 'incoming' else "assistant"
-            cleaned_record_body = clean_string(record.body)
-    
-            if idx == len(reversed_history) - 1:  # Check if this is the last iteration
-                cleaned_record_body += f"\n Limit responses to less than 3200 characters.\nRemove all markup from your responses.\n"
-    
-            messages.append({"role": role, "content": [{"type": "text", "text": cleaned_record_body}]})
-    
-    cleaned_messages = json.loads(json.dumps(messages))
-
-    current_app.logger.debug(f"build_and_send_messages: messages: {cleaned_messages}")
-
-    # Initialize OpenAI client and create a completion
-    client = OpenAI(api_key=current_app.config['OPEN_AI_KEY'])
-    completion = client.chat.completions.create(
-        model=current_app.config['OPEN_AI_MODEL'],
-        messages=cleaned_messages,
-        temperature=1,
-        max_tokens=1024,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0
-    )
-
-    output = clean_string(completion.choices[0].message.content)
-
-    current_app.logger.debug(f"{output}")
-
-    # Return the output content
-    return json.loads(json.dumps(output))
 
 
 def build_and_send_messages(system_prompt, history_records):
