@@ -158,14 +158,15 @@
                         <h3 class="panel-title">Name of Person</h3>
                     </div>
                     <div class="panel-body">
-                        <div class="media">
-                            <div class="media-left">
+                        <!-- Use of Bootstrap grid to control layout -->
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-3">
                                 <!-- Linking the image to LinkedIn profile -->
-                                <a href="https://www.linkedin.com/in/link-to-profile">
-                                    <img class="media-object" src="path-to-image.jpg" alt="Name" style="width:100px; height:100px;">
+                                <a href="https://www.linkedin.com/in/link-to-profile" style="display: block; width: 100%; text-align: center;">
+                                    <img class="media-object" src="path-to-image.jpg" alt="Name" style="width:100px; height:100px; margin: 0 auto;">
                                 </a>
                             </div>
-                            <div class="media-body">
+                            <div class="col-xs-12 col-sm-9">
                                 <h4 class="media-heading">Short Bio</h4>
                                 <p>Description of the person’s role, contributions, and background. Add more details here about the person.</p>
                                 <!-- Optionally adding a direct LinkedIn link below the bio -->
