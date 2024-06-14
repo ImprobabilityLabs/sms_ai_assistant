@@ -10,6 +10,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
     app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+    app.config['SITEMAP_URL_SCHEME'] = 'https'
     
     # Initialize Extensions
     db.init_app(app)
