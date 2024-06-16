@@ -424,7 +424,7 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="{{ url_for('static', filename='js/ie10-viewport-bug-workaround.js') }}"></script>
     <script>
-        var stripe = Stripe('{{ app.config['STRIPE_PUB_KEY'] }}'); 
+        var stripe = Stripe('{{ STRIPE_PUB_KEY }}'); 
     </script>
     <script src="{{ url_for('static', filename='js/stripe.js') }}"></script>
     <script src="{{ url_for('static', filename='js/improbability.js') }}"></script>
