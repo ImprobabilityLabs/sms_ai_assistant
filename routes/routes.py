@@ -166,7 +166,7 @@ def configure_routes(app):
                         
             product_data = get_products()
             current_app.logger.info('Info: Subscribe Page - Products Object: ' + str(product_data))
-            return render_template('subscribe.html', seometa=MetaTags, menu=menu, products=product_data, form_data=request.form, STRIPE_PUB_KEY=STRIPE_PUB_KEY, error=error_message)
+            return render_template('subscribe.html', seometa=MetaTags, menu=menu, products=product_data, form_data=request.form, STRIPE_PUB_KEY=current_app.config['STRIPE_PUB_KEY'], error=error_message)
 
     
     @app.route('/account', methods=['GET', 'POST'])
@@ -296,7 +296,7 @@ def configure_routes(app):
                     'status': subscription.status
                 }
                 current_app.logger.info(f"Account: form_data: {form_data}")
-                return render_template('account.html', seometa=MetaTags, menu=menu, invoices=invoice_data, form_data=form_data, subscription_details=subscription_details, subscription_canceled=subscription_canceled, show_response=show_response, STRIPE_PUB_KEY=STRIPE_PUB_KEY, payment_error_msg=payment_error_msg)
+                return render_template('account.html', seometa=MetaTags, menu=menu, invoices=invoice_data, form_data=form_data, subscription_details=subscription_details, subscription_canceled=subscription_canceled, show_response=show_response, STRIPE_PUB_KEY=current_app.config['STRIPE_PUB_KEY'], payment_error_msg=payment_error_msg)
         
             except Exception as e:
                 return jsonify({'error': str(e)}), 500
