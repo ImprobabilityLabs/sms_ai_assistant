@@ -540,7 +540,7 @@
     <script src="{{ url_for('static', filename='js/ie10-viewport-bug-workaround.js') }}"></script>
     <script src="https://unpkg.com/libphonenumber-js@1.9.44/bundle/libphonenumber-js.min.js"></script>
     <script>
-        var stripe = Stripe('pk_test_51OOwrOJzClWbuS5HiI3za4AH1nlNiu1ZqJZo6ATTSTdA36SIOM0yOtotS2iUR0x6XFg5vCibUaOnK2VX6EG2kQF200jcPkbwTA'); 
+        var stripe = Stripe('{{ STRIPE_PUB_KEY }}'); 
     </script>
     <script src="{{ url_for('static', filename='js/stripe.js') }}"></script>
     <script src="{{ url_for('static', filename='js/improbability.js') }}"></script>
