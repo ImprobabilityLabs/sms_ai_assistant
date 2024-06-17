@@ -549,7 +549,7 @@ def get_products():
     """
     # Fetch a list of products from Stripe with a specified limit
     try:
-        products = stripe.Product.list(limit=10)  # Adjust limit as necessary
+        products = stripe.Product.list(limit=10, active=True)
         current_app.logger.info("Successfully retrieved products from Stripe.")
     except Exception as e:
         current_app.logger.error(f"Error fetching products from Stripe: {e}")
@@ -563,7 +563,7 @@ def get_products():
 
         # Fetch recurring prices for each product
         try:
-            prices = stripe.Price.list(product=product.id, type='recurring')
+            prices = stripe.Price.list(product=product.id, type='recurring', active=True)
             current_app.logger.debug(f"Retrieved prices for product {product.id}")
         except Exception as e:
             current_app.logger.error(f"Error fetching prices for product {product.id}: {e}")
